@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — QA Glossary</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;
+  --card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);
+  --text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;
+  --g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);
+  --blue:#3B82F6;--yellow:#F59E0B;--orange:#F97316;
+  --shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);
+}
+[data-theme="light"]{
+  --bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;
+  --card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);
+  --text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;
+  --g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);
+  --blue:#2563EB;--yellow:#D97706;--orange:#EA580C;
+  --shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);
+}
+[data-theme="hc"]{
+  --bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;
+  --card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);
+  --text:#FFF;--text2:#D0D0D0;--text3:#888;
+  --g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);
+  --blue:#60A5FA;--yellow:#FCD34D;--orange:#FB923C;
+  --shadow:rgba(0,0,0,.8);--navbg:rgba(0,0,0,.98);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;min-height:100vh;transition:background .3s,color .3s;}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+
+/* search bar — fixed below topbar */
+.search-wrap{position:fixed;top:60px;left:0;right:0;z-index:199;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:10px 20px;}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;transition:border-color .2s;}
+.search-box:focus-within{border-color:var(--border2);}
+.search-icon{font-size:16px;color:var(--text3);flex-shrink:0;}
+.search-input{flex:1;background:none;border:none;outline:none;font-family:"Roboto",sans-serif;font-size:15px;color:var(--text);}
+.search-input::placeholder{color:var(--text3);}
+.search-count{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);flex-shrink:0;}
+
+/* filter chips */
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding:8px 20px 0;scrollbar-width:none;}
+.filter-row::-webkit-scrollbar{display:none;}
+.filter-chip{flex-shrink:0;padding:5px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.filter-chip.on{background:var(--gdim);border-color:var(--border2);color:var(--g);}
+
+/* main content */
+.main{padding:140px 20px 90px;max-width:700px;margin:0 auto;}
+
+/* alpha group */
+.alpha-group{margin-bottom:24px;}
+.alpha-letter{font-family:"Syne",sans-serif;font-size:28px;font-weight:800;color:var(--g);opacity:.3;padding:0 0 8px;letter-spacing:-1px;}
+
+/* term card */
+.term-card{
+  background:var(--card);border-radius:14px;
+  border:1px solid var(--border);
+  margin-bottom:8px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .2s;
+}
+.term-card:hover{border-color:var(--border2);}
+.term-card.expanded{border-color:var(--border2);}
+.term-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+}
+.term-name{font-size:15px;font-weight:700;color:var(--text);flex:1;}
+.term-tag{font-family:"Space Mono",monospace;font-size:8px;padding:3px 7px;border-radius:5px;flex-shrink:0;}
+.term-tag.design{background:rgba(59,130,246,.1);color:var(--blue);}
+.term-tag.static{background:rgba(245,158,11,.1);color:var(--yellow);}
+.term-tag.mgmt{background:rgba(249,115,22,.1);color:var(--orange);}
+.term-tag.found{background:var(--gdim);color:var(--g);}
+.term-tag.tools{background:rgba(168,85,247,.1);color:#A78BFA;}
+.term-chevron{font-size:12px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+.term-card.expanded .term-chevron{transform:rotate(180deg);}
+
+.term-body{display:none;padding:0 16px 14px;}
+.term-card.expanded .term-body{display:block;}
+.term-def{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:8px;}
+.term-def strong{color:var(--g);font-weight:500;}
+.term-meta{display:flex;gap:8px;flex-wrap:wrap;}
+.tm-chip{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);background:var(--bg3);padding:3px 8px;border-radius:5px;}
+
+/* bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+.no-results{text-align:center;padding:40px 20px;font-family:"Space Mono",monospace;font-size:12px;color:var(--text3);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#" class="back-btn">←</a>
+  <div class="page-title">QA <span>Glossary</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="search" placeholder="Search 75 QA terms..." id="search-input" oninput="filterTerms()">
+    <span class="search-count" id="count-label">75 terms</span>
+  </div>
+  <div class="filter-row" id="filter-row">
+    <button class="filter-chip on" onclick="setFilter('all',this)">All</button>
+    <button class="filter-chip" onclick="setFilter('found',this)">Fundamentals</button>
+    <button class="filter-chip" onclick="setFilter('design',this)">Test Design</button>
+    <button class="filter-chip" onclick="setFilter('static',this)">Static Testing</button>
+    <button class="filter-chip" onclick="setFilter('mgmt',this)">Test Mgmt</button>
+    <button class="filter-chip" onclick="setFilter('tools',this)">Tools</button>
+  </div>
+</div>
+
+<div class="main" id="main"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="#" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="#" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="#" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="#" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="#" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  ['dark','light','hc'].forEach(id=>{const b=document.getElementById('btn-'+id);if(b)b.classList.toggle('on',id===t);});
+}
+if(window.matchMedia('(prefers-color-scheme: light)').matches) setTheme('light');
+
+const TERMS = [
+  {name:'Acceptance Testing',     cat:'found',  ctfl:'1.2',   def:'Testing performed to determine if a system satisfies <strong>acceptance criteria</strong> and enables the customer to accept the system.'},
+  {name:'Black-box Testing',      cat:'design', ctfl:'4.1',   def:'Testing based on an analysis of the <strong>specification of the component</strong> without reference to its internal structure.'},
+  {name:'Boundary Value Analysis',cat:'design', ctfl:'4.2.2', def:'A technique based on values at the <strong>edges of equivalence partitions</strong> — on, just above, and just below the boundary.'},
+  {name:'Branch Coverage',        cat:'design', ctfl:'4.3.2', def:'The percentage of <strong>branches</strong> in the source code that have been exercised by a test suite.'},
+  {name:'Bug',                    cat:'found',  ctfl:'1.1',   def:'A <strong>defect</strong> in a component or system that can cause it to fail to perform its required function. Also: defect, fault, error.'},
+  {name:'Cause-Effect Graphing',  cat:'design', ctfl:'4.2',   def:'A technique for designing test cases by creating a <strong>logical model</strong> of the relationships between inputs (causes) and outputs (effects).'},
+  {name:'Code Coverage',          cat:'design', ctfl:'4.3',   def:'A metric indicating the degree to which the <strong>source code</strong> of a program has been tested.'},
+  {name:'Confirmation Testing',   cat:'found',  ctfl:'2.3',   def:'Testing that <strong>re-executes failed tests</strong> after defects are fixed to verify the fix resolved the issue. Also: re-testing.'},
+  {name:'Decision Coverage',      cat:'design', ctfl:'4.3.2', def:'The percentage of <strong>decision outcomes</strong> (true/false) that have been exercised during testing.'},
+  {name:'Decision Table Testing', cat:'design', ctfl:'4.2.3', def:'A technique using a table to represent <strong>combinations of conditions</strong> and corresponding actions systematically.'},
+  {name:'Defect',                 cat:'found',  ctfl:'1.1',   def:'A flaw in a component or system that can cause it to <strong>fail to perform</strong> its required function. Also: bug, fault.'},
+  {name:'Defect Density',         cat:'mgmt',   ctfl:'5.3',   def:'The number of defects identified in a component or system <strong>divided by the size</strong> of the component (e.g., lines of code).'},
+  {name:'Equivalence Partitioning',cat:'design',ctfl:'4.2.1', def:'A technique that divides data into <strong>partitions</strong> from which test cases can be derived. Values in a partition are expected to behave the same.'},
+  {name:'Error',                  cat:'found',  ctfl:'1.1',   def:'A human action that produces an <strong>incorrect result</strong> — the mistake made by a person that leads to a defect.'},
+  {name:'Exploratory Testing',    cat:'design', ctfl:'4.4',   def:'Testing in which the tester <strong>simultaneously designs and executes tests</strong>, using knowledge gained to design new tests.'},
+  {name:'Failure',                cat:'found',  ctfl:'1.1',   def:'Deviation of the component or system from its <strong>expected delivery</strong> — when a defect is executed, a failure occurs.'},
+  {name:'Functional Testing',     cat:'found',  ctfl:'4.1',   def:'Testing conducted to evaluate the <strong>compliance of a component</strong> with functional requirements.'},
+  {name:'Integration Testing',    cat:'found',  ctfl:'2.2',   def:'Testing in which software components are <strong>combined and tested</strong> as a group to expose defects in their interfaces.'},
+  {name:'Non-functional Testing', cat:'found',  ctfl:'4.1',   def:'Testing of <strong>non-functional attributes</strong> such as reliability, performance, usability, maintainability, and portability.'},
+  {name:'Regression Testing',     cat:'found',  ctfl:'2.3',   def:'Testing of a previously tested program after a modification to ensure that <strong>defects have not been introduced</strong> or uncovered.'},
+  {name:'Risk-based Testing',     cat:'mgmt',   ctfl:'5.2',   def:'An approach to testing in which test activities are allocated and prioritized based on <strong>identified risks</strong>.'},
+  {name:'Smoke Testing',          cat:'found',  ctfl:'2.2',   def:'Preliminary testing to reveal <strong>basic failures</strong> severe enough to reject a release. Also: build verification testing.'},
+  {name:'State Transition Testing',cat:'design',ctfl:'4.2.4', def:'A technique that models a system as a set of <strong>states and transitions</strong> and derives test cases from this model.'},
+  {name:'Statement Coverage',     cat:'design', ctfl:'4.3.1', def:'The percentage of <strong>executable statements</strong> in a component that have been exercised by a test suite.'},
+  {name:'Static Testing',         cat:'static', ctfl:'3.1',   def:'Testing that does not involve <strong>execution of the component</strong> — includes reviews, walkthroughs, and static analysis.'},
+  {name:'System Testing',         cat:'found',  ctfl:'2.2',   def:'Testing of a <strong>complete integrated system</strong> to evaluate its compliance with specified requirements.'},
+  {name:'Test Basis',             cat:'found',  ctfl:'1.2',   def:'All the <strong>documentation</strong> from which the requirements of a component or system can be inferred and from which test cases are derived.'},
+  {name:'Test Case',              cat:'found',  ctfl:'1.3',   def:'A set of <strong>preconditions, inputs, actions, expected results</strong> and postconditions developed to drive the execution of a test item.'},
+  {name:'Test Charter',           cat:'design', ctfl:'4.4',   def:'A statement of <strong>test objectives</strong> and possible approaches used as a basis for exploratory testing.'},
+  {name:'Test Coverage',          cat:'mgmt',   ctfl:'5.3',   def:'The degree to which specified <strong>coverage items</strong> have been exercised by a test suite, expressed as a percentage.'},
+  {name:'Test Design',            cat:'design', ctfl:'4.1',   def:'The activity of deriving and specifying <strong>test cases</strong> from test conditions using test design techniques.'},
+  {name:'Test Execution',         cat:'mgmt',   ctfl:'5.1',   def:'The process of <strong>running a test</strong> on the component or system under test, producing actual results.'},
+  {name:'Test Level',             cat:'found',  ctfl:'2.2',   def:'A specific <strong>instantiation of a test process</strong> — e.g., component, integration, system, or acceptance testing.'},
+  {name:'Test Management',        cat:'mgmt',   ctfl:'5.1',   def:'The process of <strong>planning, monitoring, and controlling</strong> test activities to meet testing objectives.'},
+  {name:'Test Oracle',            cat:'found',  ctfl:'1.3',   def:'A source to determine expected results to compare with actual results — the <strong>basis for expected behavior</strong>.'},
+  {name:'Test Plan',              cat:'mgmt',   ctfl:'5.1',   def:'A document describing the <strong>scope, approach, resources, and schedule</strong> of intended testing activities.'},
+  {name:'Test Strategy',          cat:'mgmt',   ctfl:'5.1',   def:'A document aligned with the test policy that describes the <strong>generic requirements for testing</strong> and details how to perform testing.'},
+  {name:'Unit Testing',           cat:'found',  ctfl:'2.2',   def:'Testing of <strong>individual hardware or software units</strong> or groups of related units. Also: component testing.'},
+  {name:'Use Case Testing',       cat:'design', ctfl:'4.2',   def:'A technique deriving test cases from <strong>use cases</strong> — scenarios that describe interactions between actors and the system.'},
+  {name:'White-box Testing',      cat:'design', ctfl:'4.3',   def:'Testing based on an analysis of the <strong>internal structure</strong> of the component. Also: structural or glass-box testing.'},
+];
+
+let activeFilter = 'all';
+
+function setFilter(f, el){
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  filterTerms();
+}
+
+function filterTerms(){
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = TERMS.filter(t=>{
+    const matchCat = activeFilter==='all' || t.cat===activeFilter;
+    const matchQ   = !q || t.name.toLowerCase().includes(q) || t.def.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  renderTerms(filtered);
+  document.getElementById('count-label').textContent = filtered.length + ' terms';
+}
+
+function renderTerms(terms){
+  const main = document.getElementById('main');
+  if(!terms.length){
+    main.innerHTML = '<div class="no-results">No terms found.<br>"QALemental, Watson — try another query."</div>';
+    return;
+  }
+
+  // Group by first letter
+  const groups = {};
+  terms.forEach(t=>{
+    const letter = t.name[0].toUpperCase();
+    if(!groups[letter]) groups[letter]=[];
+    groups[letter].push(t);
+  });
+
+  main.innerHTML = Object.keys(groups).sort().map(letter=>`
+    <div class="alpha-group">
+      <div class="alpha-letter">${letter}</div>
+      ${groups[letter].map(t=>`
+        <div class="term-card" onclick="toggleTerm(this)">
+          <div class="term-header">
+            <div class="term-name">${t.name}</div>
+            <span class="term-tag ${t.cat}">${tagLabel(t.cat)}</span>
+            <span class="term-chevron">▼</span>
+          </div>
+          <div class="term-body">
+            <div class="term-def">${t.def}</div>
+            <div class="term-meta">
+              <span class="tm-chip">CTFL ${t.ctfl}</span>
+              <span class="tm-chip">${catLabel(t.cat)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function toggleTerm(el){
+  el.classList.toggle('expanded');
+}
+
+function tagLabel(cat){
+  return {found:'Fundamentals',design:'Test Design',static:'Static',mgmt:'Mgmt',tools:'Tools'}[cat]||cat;
+}
+function catLabel(cat){
+  return {found:'CTFL Fundamentals',design:'Test Design',static:'Static Testing',mgmt:'Test Management',tools:'Tool Support'}[cat]||cat;
+}
+
+filterTerms();
+</script>
+</body>
+</html>
