@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — API Testing</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;
+  --card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);
+  --text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;
+  --g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);
+  --blue:#3B82F6;--bluedim:rgba(59,130,246,.10);
+  --yellow:#F59E0B;--red:#EF4444;--orange:#F97316;--purple:#8B5CF6;
+  --code:#0A1F10;--codeborder:rgba(34,197,94,.2);
+  --shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);
+}
+[data-theme="light"]{
+  --bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;
+  --card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);
+  --text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;
+  --g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);
+  --blue:#2563EB;--bluedim:rgba(37,99,235,.08);
+  --yellow:#D97706;--red:#DC2626;--orange:#EA580C;--purple:#7C3AED;
+  --code:#F0F7F0;--codeborder:rgba(22,163,74,.2);
+  --shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);
+}
+[data-theme="hc"]{
+  --bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;
+  --card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);
+  --text:#FFF;--text2:#D0D0D0;--text3:#888;
+  --g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);
+  --blue:#60A5FA;--bluedim:rgba(96,165,250,.10);
+  --yellow:#FCD34D;--red:#F87171;--orange:#FB923C;--purple:#A78BFA;
+  --code:#050F05;--codeborder:rgba(74,222,128,.2);
+  --shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+.main{padding:72px 20px 100px;max-width:720px;margin:0 auto;}
+
+/* MODULE HERO */
+.module-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:24px;margin-bottom:28px;position:relative;overflow:hidden;}
+.module-hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(59,130,246,.06),transparent 70%);}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.mh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;}
+.mh-chip.g{background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.mh-chip.b{background:var(--bluedim);color:var(--blue);border:1px solid rgba(59,130,246,.25);}
+.mh-chip.y{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.2);}
+
+/* SECTION NAV */
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:28px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--blue);background:var(--bluedim);color:var(--blue);}
+
+/* LESSON CARD */
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:20px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--blue);font-family:"Space Mono",monospace;margin-bottom:16px;}
+
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:14px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.concept-text code{font-family:"Space Mono",monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--yellow);}
+.concept-text em{font-style:italic;color:var(--text);}
+
+/* METHOD CARDS */
+.method-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.method-card{background:var(--bg2);border-radius:12px;padding:14px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.method-badge{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;flex-shrink:0;min-width:58px;text-align:center;}
+.method-badge.get{background:rgba(34,197,94,.12);color:var(--g);border:1px solid rgba(34,197,94,.2);}
+.method-badge.post{background:rgba(59,130,246,.1);color:var(--blue);border:1px solid rgba(59,130,246,.2);}
+.method-badge.put{background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2);}
+.method-badge.patch{background:rgba(139,92,246,.1);color:var(--purple);border:1px solid rgba(139,92,246,.2);}
+.method-badge.delete{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.method-info{}
+.method-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.method-desc{font-size:12px;color:var(--text2);line-height:1.55;font-weight:300;}
+
+/* STATUS CODE GRID */
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0;}
+.sc-card{background:var(--bg2);border-radius:10px;padding:12px;border:1px solid var(--border);}
+.sc-range{font-family:"Space Mono",monospace;font-size:14px;font-weight:700;margin-bottom:4px;}
+.sc-range.s2{color:var(--g);}
+.sc-range.s3{color:var(--blue);}
+.sc-range.s4{color:var(--yellow);}
+.sc-range.s5{color:var(--red);}
+.sc-label{font-size:12px;color:var(--text2);font-weight:500;margin-bottom:4px;}
+.sc-codes{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);line-height:1.6;}
+
+/* CODE BLOCK */
+.code-block{background:var(--code);border:1px solid var(--codeborder);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto;}
+.cb-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cb-label span{color:var(--blue);}
+pre{font-family:"Space Mono",monospace;font-size:12px;line-height:1.8;color:var(--text2);white-space:pre;}
+.kw{color:#60A5FA;}.cm{color:#4B5563;}.st{color:#F59E0B;}.ok{color:#22C55E;}.er{color:#EF4444;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:10px;margin:12px 0;}
+.cl-item{background:var(--bg2);border-radius:12px;padding:14px;border:1px solid var(--border);}
+.cl-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.cl-points{font-size:12px;color:var(--text2);line-height:1.65;font-weight:300;}
+.cl-points code{font-family:"Space Mono",monospace;font-size:10px;background:var(--bg3);padding:1px 4px;border-radius:3px;color:var(--yellow);}
+
+/* CASE FILE */
+.case-file{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:14px;border:1.5px solid var(--border2);padding:18px;margin:12px 20px 0;}
+.cf-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--yellow);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cf-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.cf-tests{display:flex;flex-direction:column;gap:8px;}
+.cf-test{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);}
+.cf-num{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);width:18px;flex-shrink:0;margin-top:2px;}
+.cf-test strong{color:var(--text);font-weight:500;}
+
+/* QUIZ */
+.quiz-card{background:var(--gdim);border:1.5px solid var(--border2);border-radius:14px;padding:16px;margin:12px 20px 0;}
+.qz-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.qz-q{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.qz-opts{display:flex;flex-direction:column;gap:6px;}
+.qz-opt{padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:13px;color:var(--text2);cursor:pointer;transition:all .2s;text-align:left;}
+.qz-opt:hover{border-color:var(--border2);color:var(--text);}
+.qz-opt.correct{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);color:var(--g);}
+.qz-opt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:var(--red);}
+
+/* Q TIP */
+.q-tip{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin:14px 20px 0;}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+
+/* CHEAT SHEET */
+.cheat-sheet{background:var(--bg2);border-radius:16px;border:1px solid var(--border);padding:18px;margin:12px 0;}
+.cs-title{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.cs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.cs-item{}
+.cs-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--g);margin-bottom:6px;}
+.cs-content{font-family:"Space Mono",monospace;font-size:10px;color:var(--text2);line-height:1.8;}
+.cs-content code{color:var(--yellow);}
+
+/* NEXT BTN */
+.next-section{width:100%;padding:14px;border-radius:13px;border:none;background:var(--blue);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin:8px 0 0;}
+.next-section:hover{background:#2563EB;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">🔌 API <span>Testing</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+
+<div class="main">
+
+  <div class="module-hero fade">
+    <div class="mh-tag">// specialization track · API Testing</div>
+    <div class="mh-title">API Testing</div>
+    <div class="mh-sub">Learn to test REST APIs like a QA detective — HTTP methods, status codes, Postman, real scenarios, and what to verify when there's no UI to hide behind.</div>
+    <div class="mh-chips">
+      <span class="mh-chip g">6 lessons</span>
+      <span class="mh-chip b">REST + JSON</span>
+      <span class="mh-chip y">Postman Lab</span>
+    </div>
+  </div>
+
+  <div class="sec-nav" id="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · What is an API?</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · HTTP Methods</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · Status Codes</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · What to Test</button>
+    <button class="sn-btn" onclick="goTo(4)">5 · Postman</button>
+    <button class="sn-btn" onclick="goTo(5)">6 · Real Scenario</button>
+  </div>
+
+  <div id="sections"></div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  ["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});
+}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+
+let current=0;
+const completed=new Set();
+
+const SECTIONS=[
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">Lesson 01 · Foundations</div>
+    <div class="lc-title">What is an API?</div>
+    <div class="lc-sub">// and why should you test it?</div>
+  </div>
+  <div class="concept-box">
+    <p class="concept-text">An <strong>API (Application Programming Interface)</strong> is a contract between two systems. It defines what requests you can make, what data to send, and what response to expect.<br><br>Think of it like ordering at a restaurant. You (the client) tell the waiter (the API) what you want. The waiter goes to the kitchen (the server) and comes back with your food (the response). You never see the kitchen — you just interact with the waiter.<br><br>As a QA detective, your job is to verify <em>the contract holds</em> — even when someone tries to break it.</p>
+    <div class="code-block">
+      <div class="cb-label">// <span>HTTP Request + Response</span></div>
+      <pre><span class="kw">GET</span> https://api.qalingo.com/users/42
+Authorization: Bearer eyJhbGci...
+Content-Type: application/json
+
+<span class="cm">// Response:</span>
+{
+  <span class="st">"id"</span>: 42,
+  <span class="st">"name"</span>: <span class="st">"Omar A."</span>,
+  <span class="st">"role"</span>: <span class="st">"QA Specialist"</span>,
+  <span class="st">"certified"</span>: <span class="ok">true</span>,
+  <span class="st">"xp"</span>: 2840
+}</pre>
+    </div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"The UI is merely a disguise, Watson. The <em>API is where the real crime happens.</em> Any bug in the backend surfaces through the API — with or without a pretty interface to hide it."</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">A dev tells you: "Just test the UI — the API is the backend team's problem." What do you say?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">"Sure, if you say so."</button>
+      <button class="qz-opt" onclick="quiz(this,true)">"UI bugs are symptoms — the API is where the root cause lives. I test both."</button>
+      <button class="qz-opt" onclick="quiz(this,false)">"I only test what's in my test plan."</button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(0)">Next: HTTP Methods →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">Lesson 02 · HTTP Methods</div>
+    <div class="lc-title">The 5 HTTP Methods Every QA Must Know</div>
+    <div class="lc-sub">// the verbs of the API language</div>
+  </div>
+  <div class="concept-box">
+    <p class="concept-text">HTTP methods define the <em>action</em> being performed on a resource. Each has a specific purpose and creates different test scenarios.</p>
+    <div class="method-grid">
+      <div class="method-card"><div class="method-badge get">GET</div><div class="method-info"><div class="method-name">Read / Retrieve</div><div class="method-desc">Fetches data without modifying it. Should be idempotent — 10 calls, same result. Test: does it return the right data? Handle non-existent IDs gracefully?</div></div></div>
+      <div class="method-card"><div class="method-badge post">POST</div><div class="method-info"><div class="method-name">Create</div><div class="method-desc">Creates a new resource. Each call typically creates a new record. Test: does it return 201 Created? What happens with duplicate data or missing required fields?</div></div></div>
+      <div class="method-card"><div class="method-badge put">PUT</div><div class="method-info"><div class="method-name">Replace (full update)</div><div class="method-desc">Replaces the entire resource. Omitting a field may delete it. Test: does it correctly overwrite all fields? What if the resource doesn't exist?</div></div></div>
+      <div class="method-card"><div class="method-badge patch">PATCH</div><div class="method-info"><div class="method-name">Partial update</div><div class="method-desc">Updates only the fields provided. Other fields remain unchanged. Test: does it only change what you sent? Does it accept or reject unknown fields?</div></div></div>
+      <div class="method-card"><div class="method-badge delete">DELETE</div><div class="method-info"><div class="method-name">Remove</div><div class="method-desc">Deletes a resource. Test: does calling DELETE twice return 404 on the second call? Are there cascade effects? Is authorization required?</div></div></div>
+    </div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"<em>Rookie mistake:</em> assuming GET is harmless. I've seen GET endpoints that triggered background jobs, updated view counters, and leaked sensitive data in response headers. <em>Every method deserves your suspicion.</em>"</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">A user updates only their profile picture. The endpoint changes ONLY that field and leaves the rest intact. Which HTTP method is being used correctly?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">PUT — full replacement</button>
+      <button class="qz-opt" onclick="quiz(this,true)">PATCH — partial update</button>
+      <button class="qz-opt" onclick="quiz(this,false)">POST — create a new resource</button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(1)">Next: Status Codes →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">Lesson 03 · Status Codes</div>
+    <div class="lc-title">HTTP Status Codes — The API's Confessional</div>
+    <div class="lc-sub">// when the wrong code is the bug</div>
+  </div>
+  <div class="concept-box">
+    <p class="concept-text">Status codes tell you <strong>what happened</strong> after your request. A good QA knows not just what they mean — but when the <em>wrong code is a bug</em> even if the data looks correct.</p>
+    <div class="status-grid">
+      <div class="sc-card"><div class="sc-range s2">2xx</div><div class="sc-label">Success</div><div class="sc-codes">200 OK · 201 Created<br>204 No Content</div></div>
+      <div class="sc-card"><div class="sc-range s3">3xx</div><div class="sc-label">Redirection</div><div class="sc-codes">301 Moved Permanently<br>304 Not Modified</div></div>
+      <div class="sc-card"><div class="sc-range s4">4xx</div><div class="sc-label">Client errors</div><div class="sc-codes">400 Bad Request<br>401 Unauthorized<br>403 Forbidden · 404 Not Found<br>422 Unprocessable · 429 Rate Limit</div></div>
+      <div class="sc-card"><div class="sc-range s5">5xx</div><div class="sc-label">Server errors</div><div class="sc-codes">500 Internal Error<br>502 Bad Gateway<br>503 Unavailable</div></div>
+    </div>
+    <div class="code-block">
+      <div class="cb-label">// <span>Common Status Code Bugs</span></div>
+      <pre><span class="er">// ❌ Deleting non-existent resource returns 200</span>
+DELETE /users/9999 → <span class="er">200 OK</span>  <span class="cm">// Should be 404</span>
+
+<span class="er">// ❌ Missing auth returns 500 instead of 401</span>
+GET /admin/reports → <span class="er">500 Error</span> <span class="cm">// Should be 401</span>
+
+<span class="er">// ❌ Invalid email returns 500 instead of 422</span>
+POST /users { email: "notanemail" } → <span class="er">500</span>
+
+<span class="ok">// ✅ CORRECT: Duplicate returns 409 Conflict</span>
+POST /users { email: "user@example.com" } → <span class="ok">409</span></pre>
+    </div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"<strong>A 200 OK is not a pass.</strong> I've seen APIs return 200 with an error message inside the body. <em>The status code and the body must tell the same story.</em> When they don't — that's your bug."</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">You send POST to create a user with missing required field "email". The API returns 200 OK with body: {"error": "email required"}. Is this a bug?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">No — the error is in the body, that's fine.</button>
+      <button class="qz-opt" onclick="quiz(this,true)">Yes — it should return 400 or 422, not 200. Status and body contradict each other.</button>
+      <button class="qz-opt" onclick="quiz(this,false)">It depends on the team's convention.</button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(2)">Next: What to Test →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">Lesson 04 · Test Strategy</div>
+    <div class="lc-title">The QA API Testing Checklist</div>
+    <div class="lc-sub">// for every endpoint, run through these categories</div>
+  </div>
+  <div class="concept-box">
+    <div class="checklist">
+      <div class="cl-item"><div class="cl-title">✅ Functional Testing</div><div class="cl-points">Does it do what it's supposed to do?<br>• Valid inputs → expected response + correct status<br>• Business rules applied<br>• Response body has all required fields with correct data types</div></div>
+      <div class="cl-item"><div class="cl-title">🔒 Security Testing</div><div class="cl-points">Can it be exploited?<br>• Missing auth token → 401 (not 200 or 500)<br>• SQL injection in parameters → no crash, no data leak<br>• IDOR: User A can't access User B's data by changing an ID</div></div>
+      <div class="cl-item"><div class="cl-title">🧨 Negative Testing</div><div class="cl-points">What happens when things go wrong?<br>• Missing required fields → 400/422, clear error message<br>• Invalid types (string where number expected)<br>• Non-existent resources → 404, not 500</div></div>
+      <div class="cl-item"><div class="cl-title">⚡ Performance Testing</div><div class="cl-points">Does it hold up under load?<br>• Response time under threshold (e.g. &lt;300ms)<br>• Concurrent requests handled without errors<br>• Rate limiting returns 429 when exceeded</div></div>
+      <div class="cl-item"><div class="cl-title">📄 Contract Testing</div><div class="cl-points">Does the response match the documented spec?<br>• All documented fields present, correct data types<br>• Field names exact match (case-sensitive!)<br>• No undocumented fields leaking sensitive data</div></div>
+    </div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"<em>IDOR</em> — Insecure Direct Object Reference. Change <code>/users/42</code> to <code>/users/43</code> while authenticated as user 42. If you get user 43's data — <em>critical security bug. Escalate immediately.</em>"</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">You test GET /orders/101 while logged in as User A. The order belongs to User B. The API returns full order details with 200 OK. What type of bug is this?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">Performance bug — too much data returned.</button>
+      <button class="qz-opt" onclick="quiz(this,false)">Functional bug — wrong status code.</button>
+      <button class="qz-opt" onclick="quiz(this,true)">Security bug — IDOR (Insecure Direct Object Reference).</button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(3)">Next: Postman →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">Lesson 05 · Tools</div>
+    <div class="lc-title">Postman — The QA Detective's Toolkit</div>
+    <div class="lc-sub">// the most used API testing tool in the world</div>
+  </div>
+  <div class="concept-box">
+    <p class="concept-text"><strong>Postman</strong> is the most widely used API testing tool. It lets you send HTTP requests, inspect responses, write assertions, and automate test suites — no code required (though you can add it).</p>
+    <div class="method-grid">
+      <div class="method-card"><div class="method-badge get" style="min-width:auto;padding:4px 8px">🔧</div><div class="method-info"><div class="method-name">Collections</div><div class="method-desc">Group related requests by feature. Run the whole collection with one click. Share with your team.</div></div></div>
+      <div class="method-card"><div class="method-badge post" style="min-width:auto;padding:4px 8px">🌍</div><div class="method-info"><div class="method-name">Environments</div><div class="method-desc">Switch between dev, staging, prod using variables. Never hardcode URLs.</div></div></div>
+      <div class="method-card"><div class="method-badge put" style="min-width:auto;padding:4px 8px">✅</div><div class="method-info"><div class="method-name">Tests Tab</div><div class="method-desc">Write JS assertions after each request. pm.test(), pm.expect(). Automated checks on every run.</div></div></div>
+      <div class="method-card"><div class="method-badge patch" style="min-width:auto;padding:4px 8px">🔄</div><div class="method-info"><div class="method-name">Newman</div><div class="method-desc">Run Postman collections from command line. Integrate into CI/CD. No GUI needed.</div></div></div>
+    </div>
+    <div class="code-block">
+      <div class="cb-label">// <span>Postman Test Scripts (JavaScript)</span></div>
+      <pre>pm.test(<span class="st">"Status is 200"</span>, () => {
+  pm.response.to.have.status(<span class="kw">200</span>);
+});
+
+pm.test(<span class="st">"Has id field"</span>, () => {
+  pm.expect(pm.response.json()).to.have.property(<span class="st">'id'</span>);
+});
+
+pm.test(<span class="st">"Response under 300ms"</span>, () => {
+  pm.expect(pm.response.responseTime).to.be.below(<span class="kw">300</span>);
+});
+
+pm.test(<span class="st">"User is certified"</span>, () => {
+  <span class="kw">const</span> json = pm.response.json();
+  pm.expect(json.certified).to.eql(<span class="ok">true</span>);
+});</pre>
+    </div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"A collection without tests is just a list of requests. <em>Add assertions to every endpoint.</em> Then run it with Newman in your CI pipeline. That's the difference between manual and automated API testing."</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">You want your Postman collection to run automatically every time a developer pushes code. What makes this possible?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">Postman Monitor — schedules runs on a timer.</button>
+      <button class="qz-opt" onclick="quiz(this,true)">Newman — runs Postman collections from the command line, integrates into CI/CD.</button>
+      <button class="qz-opt" onclick="quiz(this,false)">Postman Sync — auto-runs on save.</button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(4)">Next: Real Scenario →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">🕵️ Detective Case File #001</div>
+    <div class="lc-title">The Login API — 6 Tests You Must Run</div>
+    <div class="lc-sub">// find the bugs before users do</div>
+  </div>
+  <div class="concept-box">
+    <p class="concept-text"><strong>The situation:</strong> You're testing a new login endpoint before it goes to production. Endpoint: <code>POST /auth/login</code>. It accepts email + password, returns a JWT token on success. Find the bugs before users do.</p>
+  </div>
+  <div class="case-file">
+    <div class="cf-tag">// Test Cases</div>
+    <div class="cf-title">POST /auth/login — Required tests</div>
+    <div class="cf-tests">
+      <div class="cf-test"><div class="cf-num">01</div><div>Valid email + correct password → <strong>200 OK + token in response</strong></div></div>
+      <div class="cf-test"><div class="cf-num">02</div><div>Valid email + wrong password → <strong>401 Unauthorized</strong> (not 500)</div></div>
+      <div class="cf-test"><div class="cf-num">03</div><div>Missing password field → <strong>400 Bad Request</strong> with clear error message</div></div>
+      <div class="cf-test"><div class="cf-num">04</div><div>SQL injection in email field → <strong>no crash, no data leak</strong></div></div>
+      <div class="cf-test"><div class="cf-num">05</div><div>Valid credentials but account locked → <strong>403 Forbidden</strong> with reason</div></div>
+      <div class="cf-test"><div class="cf-num">06</div><div>50 rapid login attempts → <strong>429 Too Many Requests</strong> (rate limiting active)</div></div>
+    </div>
+  </div>
+  <div class="code-block" style="margin:12px 20px 0;">
+    <div class="cb-label">// <span>Expected Results</span></div>
+    <pre><span class="ok">Test 1:</span> POST { email, password } → <span class="ok">200</span> + { token: "eyJ..." }
+<span class="ok">Test 2:</span> POST { email, wrongPass } → <span class="er">401</span> { error: "Invalid credentials" }
+<span class="ok">Test 3:</span> POST { email } → <span class="er">400</span> { error: "password is required" }
+<span class="ok">Test 4:</span> POST { email: "' OR 1=1--" } → <span class="er">400</span> (no crash)
+<span class="ok">Test 5:</span> POST (locked account) → <span class="er">403</span> { error: "Account suspended" }
+<span class="ok">Test 6:</span> 50x rapid → <span class="er">429</span> { retryAfter: 60 }</pre>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div>
+      <div class="qt-tag">// Q says</div>
+      <p class="qt-msg">"Tests 1-3: <em>functional.</em> Test 4: <em>security</em> — never skip on auth endpoints. Test 5: <em>business logic.</em> Test 6 — rate limiting — is what separates junior QAs from senior ones. <em>Most people forget it. Attackers don't.</em>"</p>
+    </div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Final Check</div>
+    <div class="qz-q">In an interview: "How would you test an API without any documentation?" — Best answer?</div>
+    <div class="qz-opts">
+      <button class="qz-opt" onclick="quiz(this,false)">"I'd wait for the documentation before testing."</button>
+      <button class="qz-opt" onclick="quiz(this,false)">"I'd only test the happy path to avoid guessing."</button>
+      <button class="qz-opt" onclick="quiz(this,true)">"I'd explore the API like a detective — infer from responses, test edge cases, check status codes, look for security issues. Documentation is a starting point, not a requirement."</button>
+    </div>
+  </div>
+
+  <div style="margin:12px 20px 0;">
+    <div class="cheat-sheet">
+      <div class="cs-title">// API Testing Cheat Sheet</div>
+      <div class="cs-grid">
+        <div class="cs-item">
+          <div class="cs-label">Status Codes</div>
+          <div class="cs-content"><code>200</code> OK · <code>201</code> Created<br><code>400</code> Bad Request · <code>401</code> Unauth<br><code>403</code> Forbidden · <code>404</code> Not Found<br><code>409</code> Conflict · <code>422</code> Invalid<br><code>429</code> Rate Limit · <code>500</code> Server</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-label">HTTP Methods</div>
+          <div class="cs-content"><code>GET</code> Read (idempotent)<br><code>POST</code> Create (201)<br><code>PUT</code> Full replace<br><code>PATCH</code> Partial update<br><code>DELETE</code> Remove</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-label">Always Test</div>
+          <div class="cs-content">✓ Happy path<br>✓ Missing required fields<br>✓ Invalid data types<br>✓ Auth missing/invalid<br>✓ IDOR · SQL injection<br>✓ Rate limiting</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-label">Tools</div>
+          <div class="cs-content"><code>Postman</code> GUI testing<br><code>Newman</code> CLI / CI-CD<br><code>Swagger</code> API docs<br><code>curl</code> Command line<br><code>pytest</code> Python automation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(5)" style="background:var(--g)">🏆 Complete Module</button></div>
+</div>`
+];
+
+function quiz(btn, correct){
+  const opts = btn.closest('.qz-opts').querySelectorAll('.qz-opt');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')) o.classList.add('correct');});
+  }
+}
+
+function goTo(i){
+  current=i;
+  document.getElementById('sections').innerHTML=SECTIONS[i];
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{
+    b.classList.toggle('active',idx===i);
+    b.classList.toggle('done',completed.has(idx)&&idx!==i);
+  });
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(i){
+  completed.add(i);
+  if(i<SECTIONS.length-1) goTo(i+1);
+  else{
+    document.getElementById('sections').innerHTML=`
+    <div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--blue);margin-bottom:8px">API Module Complete!</div>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:20px">"QALemental. You now test APIs like a detective — not like a tourist."</p>
+      <a href="dashboard.html" style="display:inline-block;background:var(--g);color:#fff;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px">← Back to Dashboard</a>
+    </div>`;
+    updateProgress();
+  }
+}
+
+function updateProgress(){
+  document.getElementById('prog').style.width=(completed.size/SECTIONS.length*100)+'%';
+}
+
+goTo(0);
+</script>
+</body>
+</html>
