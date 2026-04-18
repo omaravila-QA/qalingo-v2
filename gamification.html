@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Progress & Badges</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--yellow:#F59E0B;--orange:#F97316;--blue:#3B82F6;--red:#EF4444;--purple:#8B5CF6;--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--yellow:#D97706;--orange:#EA580C;--blue:#2563EB;--red:#DC2626;--purple:#7C3AED;--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--yellow:#FCD34D;--orange:#FB923C;--blue:#60A5FA;--red:#F87171;--purple:#A78BFA;--shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+
+/* TABS */
+.tabs{display:flex;background:var(--bg3);border-radius:13px;padding:3px;margin:70px 20px 0;}
+.tab{flex:1;padding:9px;border-radius:10px;border:none;background:transparent;font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.tab.on{background:var(--card);color:var(--text);}
+
+.main{padding:12px 20px 90px;max-width:720px;margin:0 auto;}
+.tab-panel{display:none;}
+.tab-panel.active{display:flex;flex-direction:column;gap:14px;}
+.sec-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:2px 0;}
+
+/* HERO CARD */
+.hero-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:20px;position:relative;overflow:hidden;}
+.hero-card::before{content:"";position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(34,197,94,.07),transparent 70%);}
+.hc-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.avatar-ring{width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--g) 80%,var(--bg3) 80%);padding:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.avatar-inner{width:100%;height:100%;background:var(--bg2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.hc-info h2{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;margin-bottom:2px;}
+.hc-role{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:4px;}
+.hc-level{display:inline-block;background:var(--yellow);color:#1a1a1a;font-family:"Space Mono",monospace;font-size:9px;font-weight:900;padding:2px 8px;border-radius:99px;}
+.xp-meta{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);margin-bottom:5px;}
+.xp-track{height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gh),var(--g));width:80%;}
+
+/* QUICK STATS */
+.quick-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.qs-card{background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);text-align:center;}
+.qs-icon{font-size:22px;margin-bottom:5px;}
+.qs-num{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:3px;}
+.qs-num.g{color:var(--g);}
+.qs-num.y{color:var(--yellow);}
+.qs-num.o{color:var(--orange);}
+.qs-num.b{color:var(--blue);}
+.qs-lbl{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:.5px;}
+
+/* STREAK */
+.streak-card{background:linear-gradient(135deg,rgba(249,115,22,.06),var(--card));border-radius:16px;border:1px solid rgba(249,115,22,.2);padding:18px;}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.streak-num-big{font-family:"Syne",sans-serif;font-size:42px;font-weight:800;color:var(--orange);line-height:1;letter-spacing:-2px;}
+.streak-lbl{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);margin-top:2px;}
+.streak-stats{display:flex;gap:16px;}
+.ss-item{text-align:center;}
+.ss-n{font-family:"Space Mono",monospace;font-size:14px;font-weight:700;color:var(--text);}
+.ss-l{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);}
+.streak-days{display:flex;gap:6px;}
+.sd{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.sd-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.sd-dot.done{background:rgba(249,115,22,.15);border:1.5px solid rgba(249,115,22,.3);}
+.sd-dot.today{background:var(--orange);color:#fff;box-shadow:0 0 10px rgba(249,115,22,.3);}
+.sd-dot.miss{background:var(--bg3);border:1.5px solid var(--border);opacity:.4;}
+.sd-lbl{font-family:"Space Mono",monospace;font-size:7px;color:var(--text3);}
+
+/* DAILY CHALLENGE CARD */
+.challenge-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border2);padding:16px;}
+.cc-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--yellow);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cc-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.cc-sub{font-size:13px;color:var(--text2);font-weight:300;line-height:1.5;margin-bottom:12px;}
+.cc-chips{display:flex;gap:8px;margin-bottom:12px;}
+.cc-chip{font-family:"Space Mono",monospace;font-size:9px;padding:3px 8px;border-radius:5px;}
+.cc-chip.xp{background:rgba(245,158,11,.1);color:var(--yellow);}
+.cc-chip.diff{background:var(--gdim);color:var(--g);}
+.cc-btn{width:100%;padding:13px;border-radius:12px;border:none;background:var(--g);color:#fff;font-size:14px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;}
+.cc-btn:hover{background:var(--gh);}
+
+/* BADGES */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.badge-card{background:var(--card);border-radius:14px;padding:14px 10px;border:1px solid var(--border);text-align:center;transition:transform .2s;}
+.badge-card:hover{transform:translateY(-3px);}
+.badge-card.unlocked{border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,rgba(245,158,11,.04),var(--card));}
+.badge-card.locked{opacity:.3;filter:grayscale(1);}
+.badge-icon{font-size:28px;margin-bottom:6px;}
+.badge-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.badge-sub{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);}
+.badge-new{display:inline-block;background:var(--g);color:#fff;font-family:"Space Mono",monospace;font-size:7px;padding:1px 5px;border-radius:3px;margin-bottom:4px;}
+
+/* LEADERBOARD */
+.lb-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.lb-tab{padding:6px 14px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.lb-tab.on{border-color:var(--g);background:var(--gdim);color:var(--g);}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:16px;padding:16px 0 0;}
+.pod{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.pod-av{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);position:relative;}
+.pod.first .pod-av{width:58px;height:58px;border-color:var(--yellow);font-size:26px;}
+.pod-rank{position:absolute;top:-8px;right:-4px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--bg);}
+.r1{background:var(--yellow);color:#1a1a1a;}
+.r2{background:#9CA3AF;color:#fff;}
+.r3{background:#CD7C3A;color:#fff;}
+.pod-name{font-size:11px;font-weight:700;text-align:center;}
+.pod-pts{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);}
+.pod-bar{width:100%;border-radius:8px 8px 0 0;}
+.pod.first .pod-bar{height:60px;background:rgba(245,158,11,.1);}
+.pod.second .pod-bar{height:44px;background:rgba(156,163,175,.08);}
+.pod.third .pod-bar{height:32px;background:rgba(205,124,58,.08);}
+.lb-list{display:flex;flex-direction:column;gap:6px;}
+.lb-row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:13px;padding:12px 14px;border:1px solid var(--border);}
+.lb-row.me{border-color:var(--border2);background:linear-gradient(135deg,var(--bg4),var(--card));}
+.lb-pos{font-family:"Syne",sans-serif;font-size:15px;font-weight:800;color:var(--text3);width:22px;}
+.lb-av{width:34px;height:34px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.lb-info{flex:1;}
+.lb-name{font-size:13px;font-weight:700;}
+.lb-sub{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);}
+.me-tag{font-family:"Space Mono",monospace;font-size:7px;color:var(--g);background:var(--gdim);padding:1px 5px;border-radius:3px;margin-left:4px;}
+.lb-pts{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;color:var(--g);letter-spacing:-1px;}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">🏅 Progress <span>& Badges</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="switchTab('progress',this)">Progress</button>
+  <button class="tab"    onclick="switchTab('badges',this)">Badges</button>
+  <button class="tab"    onclick="switchTab('leaderboard',this)">Leaderboard</button>
+</div>
+
+<div class="main">
+
+  <!-- PROGRESS TAB -->
+  <div class="tab-panel active" id="tab-progress">
+    <div class="hero-card fade">
+      <div class="hc-top">
+        <div class="avatar-ring"><div class="avatar-inner">🧑‍💻</div></div>
+        <div class="hc-info">
+          <h2>Omar A.</h2>
+          <div class="hc-role">Senior QA Detective</div>
+          <div class="hc-level">LVL 8 · Senior Investigator</div>
+        </div>
+      </div>
+      <div class="xp-meta"><span>⚡ 2,840 XP</span><span style="color:var(--g)">Next level: 3,500 XP</span></div>
+      <div class="xp-track"><div class="xp-fill"></div></div>
+    </div>
+
+    <div class="quick-stats">
+      <div class="qs-card"><div class="qs-icon">🔥</div><div class="qs-num y">23</div><div class="qs-lbl">Day streak</div></div>
+      <div class="qs-card"><div class="qs-icon">🎯</div><div class="qs-num g">94%</div><div class="qs-lbl">Accuracy</div></div>
+      <div class="qs-card"><div class="qs-icon">🏅</div><div class="qs-num o">14</div><div class="qs-lbl">Badges</div></div>
+      <div class="qs-card"><div class="qs-icon">🏆</div><div class="qs-num b">#7</div><div class="qs-lbl">Global rank</div></div>
+    </div>
+
+    <div class="streak-card">
+      <div class="streak-top">
+        <div>
+          <div class="streak-num-big">🔥 23</div>
+          <div class="streak-lbl">day streak — keep going, Watson</div>
+        </div>
+        <div class="streak-stats">
+          <div class="ss-item"><div class="ss-n">31</div><div class="ss-l">longest</div></div>
+          <div class="ss-item"><div class="ss-n">47</div><div class="ss-l">total days</div></div>
+        </div>
+      </div>
+      <div class="streak-days">
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">M</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">T</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">W</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">T</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">F</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">S</div></div>
+        <div class="sd"><div class="sd-dot today">●</div><div class="sd-lbl">S</div></div>
+      </div>
+    </div>
+
+    <div class="sec-label">// daily challenge</div>
+    <div class="challenge-card">
+      <div class="cc-tag">⚡ Daily Challenge — resets in 6h 42m</div>
+      <div class="cc-title">The Boundary Case</div>
+      <div class="cc-sub">5 questions from Chapter 4 — Test Design Techniques. BVA, EP, Decision Tables.</div>
+      <div class="cc-chips">
+        <span class="cc-chip xp">+150 XP</span>
+        <span class="cc-chip diff">⚡ Medium</span>
+        <span class="cc-chip diff">🔥 Streak protected</span>
+      </div>
+      <button class="cc-btn" onclick="window.location.href='challenges.html'">Start Challenge →</button>
+    </div>
+  </div>
+
+  <!-- BADGES TAB -->
+  <div class="tab-panel" id="tab-badges">
+    <div style="font-size:13px;color:var(--text2);font-weight:300;line-height:1.6">14 of 28 badges earned · <span style="color:var(--g)">50% complete</span></div>
+
+    <div class="sec-label">// earned badges</div>
+    <div class="badge-grid">
+      <div class="badge-card unlocked"><div class="badge-new">NEW</div><div class="badge-icon">🐛</div><div class="badge-name">Bug Hunter</div><div class="badge-sub">50 bugs found</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🔥</div><div class="badge-name">On Fire</div><div class="badge-sub">7-day streak</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🎯</div><div class="badge-name">Precision</div><div class="badge-sub">90%+ accuracy</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🗄️</div><div class="badge-name">SQL Detective</div><div class="badge-sub">SQL M1 complete</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🔌</div><div class="badge-name">API Tester</div><div class="badge-sub">API module done</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">⚡</div><div class="badge-name">Speed Round</div><div class="badge-sub">10 min session</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">📖</div><div class="badge-name">Vocabularian</div><div class="badge-sub">50 terms learned</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🌙</div><div class="badge-name">Night Owl</div><div class="badge-sub">Studied after midnight</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🏃</div><div class="badge-name">Early Bird</div><div class="badge-sub">7-day morning streak</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🧠</div><div class="badge-name">Fundamentals</div><div class="badge-sub">Ch.1 mastered</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🔍</div><div class="badge-name">Detective</div><div class="badge-sub">Level 5 reached</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">💬</div><div class="badge-name">Interviewed</div><div class="badge-sub">First AI interview</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">📝</div><div class="badge-name">Test Writer</div><div class="badge-sub">20 test cases written</div></div>
+      <div class="badge-card unlocked"><div class="badge-icon">🌍</div><div class="badge-name">LATAM QA</div><div class="badge-sub">Colombian tester</div></div>
+    </div>
+
+    <div class="sec-label">// locked badges</div>
+    <div class="badge-grid">
+      <div class="badge-card locked"><div class="badge-icon">🏆</div><div class="badge-name">CTFL Ready</div><div class="badge-sub">Pass simulator</div></div>
+      <div class="badge-card locked"><div class="badge-icon">🚀</div><div class="badge-name">Deployed</div><div class="badge-sub">Complete all modules</div></div>
+      <div class="badge-card locked"><div class="badge-icon">👑</div><div class="badge-name">Top 3</div><div class="badge-sub">Reach global #3</div></div>
+      <div class="badge-card locked"><div class="badge-icon">💎</div><div class="badge-name">Diamond</div><div class="badge-sub">30-day streak</div></div>
+      <div class="badge-card locked"><div class="badge-icon">🎓</div><div class="badge-name">Certified</div><div class="badge-sub">Share ISTQB cert</div></div>
+      <div class="badge-card locked"><div class="badge-icon">🌙</div><div class="badge-name">Insomniac</div><div class="badge-sub">Study 3 nights</div></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD TAB -->
+  <div class="tab-panel" id="tab-leaderboard">
+    <div class="lb-tabs">
+      <button class="lb-tab on" onclick="setLbTab(this,'weekly')">Weekly</button>
+      <button class="lb-tab" onclick="setLbTab(this,'monthly')">Monthly</button>
+      <button class="lb-tab" onclick="setLbTab(this,'alltime')">All Time</button>
+    </div>
+
+    <div class="podium">
+      <div class="pod second"><div class="pod-av">🧑‍💼<div class="pod-rank r2">2</div></div><div class="pod-name">Ana M.</div><div class="pod-pts">2,840 pts</div><div class="pod-bar"></div></div>
+      <div class="pod first"><div class="pod-av">🧑‍💻<div class="pod-rank r1">👑</div></div><div class="pod-name">Carlos R.</div><div class="pod-pts">3,120 pts</div><div class="pod-bar"></div></div>
+      <div class="pod third"><div class="pod-av">👩‍💼<div class="pod-rank r3">3</div></div><div class="pod-name">María P.</div><div class="pod-pts">2,610 pts</div><div class="pod-bar"></div></div>
+    </div>
+
+    <div class="lb-list">
+      <div class="lb-row"><div class="lb-pos" style="color:var(--yellow)">4</div><div class="lb-av">🧑‍🔬</div><div class="lb-info"><div class="lb-name">Jorge T.</div><div class="lb-sub">🇲🇽 · 18 day streak</div></div><div class="lb-pts">2,480</div></div>
+      <div class="lb-row"><div class="lb-pos" style="color:var(--yellow)">5</div><div class="lb-av">👩‍💻</div><div class="lb-info"><div class="lb-name">Laura V.</div><div class="lb-sub">🇦🇷 · 12 day streak</div></div><div class="lb-pts">2,310</div></div>
+      <div class="lb-row"><div class="lb-pos">6</div><div class="lb-av">👨‍💻</div><div class="lb-info"><div class="lb-name">Pedro M.</div><div class="lb-sub">🇧🇷 · 9 day streak</div></div><div class="lb-pts">2,100</div></div>
+      <div class="lb-row me"><div class="lb-pos">7</div><div class="lb-av">🧑</div><div class="lb-info"><div class="lb-name">Omar A.<span class="me-tag">you</span></div><div class="lb-sub">🇨🇴 · 23 day streak 🔥</div></div><div class="lb-pts" style="color:var(--yellow)">2,840</div></div>
+      <div class="lb-row"><div class="lb-pos">8</div><div class="lb-av">👩‍🎓</div><div class="lb-info"><div class="lb-name">Daniela Q.</div><div class="lb-sub">🇨🇱 · 5 day streak</div></div><div class="lb-pts">1,950</div></div>
+      <div class="lb-row"><div class="lb-pos">9</div><div class="lb-av">👨‍🏫</div><div class="lb-info"><div class="lb-name">Roberto F.</div><div class="lb-sub">🇧🇷 · 3 day streak</div></div><div class="lb-pts">1,780</div></div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="gamification.html" class="nav-item on"><div class="nav-icon">📋</div><div class="nav-label">Progress</div><div class="nav-pip"></div></a>
+  <a href="glossary.html" class="nav-item"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('on');
+}
+
+function setLbTab(btn,period){
+  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>
