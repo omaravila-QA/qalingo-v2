@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Programming for QA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--blue:#3B82F6;--bluedim:rgba(59,130,246,.10);--yellow:#F59E0B;--red:#EF4444;--orange:#F97316;--purple:#8B5CF6;--code:#0A1F10;--codeborder:rgba(34,197,94,.2);--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--blue:#2563EB;--bluedim:rgba(37,99,235,.08);--yellow:#D97706;--red:#DC2626;--orange:#EA580C;--purple:#7C3AED;--code:#F0F7F0;--codeborder:rgba(22,163,74,.2);--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--blue:#60A5FA;--bluedim:rgba(96,165,250,.10);--yellow:#FCD34D;--red:#F87171;--orange:#FB923C;--purple:#A78BFA;--code:#050F05;--codeborder:rgba(74,222,128,.2);--shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+.main{padding:72px 20px 100px;max-width:720px;margin:0 auto;}
+.module-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid rgba(139,92,246,.3);padding:24px;margin-bottom:28px;}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.mh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;}
+.mh-chip.g{background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.mh-chip.p{background:rgba(139,92,246,.1);color:var(--purple);border:1px solid rgba(139,92,246,.25);}
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:24px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--purple);background:rgba(139,92,246,.1);color:var(--purple);}
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:20px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--purple);font-family:"Space Mono",monospace;margin-bottom:16px;}
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:14px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.qa-thinking{background:var(--gdim);border:1px solid var(--border2);border-radius:12px;padding:14px;margin:12px 0;}
+.qa-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.qa-points{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.qa-points li{font-size:13px;color:var(--text2);font-weight:300;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.qa-points li::before{content:"🔍";flex-shrink:0;}
+.code-block{background:var(--code);border:1px solid var(--codeborder);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto;}
+.cb-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cb-label span{color:var(--purple);}
+pre{font-family:"Space Mono",monospace;font-size:12px;line-height:1.8;color:var(--text2);white-space:pre;}
+.kw{color:#60A5FA;}.cm{color:#4B5563;}.st{color:#F59E0B;}.ok{color:#22C55E;}.er{color:#EF4444;}.fn{color:#22C55E;}.nm{color:#F97316;}
+.test-table{margin:12px 0;}
+.test-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg3);font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:12px;}
+tr:last-child td{border-bottom:none;}
+.status-pass{color:var(--g);font-weight:700;}
+.status-fail{color:var(--red);font-weight:700;}
+.status-warn{color:var(--yellow);font-weight:700;}
+.quiz-card{background:rgba(139,92,246,.06);border:1.5px solid rgba(139,92,246,.25);border-radius:14px;padding:16px;margin:12px 20px 0;}
+.qz-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.qz-q{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.qz-opts{display:flex;flex-direction:column;gap:6px;}
+.qz-opt{padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:13px;color:var(--text2);cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+.qz-opt:hover{border-color:var(--border2);}
+.qz-opt.correct{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);color:var(--g);}
+.qz-opt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:var(--red);}
+.q-tip{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin:14px 20px 0;}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+.next-section{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin:8px 0 0;}
+.next-section:hover{background:var(--gh);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">💻 Programming <span>for QA</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+<div class="main">
+  <div class="module-hero fade">
+    <div class="mh-tag">// Programming Foundations for QA</div>
+    <div class="mh-title">Programming for QA</div>
+    <div class="mh-sub">You don't need to code. But you need to think like a developer to test like a detective. 7 concepts explained from a pure QA perspective.</div>
+    <div class="mh-chips">
+      <span class="mh-chip g">7 concepts</span>
+      <span class="mh-chip g">7 quizzes</span>
+      <span class="mh-chip p">QA perspective on every topic</span>
+    </div>
+  </div>
+  <div class="sec-nav" id="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · Variables</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · Data Types</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · Conditionals</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · Loops</button>
+    <button class="sn-btn" onclick="goTo(4)">5 · Functions</button>
+    <button class="sn-btn" onclick="goTo(5)">6 · Arrays</button>
+    <button class="sn-btn" onclick="goTo(6)">7 · OOP</button>
+  </div>
+  <div id="sections"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+let current=0;const completed=new Set();
+
+const CONCEPTS=[
+{num:"Concept 01",title:"Variables",sub:"A labeled box that holds a value",
+ thinking:["Test <strong>valid values</strong> — expected input the system should accept","Test <strong>invalid values</strong> — wrong type, wrong format, unexpected data","Test <strong>boundary values</strong> — min, max, empty, null","Ask: what happens if the variable is never assigned a value?"],
+ code:`<span class="cm">// Field: userAge — testing the variable's valid range</span>
+<span class="kw">let</span> userAge = <span class="nm">25</span>;    <span class="ok">// ✅ Valid</span>
+<span class="kw">let</span> userAge = <span class="nm">0</span>;     <span class="cm">// ⚠️ Edge case — is 0 a valid age?</span>
+<span class="kw">let</span> userAge = <span class="nm">-1</span>;    <span class="er">// ❌ Invalid — negative age</span>
+<span class="kw">let</span> userAge = <span class="kw">null</span>;  <span class="er">// ❌ Invalid — no value provided</span>
+<span class="kw">let</span> userAge = <span class="st">"abc"</span>; <span class="er">// ❌ Invalid — wrong type (string)</span>`,
+ rows:[["25","Accepted","✅ Pass"],["0","Edge case — verify system behavior","⚠️ Review"],["-1","Validation error shown","❌ Should fail"],["null","Required field error","❌ Should fail"],["\"abc\"","Type error / validation message","❌ Should fail"]],
+ heads:["Test Input","Expected Result","Status"],
+ insight:"Understanding variables helps you design test cases that cover <strong>valid, invalid, and boundary scenarios</strong>. Every input field in an application is backed by a variable — knowing that helps you ask: what values can break it?",
+ quiz:{q:"A registration form has a 'username' field. Which test cases should you write for this variable?",opts:[["Only test valid usernames — that's the happy path.",false],["Test valid, invalid, empty, too long, special characters, and SQL injection.",true],["Only test what's in the acceptance criteria document.",false]],},
+ qtip:`"Every field is a variable, Watson. And <em>every variable has a breaking point.</em> Find it before the user does."`
+},
+{num:"Concept 02",title:"Data Types",sub:"The kind of data a variable can hold",
+ thinking:["Verify the system handles the <strong>correct data type</strong> as expected","Test what happens when a <strong>wrong type is submitted</strong>","Check <strong>type conversions</strong> — does '123' behave like 123?","Validate <strong>edge cases</strong>: empty strings, zero, false vs null"],
+ code:`<span class="cm">// Field: phoneNumber — type matters!</span>
+phoneNumber = <span class="st">"3001234567"</span>  <span class="ok">// ✅ String (correct type)</span>
+phoneNumber = <span class="nm">3001234567</span>    <span class="cm">// ⚠️ Integer — leading zeros lost!</span>
+phoneNumber = <span class="st">"ABC123"</span>      <span class="er">// ❌ Invalid format</span>
+phoneNumber = <span class="st">""</span>            <span class="er">// ❌ Empty string</span>
+phoneNumber = <span class="kw">true</span>          <span class="er">// ❌ Wrong type (Boolean)</span>`,
+ rows:[["\"3001234567\"","String","Accepted","✅"],["3001234567","Integer","Leading zeros may be lost","⚠️"],["\"ABC123\"","String","Format validation error","❌"],["\"\"","Empty","Required field error","❌"]],
+ heads:["Input","Type","Expected","Status"],
+ insight:"Data type mismatches are one of the most common sources of bugs. A field expecting a <strong>String</strong> that receives an <strong>Integer</strong> can cause silent failures, data corruption, or crashes — especially in APIs and databases.",
+ quiz:{q:"An API endpoint expects age as an Integer. A tester sends age as '25' (a string). The API returns 200 OK. Is there a potential issue?",opts:[["No — 200 OK means it's fine.",false],["Yes — type coercion may cause issues in downstream processing. The API should validate types explicitly.",true],["Only if the documentation specifies the type.",false]],},
+ qtip:`"<em>The string '123' and the integer 123</em> look the same to a human. They're completely different to a system. Type bugs are the silent killers."`
+},
+{num:"Concept 03",title:"Conditional Statements",sub:"The foundation of all system behavior",
+ thinking:["Always test <strong>both the TRUE path and the FALSE path</strong>","Verify error messages or actions appear correctly on each path","Test <strong>boundary conditions</strong> — what happens exactly at the threshold?","Check for <strong>missing else branches</strong> — what if neither condition is met?"],
+ code:`<span class="cm">// Login page conditional logic</span>
+<span class="kw">if</span> (credentials.areValid()) {
+  redirectTo(<span class="st">"dashboard"</span>);   <span class="ok">// ✅ TRUE path</span>
+} <span class="kw">else</span> {
+  showError(<span class="st">"Invalid login"</span>); <span class="er">// ❌ FALSE path — test this!</span>
+}
+
+<span class="cm">// QA tests BOTH branches, not just the happy path</span>`,
+ rows:[["Valid credentials","Redirect to Dashboard","✅ TRUE path"],["Invalid password","Show error message","❌ FALSE path"],["Valid email, wrong password","Show error — not redirect","❌ Must test"],["Empty fields submitted","Validation before if/else","⚠️ Edge case"]],
+ heads:["Condition","Expected Result","Status"],
+ insight:"Every feature has conditional logic. <strong>Testing only the happy path (the TRUE branch) is the most common QA mistake.</strong> The FALSE path is where most production bugs live — especially missing error messages, wrong redirects, and silent failures.",
+ quiz:{q:"A developer shows you the login feature. You run 'valid email + correct password' and it works. What do you test next?",opts:[["Mark it as passed — the main scenario works.",false],["Test only one more scenario — invalid password.",false],["Test valid email + wrong password, empty fields, SQL injection, locked account, and expired session.",true]],},
+ qtip:`"The TRUE path is where <em>developers test.</em> The FALSE path is where <em>QA engineers live.</em> That's where the bugs are hiding."`
+},
+{num:"Concept 04",title:"Loops",sub:"Repeat until a condition is met",
+ thinking:["Test <strong>minimum iterations</strong> — what happens with 0 items?","Test <strong>maximum iterations</strong> — does the loop have a limit?","Check <strong>performance</strong> — what if the loop runs 10,000 times?","Verify <strong>off-by-one errors</strong> — does it show 10 or 11 items?","Test <strong>empty state</strong> — what does the user see with no data?"],
+ code:`<span class="cm">// Display last 10 messages</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nm">0</span>; i < <span class="nm">10</span>; i++) {
+  displayMessage(messages[i]);
+}
+
+<span class="cm">// QA asks:</span>
+<span class="cm">// What if messages.length is 0?  → empty state?</span>
+<span class="cm">// What if messages.length is 5?  → shows 5, not crash</span>
+<span class="cm">// What if messages.length is 50? → shows only 10</span>
+<span class="cm">// What if i starts at 0 instead of 1? → off-by-one!</span>`,
+ rows:[["10 messages exist","Display all 10","✅"],["0 messages","Display empty state message","✅ Must test"],["50 messages exist","Display only last 10","✅"],["1 message","Display 1, not crash","⚠️ Edge case"]],
+ heads:["Scenario","Expected Result","Status"],
+ insight:"Loops are behind <strong>every list, table, notification feed, and search result</strong> in an application. Testing empty states and maximum limits catches the bugs that only appear in real usage — not in the developer's test environment with 3 items of sample data.",
+ quiz:{q:"A search results page shows 20 results per page. What loop-related test cases should you write?",opts:[["Just test with a normal search that returns results.",false],["Test 0 results, 1 result, 19 results, 20 results, 21 results (page 2), and a search returning thousands of results.",true],["Test with the first page only.",false]],},
+ qtip:`"The developer tests with <em>their 3 favorite results.</em> You test with zero results, one result, and a million. That's the difference."`
+},
+{num:"Concept 05",title:"Functions",sub:"A reusable block of code with inputs and outputs",
+ thinking:["Test <strong>valid inputs</strong> — does the function return the correct output?","Test <strong>invalid inputs</strong> — does it handle errors gracefully?","Test <strong>edge cases</strong> — zero, negative numbers, empty strings","Verify <strong>consistent results</strong> — same input should always return same output","Check what happens when <strong>required parameters are missing</strong>"],
+ code:`<span class="cm">// function calculateDiscount(price, discountRate)</span>
+<span class="kw">function</span> <span class="fn">calculateDiscount</span>(price, discountRate) {
+  <span class="kw">return</span> price - (price * discountRate / <span class="nm">100</span>);
+}
+
+<span class="fn">calculateDiscount</span>(<span class="nm">100</span>, <span class="nm">10</span>)  <span class="cm">// → 90  ✅</span>
+<span class="fn">calculateDiscount</span>(<span class="nm">0</span>, <span class="nm">10</span>)    <span class="cm">// → 0   ✅</span>
+<span class="fn">calculateDiscount</span>(<span class="nm">-50</span>, <span class="nm">10</span>)  <span class="er">// ❌ Negative price — error?</span>
+<span class="fn">calculateDiscount</span>(<span class="nm">100</span>, <span class="nm">110</span>) <span class="er">// ❌ >100% discount — error?</span>
+<span class="fn">calculateDiscount</span>(<span class="nm">100</span>, <span class="nm">0</span>)   <span class="cm">// → 100  ⚠️ 0% discount = no change</span>`,
+ rows:[["(100, 10)","90","✅"],["(0, 10)","0","✅"],["(-50, 10)","Error — negative price","❌ Should fail"],["(100, 110)","Error — discount over 100%","❌ Should fail"],["(100, 0)","100 — no discount applied","⚠️ Edge case"]],
+ heads:["Input","Expected Output","Status"],
+ insight:"Every button click, form submission, and API call triggers a function. <strong>Testing a function's inputs and outputs systematically</strong> — especially invalid and edge cases — is the essence of test design. This is Equivalence Partitioning and BVA applied to code.",
+ quiz:{q:"A 'sendEmail' function takes recipient, subject, body. What test case is most likely to be missed?",opts:[["Valid recipient, subject, body → email sent.",false],["Empty body — does the function fail gracefully or send a blank email?",true],["Valid recipient with a long subject line.",false]],},
+ qtip:`"The function's <em>happy path is the brochure.</em> The edge cases are reality. Test the missing parameters, the nulls, and the negative numbers."`
+},
+{num:"Concept 06",title:"Arrays / Lists",sub:"Multiple values in one variable — ordered by index",
+ thinking:["Test <strong>adding, removing, and updating items</strong>","Check behavior for <strong>empty arrays</strong> — does the UI show an empty state?","Test <strong>maximum size</strong> — is there a limit? What happens when exceeded?","Validate <strong>index boundaries</strong> — first item, last item, beyond end","Test <strong>duplicate values</strong> — are they allowed or filtered?"],
+ code:`<span class="cm">// Shopping Cart: cartItems[]</span>
+<span class="kw">let</span> cartItems = [];           <span class="cm">// Empty cart</span>
+cartItems.push(<span class="st">"shoes"</span>);      <span class="cm">// Add → count = 1</span>
+cartItems.push(<span class="st">"shirt"</span>);      <span class="cm">// Add → count = 2</span>
+cartItems.splice(<span class="nm">0</span>, <span class="nm">1</span>);       <span class="cm">// Remove first → count = 1</span>
+
+<span class="cm">// QA: what if we push beyond the max cart limit?</span>
+<span class="cm">// QA: what if cartItems[99] is accessed on an empty array?</span>`,
+ rows:[["Add 3 items","Count = 3, all displayed","✅"],["Remove 1 item","Count decreases by 1","✅"],["Empty cart checkout","Error — cart is empty","❌ Must test"],["Add item beyond max limit","Error message shown","❌ Must test"],["Add duplicate item","Increases quantity or blocks","⚠️ Define behavior"]],
+ heads:["Action","Expected Result","Status"],
+ insight:"Arrays power <strong>every list you see</strong> in an application. Cart items, search results, user permissions, notification feeds — all arrays. Empty state testing and boundary testing on arrays catches the bugs that appear in real-world usage, not demo environments.",
+ quiz:{q:"A notification feed shows the latest 50 notifications. What array test is most likely to find a bug?",opts:[["Test with exactly 50 notifications.",false],["Test with 0 notifications (empty state), 1 notification, 50, and 51 (pagination trigger).",true],["Test with 25 notifications.",false]],},
+ qtip:`"Arrays start at index 0. The last element is length-1. <em>The off-by-one error that crashes the app</em> is always at one of those boundaries."`
+},
+{num:"Concept 07",title:"Basic OOP Concepts",sub:"Classes, Objects, Methods — the blueprint and the instance",
+ thinking:["Test <strong>object behavior</strong> — does the object do what the class defines?","Verify <strong>method outputs</strong> under valid and invalid conditions","Ensure <strong>objects interact correctly</strong> — does User interact with Order correctly?","Test <strong>state changes</strong> — does updating one property affect others correctly?"],
+ code:`<span class="cm">// Class: User / Method: updateEmail()</span>
+<span class="kw">class</span> <span class="fn">User</span> {
+  <span class="fn">constructor</span>(name, email) {
+    <span class="kw">this</span>.name = name;
+    <span class="kw">this</span>.email = email;
+  }
+
+  <span class="fn">updateEmail</span>(newEmail) {
+    <span class="kw">if</span> (!isValidEmail(newEmail)) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="st">"Invalid email"</span>);
+    <span class="kw">this</span>.email = newEmail;
+  }
+}
+
+<span class="kw">const</span> user = <span class="kw">new</span> <span class="fn">User</span>(<span class="st">"Watson"</span>, <span class="st">"watson@qa.com"</span>);
+user.updateEmail(<span class="st">"new@qa.com"</span>);   <span class="ok">// ✅</span>
+user.updateEmail(<span class="st">"notanemail"</span>); <span class="er">// ❌ Should throw error</span>
+user.updateEmail(<span class="st">""</span>);           <span class="er">// ❌ Empty — should fail</span>`,
+ rows:[["\"new@qa.com\"","Email updated successfully","✅"],["\"notanemail\"","Validation error thrown","❌ Should fail"],["\"\"","Required field error","❌ Should fail"],["Same email","No change or duplicate check","⚠️ Define behavior"]],
+ heads:["Input to updateEmail()","Expected Result","Status"],
+ insight:"Modern applications are built with OOP. Understanding that <strong>every feature maps to a class and its methods</strong> helps you write more targeted test cases. When a developer says 'the User object's updateEmail method failed' — you'll know exactly what to test.",
+ quiz:{q:"A developer says: 'There's a bug in the Order class — the calculateTotal() method returns the wrong amount when discounts are applied.' What do you test?",opts:[["Just run the full checkout flow and see if the total is correct.",false],["Test calculateTotal() with: no discount, 10% discount, 100% discount, negative discount, and discount greater than the order total.",true],["Ask the developer to fix it and retest with a normal order.",false]],},
+ qtip:`"'The User object' is a test boundary, Watson. <em>Every method is a test case.</em> Every state change is an assertion. OOP gives you the map — test each room."`
+}
+];
+
+function renderSection(i){
+  const c=CONCEPTS[i];
+  const heads4=c.heads.length===4;
+  return `<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">${c.num}</div>
+    <div class="lc-title">${c.title}</div>
+    <div class="lc-sub">// ${c.sub}</div>
+  </div>
+  <div class="concept-box">
+    <div class="qa-thinking">
+      <div class="qa-tag">// QA Thinking</div>
+      <ul class="qa-points">${c.thinking.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div class="code-block"><div class="cb-label">// <span>Example</span></div><pre>${c.code}</pre></div>
+    <div class="test-table">
+      <div class="test-table-wrap"><table>
+        <tr>${c.heads.map(h=>`<th>${h}</th>`).join('')}</tr>
+        ${c.rows.map(r=>`<tr>${r.map((cell,idx)=>{
+          const last=r[r.length-1];
+          if(idx===r.length-1){
+            if(last.includes('✅')) return `<td class="status-pass">${cell}</td>`;
+            if(last.includes('❌')) return `<td class="status-fail">${cell}</td>`;
+            if(last.includes('⚠️')) return `<td class="status-warn">${cell}</td>`;
+          }
+          return `<td>${cell}</td>`;
+        }).join('')}</tr>`).join('')}
+      </table></div>
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7;font-weight:300;margin-top:12px;padding:12px 0;border-top:1px solid var(--border)">💡 <strong style="color:var(--text)">Why this matters for QA:</strong> ${c.insight}</div>
+  </div>
+  <div class="quiz-card">
+    <div class="qz-label">// Quick Check</div>
+    <div class="qz-q">${c.quiz.q}</div>
+    <div class="qz-opts">${c.quiz.opts.map(([text,correct])=>`<button class="qz-opt" onclick="quiz(this,${correct})">${text}</button>`).join('')}</div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div><div class="qt-tag">// Q says</div><p class="qt-msg">${c.qtip}</p></div>
+  </div>
+  <div style="padding:16px 20px 20px">
+    <button class="next-section" onclick="nextSection(${i})">${i<CONCEPTS.length-1?'Next concept →':'🏆 Complete Module'}</button>
+  </div>
+</div>`;
+}
+
+function quiz(btn,correct){
+  const opts=btn.closest('.qz-opts').querySelectorAll('.qz-opt');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct) opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')) o.classList.add('correct');});
+}
+
+function goTo(i){
+  current=i;
+  document.getElementById('sections').innerHTML=renderSection(i);
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{b.classList.toggle('active',idx===i);b.classList.toggle('done',completed.has(idx)&&idx!==i);});
+  document.getElementById('prog').style.width=(completed.size/CONCEPTS.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(i){
+  completed.add(i);
+  if(i<CONCEPTS.length-1) goTo(i+1);
+  else{
+    document.getElementById('sections').innerHTML=`<div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--purple);margin-bottom:8px">Programming for QA — Complete!</div>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:20px">"QALemental, Dear Watson. You now think like both a tester and a developer."</p>
+      <a href="dashboard.html" style="display:inline-block;background:var(--g);color:#fff;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px">← Back to Dashboard</a>
+    </div>`;
+    document.getElementById('prog').style.width='100%';
+  }
+}
+
+goTo(0);
+</script>
+</body>
+</html>
