@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — SQL M2: DML & DDL</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--blue:#3B82F6;--bluedim:rgba(59,130,246,.10);--yellow:#F59E0B;--red:#EF4444;--orange:#F97316;--code:#0A1F10;--codeborder:rgba(34,197,94,.2);--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--blue:#2563EB;--bluedim:rgba(37,99,235,.08);--yellow:#D97706;--red:#DC2626;--orange:#EA580C;--code:#F0F7F0;--codeborder:rgba(22,163,74,.2);--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--blue:#60A5FA;--bluedim:rgba(96,165,250,.10);--yellow:#FCD34D;--red:#F87171;--orange:#FB923C;--code:#050F05;--codeborder:rgba(74,222,128,.2);--shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+.main{padding:72px 20px 100px;max-width:720px;margin:0 auto;}
+.module-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:24px;margin-bottom:28px;}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.mh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.mh-chip.y{background:rgba(245,158,11,.08);color:var(--yellow);border-color:rgba(245,158,11,.2);}
+.mh-chip.r{background:rgba(239,68,68,.08);color:var(--red);border-color:rgba(239,68,68,.2);}
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:24px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--g);background:var(--gdim);color:var(--g);}
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:20px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--g);font-family:"Space Mono",monospace;margin-bottom:16px;}
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:14px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.concept-text code{font-family:"Space Mono",monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--yellow);}
+.warning-box{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 14px;margin:12px 0;display:flex;gap:10px;align-items:flex-start;}
+.wb-icon{font-size:18px;flex-shrink:0;}
+.wb-text{font-size:13px;color:var(--red);line-height:1.6;}
+.wb-text strong{font-weight:700;}
+.code-block{background:var(--code);border:1px solid var(--codeborder);border-radius:12px;padding:16px;margin:12px 0;overflow-x:auto;}
+.cb-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cb-label span{color:var(--g);}
+pre{font-family:"Space Mono",monospace;font-size:12px;line-height:1.8;color:var(--text2);white-space:pre;}
+.kw{color:#60A5FA;}.cm{color:#4B5563;}.st{color:#F59E0B;}.ok{color:#22C55E;}.er{color:#EF4444;}.fn{color:#22C55E;}.nm{color:#F97316;}
+.data-table-wrap{overflow-x:auto;margin:12px 0;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg3);font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);font-family:"Space Mono",monospace;font-size:11px;}
+tr:last-child td{border-bottom:none;}
+.exercise-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:14px;border:1.5px solid var(--border2);padding:16px;margin:12px 20px 0;}
+.ex-badge{display:inline-flex;align-items:center;gap:5px;font-family:"Space Mono",monospace;font-size:8px;padding:3px 8px;border-radius:5px;margin-bottom:8px;}
+.ex-badge.easy{background:rgba(34,197,94,.1);color:var(--g);}
+.ex-badge.intermediate{background:rgba(245,158,11,.1);color:var(--yellow);}
+.ex-badge.advanced{background:rgba(239,68,68,.1);color:var(--red);}
+.ex-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.ex-scenario{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;margin-bottom:10px;}
+.ex-scenario strong{color:var(--text);font-weight:500;}
+.ex-scenario code{font-family:"Space Mono",monospace;font-size:11px;background:var(--bg3);padding:1px 4px;border-radius:3px;color:var(--yellow);}
+.sql-input{width:100%;background:var(--code);border:1.5px solid var(--codeborder);border-radius:10px;padding:12px;font-family:"Space Mono",monospace;font-size:12px;color:var(--g);outline:none;resize:vertical;min-height:70px;line-height:1.7;transition:border-color .2s;}
+.sql-input:focus{border-color:var(--g);}
+.sql-input::placeholder{color:var(--text3);}
+.ex-btns{display:flex;gap:8px;margin-top:10px;}
+.ex-btn{padding:9px 16px;border-radius:9px;font-family:"Space Mono",monospace;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.ex-btn.run{background:var(--g);color:#fff;}
+.ex-btn.hint{background:var(--bg3);border:1.5px solid var(--border);color:var(--text3);}
+.ex-btn.reset{background:transparent;border:1.5px solid var(--border);color:var(--text3);}
+.result-panel{display:none;margin-top:10px;padding:12px;border-radius:10px;font-family:"Space Mono",monospace;font-size:11px;line-height:1.6;}
+.result-panel.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:var(--g);}
+.result-panel.error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:var(--red);}
+.result-panel.hint{background:var(--bluedim);border:1px solid rgba(59,130,246,.25);color:var(--blue);}
+.q-tip{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin:14px 20px 0;}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+.qt-msg code{font-family:"Space Mono",monospace;font-size:11px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--yellow);}
+.cheatsheet{background:var(--bg2);border-radius:14px;border:1px solid var(--border);padding:18px;margin:12px 20px 16px;}
+.cs-title{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.cs-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+.cs-row:last-child{border-bottom:none;}
+.cs-cmd{font-family:"Space Mono",monospace;font-size:10px;color:var(--yellow);flex-shrink:0;min-width:140px;}
+.cs-desc{font-size:12px;color:var(--text2);font-weight:300;}
+.next-section{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin:8px 0 0;}
+.next-section:hover{background:var(--gh);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="sql.html" class="back-btn">←</a>
+  <div class="page-title">🗄️ SQL M2: <span>DML & DDL</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+<div class="main">
+  <div class="module-hero fade">
+    <div class="mh-tag">// SQL · Module 2</div>
+    <div class="mh-title">DML & DDL for QA</div>
+    <div class="mh-sub">CREATE, INSERT, UPDATE, DELETE, TRUNCATE, ALTER, DISTINCT, ORDER BY, LIMIT, GROUP BY — the commands that modify data and structure. Handle with care.</div>
+    <div class="mh-chips">
+      <span class="mh-chip">10 commands</span>
+      <span class="mh-chip">10 exercises</span>
+      <span class="mh-chip y">⚠️ UPDATE without WHERE = danger</span>
+      <span class="mh-chip r">🚨 SELECT before DELETE</span>
+    </div>
+  </div>
+  <div class="sec-nav" id="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · CREATE</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · INSERT</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · UPDATE</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · DELETE</button>
+    <button class="sn-btn" onclick="goTo(4)">5 · TRUNCATE</button>
+    <button class="sn-btn" onclick="goTo(5)">6 · ALTER</button>
+    <button class="sn-btn" onclick="goTo(6)">7 · DISTINCT</button>
+    <button class="sn-btn" onclick="goTo(7)">8 · ORDER BY</button>
+    <button class="sn-btn" onclick="goTo(8)">9 · LIMIT</button>
+    <button class="sn-btn" onclick="goTo(9)">10 · GROUP BY</button>
+  </div>
+  <div id="sections"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+let current=0;const completed=new Set();
+
+const CMDS=[
+  {num:"DDL 01",title:"CREATE TABLE",sub:"Define structure before data exists",
+   warn:false,
+   code:`<span class="kw">CREATE TABLE</span> users (
+  id   <span class="fn">INT</span> <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  name <span class="fn">VARCHAR</span>(<span class="nm">100</span>) <span class="kw">NOT NULL</span>,
+  email <span class="fn">VARCHAR</span>(<span class="nm">255</span>) <span class="kw">NOT NULL UNIQUE</span>,
+  status <span class="fn">VARCHAR</span>(<span class="nm">20</span>) <span class="kw">DEFAULT</span> <span class="st">'pending'</span>,
+  plan   <span class="fn">VARCHAR</span>(<span class="nm">20</span>) <span class="kw">DEFAULT</span> <span class="st">'free'</span>,
+  country <span class="fn">VARCHAR</span>(<span class="nm">100</span>),
+  created_at <span class="fn">TIMESTAMP</span> <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>
+);
+<span class="cm">-- QA reads this schema and knows immediately:</span>
+<span class="cm">-- ✅ name is required (NOT NULL)</span>
+<span class="cm">-- ✅ email must be unique — duplicate test case!</span>
+<span class="cm">-- ✅ status defaults to 'pending' — verify after INSERT</span>
+<span class="cm">-- ✅ country is optional (no NOT NULL)</span>`,
+   concept:`Reading CREATE TABLE is like reading the test requirements. <strong>Every NOT NULL is a mandatory field to test. Every UNIQUE is a duplicate test case. Every DEFAULT is a value to verify after INSERT.</strong> Schema reading is QA analysis before a single test is written.`,
+   ex:{badge:"easy",title:"Exercise 1 — Read the Schema",scenario:`Write a <code>CREATE TABLE</code> for an <strong>orders</strong> table: id (auto-increment PK), user_id (INT, required), amount (DECIMAL 10,2, required), status (VARCHAR 20, default 'pending'), created_at (TIMESTAMP, auto now).`,placeholder:"CREATE TABLE orders (\n  id INT PRIMARY KEY AUTO_INCREMENT,\n  ...\n);",solution:"create table orders",hint:"Use NOT NULL for required fields. DEFAULT for auto values."},
+   qtip:`"Reading a schema, Watson, is <em>reading the contract.</em> Every constraint is a test case waiting to be written."`
+  },
+  {num:"DML 01",title:"INSERT INTO",sub:"Add test data — and verify it lands correctly",
+   warn:false,
+   code:`<span class="cm">-- Insert a single user</span>
+<span class="kw">INSERT INTO</span> users (name, email, status, plan, country)
+<span class="kw">VALUES</span> (<span class="st">'Test User'</span>, <span class="st">'qa@test.com'</span>, <span class="st">'active'</span>, <span class="st">'pro'</span>, <span class="st">'Colombia'</span>);
+
+<span class="cm">-- Insert multiple rows (test data seeding)</span>
+<span class="kw">INSERT INTO</span> users (name, email, status, plan)
+<span class="kw">VALUES</span>
+  (<span class="st">'QA User 1'</span>, <span class="st">'qa1@test.com'</span>, <span class="st">'active'</span>, <span class="st">'free'</span>),
+  (<span class="st">'QA User 2'</span>, <span class="st">'qa2@test.com'</span>, <span class="st">'pending'</span>, <span class="st">'pro'</span>);
+
+<span class="cm">-- After INSERT: ALWAYS verify with SELECT</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users
+<span class="kw">WHERE</span> email = <span class="st">'qa@test.com'</span>;`,
+   concept:`INSERT INTO adds new rows to a table. QA uses INSERT to <strong>create test data, seed test environments, and reproduce bugs</strong> by inserting specific conditions into the database. Never INSERT directly into production without approval.`,
+   ex:{badge:"easy",title:"Exercise 2 — Seed Test Data",scenario:`Insert a test user: name = 'Watson QA', email = 'watson@test.com', status = 'active', plan = 'pro', country = 'Colombia'. Then write the SELECT to verify it was created.`,placeholder:"INSERT INTO users (name, email, status, plan, country)\nVALUES (...);",solution:"insert into users",hint:"Write both the INSERT and the SELECT to verify."},
+   qtip:`"INSERT is how you <em>reproduce the bug.</em> If it only happens with a suspended Pro user in Colombia — INSERT that exact record and test."`
+  },
+  {num:"DML 02",title:"UPDATE",sub:"The most dangerous command — always use WHERE",
+   warn:"⚠️ UPDATE without WHERE updates EVERY row in the table. UPDATE users SET status = 'suspended' suspends ALL users. Always verify your WHERE clause with a SELECT first.",
+   code:`<span class="cm">-- ✅ SAFE PATTERN: SELECT first, then UPDATE same WHERE</span>
+<span class="kw">SELECT</span> id, name, status <span class="kw">FROM</span> users
+<span class="kw">WHERE</span> email = <span class="st">'qa@test.com'</span>;
+
+<span class="kw">UPDATE</span> users
+<span class="kw">SET</span> status = <span class="st">'active'</span>, plan = <span class="st">'pro'</span>
+<span class="kw">WHERE</span> email = <span class="st">'qa@test.com'</span>;
+
+<span class="cm">-- Update multiple fields at once</span>
+<span class="kw">UPDATE</span> users
+<span class="kw">SET</span> status = <span class="st">'suspended'</span>, plan = <span class="st">'free'</span>
+<span class="kw">WHERE</span> id = <span class="nm">4</span>;
+
+<span class="er">-- ❌ DANGEROUS: No WHERE = updates ALL rows!</span>
+<span class="er">-- UPDATE users SET status = 'suspended'; -- Never!</span>`,
+   concept:`UPDATE modifies existing rows. Without a WHERE clause, it modifies <strong>every single row</strong> in the table. The golden rule: <strong>SELECT before UPDATE, every time.</strong> Run the SELECT first. Count the rows. If it returns 1 — safe. If it returns 1,000 — you were about to break production.`,
+   ex:{badge:"intermediate",title:"Exercise 3 — Safe UPDATE",scenario:`A QA test requires María López (maria@test.com) to have status = 'active' and plan = 'pro'. Write the UPDATE query safely — SELECT first, then UPDATE with the same WHERE.`,placeholder:"-- Step 1: SELECT to verify\nSELECT id, name, status FROM users WHERE ...\n\n-- Step 2: UPDATE\nUPDATE users SET ...",solution:"update users set",hint:"Use WHERE email = 'maria@test.com'. Always SELECT first."},
+   qtip:`"<em>SELECT before UPDATE</em>, every time. This habit has saved careers. The senior QA who runs UPDATE without WHERE doesn't stay senior for long."`
+  },
+  {num:"DML 03",title:"DELETE",sub:"Remove rows — permanently. No undo button.",
+   warn:"🚨 DELETE without WHERE removes ALL rows. Unlike TRUNCATE, DELETE can be rolled back if you're inside a transaction — but only before COMMIT. Same rule as UPDATE: SELECT first.",
+   code:`<span class="cm">-- DELETE a specific test user after testing</span>
+<span class="kw">DELETE FROM</span> users
+<span class="kw">WHERE</span> email = <span class="st">'qa@test.com'</span>;
+
+<span class="cm">-- Safe pattern: use BEGIN/ROLLBACK to preview</span>
+<span class="kw">BEGIN</span>;
+<span class="kw">DELETE FROM</span> users <span class="kw">WHERE</span> status = <span class="st">'suspended'</span>;
+<span class="kw">SELECT</span> <span class="fn">ROW_COUNT</span>(); <span class="cm">-- Check how many rows affected</span>
+<span class="kw">ROLLBACK</span>; <span class="cm">-- Cancel if wrong, COMMIT if correct</span>
+
+<span class="cm">-- QA uses DELETE to clean up test data after test runs</span>
+<span class="kw">DELETE FROM</span> users
+<span class="kw">WHERE</span> email <span class="kw">LIKE</span> <span class="st">'%@test.com'</span>;`,
+   concept:`DELETE removes specific rows with WHERE, and <strong>can be rolled back</strong> if inside a transaction before COMMIT. Use DELETE for targeted cleanup. The same SELECT-first rule applies — count the rows before you delete them.`,
+   ex:{badge:"intermediate",title:"Exercise 4 — Clean Up Test Data",scenario:`After a test run, you need to clean up. Write a DELETE query to remove all users whose email ends with <code>@test.com</code>. First write the SELECT to verify how many rows will be affected, then the DELETE.`,placeholder:"-- Count first\nSELECT COUNT(*) FROM users WHERE ...\n\n-- Then delete\nDELETE FROM users WHERE ...",solution:"delete from users where email",hint:"Use LIKE '%@test.com' to match email patterns."},
+   qtip:`"DELETE is <em>permanent surgery,</em> Watson. You check the patient before operating. SELECT before DELETE — always."`
+  },
+  {num:"DML 04",title:"TRUNCATE",sub:"Wipe a table completely — fast and irreversible",
+   warn:false,
+   code:`<span class="cm">-- TRUNCATE: removes ALL rows, resets auto-increment</span>
+<span class="kw">TRUNCATE TABLE</span> sessions;
+
+<span class="cm">-- DELETE equivalent (slower, keeps ID counter)</span>
+<span class="kw">DELETE FROM</span> sessions;
+
+<span class="cm">-- Key differences for QA:</span>
+<span class="cm">-- TRUNCATE: faster, resets ID to 1, no WHERE possible</span>
+<span class="cm">-- DELETE: slower, keeps ID counter, supports WHERE</span>
+<span class="cm">-- TRUNCATE: hard to rollback in most databases</span>
+<span class="cm">-- DELETE: rollback possible inside a transaction</span>
+
+<span class="cm">-- QA uses TRUNCATE to reset test tables between runs</span>
+<span class="kw">TRUNCATE TABLE</span> test_results;
+<span class="kw">TRUNCATE TABLE</span> audit_log;`,
+   concept:`TRUNCATE removes ALL rows instantly and resets auto-increment counters. Use TRUNCATE when you want to <strong>completely wipe a table between test runs</strong>. Use DELETE when you need to target specific rows. TRUNCATE cannot be rolled back easily — treat it like formatting a hard drive.`,
+   ex:{badge:"easy",title:"Exercise 5 — TRUNCATE vs DELETE",scenario:`Before each test suite run, your team needs to clean the sessions table completely and reset IDs to 1. Which command is correct? Write both TRUNCATE and the equivalent DELETE for comparison.`,placeholder:"-- TRUNCATE\nTRUNCATE TABLE sessions;\n\n-- DELETE equivalent\nDELETE FROM sessions;",solution:"truncate table sessions",hint:"TRUNCATE is faster and resets auto-increment. DELETE supports WHERE but is slower."},
+   qtip:`"TRUNCATE is the <em>scorched earth</em> option. Useful in test environments. In production? Only with explicit approval and a backup."`
+  },
+  {num:"DDL 02",title:"ALTER TABLE",sub:"Modify structure after creation — the migration command",
+   warn:false,
+   code:`<span class="cm">-- Add a new column</span>
+<span class="kw">ALTER TABLE</span> users
+<span class="kw">ADD COLUMN</span> phone <span class="fn">VARCHAR</span>(<span class="nm">20</span>) <span class="kw">NULL</span>;
+
+<span class="cm">-- Change column size</span>
+<span class="kw">ALTER TABLE</span> users
+<span class="kw">MODIFY COLUMN</span> name <span class="fn">VARCHAR</span>(<span class="nm">200</span>); <span class="cm">-- was 100</span>
+
+<span class="cm">-- Add NOT NULL constraint to existing column</span>
+<span class="kw">ALTER TABLE</span> users
+<span class="kw">MODIFY COLUMN</span> country <span class="fn">VARCHAR</span>(<span class="nm">100</span>) <span class="kw">NOT NULL</span>;
+
+<span class="cm">-- QA validates AFTER ALTER:</span>
+<span class="cm">-- ✅ New column exists in SELECT *</span>
+<span class="cm">-- ✅ Old data still intact</span>
+<span class="cm">-- ✅ New constraint enforced (test with NULL input)</span>`,
+   concept:`Every database migration is a QA test opportunity. <strong>After every ALTER TABLE in a deployment: verify the column exists, check old data is intact, test the new constraint with invalid input.</strong> Migrations are one of the most common sources of production bugs.`,
+   ex:{badge:"intermediate",title:"Exercise 6 — Schema Change Validation",scenario:`A developer ran a migration that added a 'phone' column (VARCHAR 20, nullable) to the users table. Write the ALTER statement, then write a SELECT to verify the column exists.`,placeholder:"ALTER TABLE users\nADD COLUMN phone VARCHAR(20) NULL;\n\n-- Verify:\nSELECT id, name, phone FROM users LIMIT 5;",solution:"alter table users add column",hint:"Use ADD COLUMN. Then SELECT to verify the new column appears."},
+   qtip:`"Every ALTER TABLE is a deployment. <em>Every deployment needs a QA check.</em> The migration worked — prove it."`
+  },
+  {num:"DQL 01",title:"DISTINCT",sub:"Remove duplicates from results — see unique values only",
+   warn:false,
+   code:`<span class="cm">-- All unique statuses in the users table</span>
+<span class="kw">SELECT DISTINCT</span> status <span class="kw">FROM</span> users;
+<span class="cm">-- Returns: active, pending, suspended</span>
+
+<span class="cm">-- All unique countries</span>
+<span class="kw">SELECT DISTINCT</span> country <span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> country;
+
+<span class="cm">-- DISTINCT on multiple columns</span>
+<span class="kw">SELECT DISTINCT</span> status, plan
+<span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> status, plan;
+
+<span class="cm">-- QA: verify all expected statuses exist</span>
+<span class="cm">-- If 'verified' should exist but doesn't appear → bug!</span>`,
+   concept:`DISTINCT filters out duplicate rows from results. In QA, DISTINCT is used to <strong>verify that only expected values exist in a column</strong>. If a status column should only have 'active', 'pending', 'suspended' — DISTINCT shows you if any unexpected value snuck in.`,
+   ex:{badge:"easy",title:"Exercise 7 — Status Validation",scenario:`After a deployment, write a query to verify all unique combinations of <strong>status and plan</strong> that exist in the users table. This confirms no unexpected status values were introduced.`,placeholder:"SELECT DISTINCT status, plan FROM users ORDER BY ...;",solution:"select distinct status",hint:"SELECT DISTINCT status, plan FROM users ORDER BY status, plan"},
+   qtip:`"DISTINCT is your <em>anomaly detector.</em> If an unexpected value appears — that's your bug, Watson."`
+  },
+  {num:"DQL 02",title:"ORDER BY",sub:"Sort results — find what's first, last, or out of order",
+   warn:false,
+   code:`<span class="cm">-- Most recent users first (DESC = descending)</span>
+<span class="kw">SELECT</span> id, name, email, created_at
+<span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>;
+
+<span class="cm">-- Alphabetical by name (ASC = ascending, default)</span>
+<span class="kw">SELECT</span> name, email <span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> name <span class="kw">ASC</span>;
+
+<span class="cm">-- Sort by multiple columns</span>
+<span class="kw">SELECT</span> name, status, plan, created_at
+<span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> status <span class="kw">ASC</span>, created_at <span class="kw">DESC</span>;
+
+<span class="cm">-- QA: find highest amount orders (billing bug check)</span>
+<span class="kw">SELECT</span> id, user_id, amount, status
+<span class="kw">FROM</span> orders
+<span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="nm">10</span>;`,
+   concept:`ORDER BY sorts query results. QA uses ORDER BY to <strong>find the most recent activity, the largest values, and confirm sort behavior in the UI</strong>. Always combine with LIMIT to avoid retrieving millions of rows accidentally.`,
+   ex:{badge:"easy",title:"Exercise 8 — Find Recent Registrations",scenario:`Write a query to get all users ordered by <strong>most recently created first</strong>. Show id, name, email, status, and created_at. This verifies new registrations are appearing correctly after a deployment.`,placeholder:"SELECT id, name, email, status, created_at FROM users ORDER BY ...;",solution:"order by created_at desc",hint:"ORDER BY created_at DESC — newest first."},
+   qtip:`"Without ORDER BY, the database returns rows in <em>any order it pleases.</em> Your test results are non-deterministic. Always sort."`
+  },
+  {num:"DQL 03",title:"LIMIT / TOP",sub:"Control how many rows you get back",
+   warn:false,
+   code:`<span class="cm">-- MySQL / PostgreSQL: LIMIT at the end</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="nm">10</span>;
+
+<span class="cm">-- SQL Server: TOP at the beginning</span>
+<span class="kw">SELECT TOP</span> <span class="nm">10</span> * <span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>;
+
+<span class="cm">-- Pagination: skip first 10, get next 10</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users
+<span class="kw">ORDER BY</span> id
+<span class="kw">LIMIT</span> <span class="nm">10</span> <span class="kw">OFFSET</span> <span class="nm">10</span>; <span class="cm">-- Page 2</span>
+
+<span class="cm">-- Page 1: LIMIT 10 OFFSET 0  → rows 1-10</span>
+<span class="cm">-- Page 2: LIMIT 10 OFFSET 10 → rows 11-20</span>
+<span class="cm">-- Last page may have fewer than 10 → test edge case!</span>`,
+   concept:`LIMIT controls how many rows are returned. <strong>LIMIT without ORDER BY returns random rows</strong> — the database picks whatever is fastest. Always combine LIMIT with ORDER BY to ensure deterministic, reproducible results. Critical for testing pagination.`,
+   ex:{badge:"intermediate",title:"Exercise 9 — Pagination Validation",scenario:`The app shows 3 users per page. Write two queries: one for <strong>Page 1</strong> (first 3 users by id) and one for <strong>Page 2</strong> (next 3 users). This simulates pagination validation.`,placeholder:"-- Page 1\nSELECT * FROM users ORDER BY id LIMIT 3;\n\n-- Page 2\nSELECT * FROM users ORDER BY id LIMIT 3 OFFSET 3;",solution:"limit 3 offset 3",hint:"Page 1: LIMIT 3 OFFSET 0. Page 2: LIMIT 3 OFFSET 3."},
+   qtip:`"Test the last page, Watson. <em>That's where pagination bugs live.</em> When the data doesn't divide evenly by the page size — that's your edge case."`
+  },
+  {num:"DQL 04",title:"GROUP BY",sub:"Aggregate data — count, sum, and analyze by category",
+   warn:false,
+   code:`<span class="cm">-- Count users by status</span>
+<span class="kw">SELECT</span> status, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total
+<span class="kw">FROM</span> users
+<span class="kw">GROUP BY</span> status
+<span class="kw">ORDER BY</span> total <span class="kw">DESC</span>;
+
+<span class="cm">-- Sum revenue by user (find highest spenders)</span>
+<span class="kw">SELECT</span>
+  u.name, u.email,
+  <span class="fn">SUM</span>(o.amount) <span class="kw">AS</span> total_spent,
+  <span class="fn">COUNT</span>(o.id) <span class="kw">AS</span> order_count
+<span class="kw">FROM</span> users u
+<span class="kw">JOIN</span> orders o <span class="kw">ON</span> u.id = o.user_id
+<span class="kw">GROUP BY</span> u.id, u.name, u.email
+<span class="kw">ORDER BY</span> total_spent <span class="kw">DESC</span>;
+
+<span class="cm">-- HAVING filters AFTER grouping (WHERE filters before)</span>
+<span class="kw">SELECT</span> status, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total
+<span class="kw">FROM</span> users
+<span class="kw">GROUP BY</span> status
+<span class="kw">HAVING COUNT</span>(*) > <span class="nm">10</span>; <span class="cm">-- Only statuses with > 10 users</span>`,
+   concept:`GROUP BY is your <strong>QA reporting engine</strong>. Use it to count affected records per category, summarize test results, identify which user segments have issues, and generate the data summaries that go into bug reports. A QA who can GROUP BY communicates impact with numbers.`,
+   ex:{badge:"advanced",title:"Exercise 10 — QA Impact Report",scenario:`Write a query that shows <strong>how many users exist per plan</strong> (free vs pro), with the count of active vs non-active in each plan. Use GROUP BY on both plan and status. Order by plan, then count descending.`,placeholder:"SELECT plan, status, COUNT(*) AS total\nFROM users\nGROUP BY ...\nORDER BY ...;",solution:"group by plan, status",hint:"GROUP BY plan, status. ORDER BY plan, total DESC."},
+   qtip:`"GROUP BY turns raw data into <em>evidence.</em> '47 users affected in pro plan' — that's what goes in the bug report. Not a screenshot of one user."`
+  }
+];
+
+function renderSection(i){
+  const c=CMDS[i];
+  return `<div class="lesson-card fade">
+  <div class="lc-header">
+    <div class="lc-num">${c.num}</div>
+    <div class="lc-title">${c.title}</div>
+    <div class="lc-sub">// ${c.sub}</div>
+  </div>
+  <div class="concept-box">
+    ${c.warn?`<div class="warning-box"><div class="wb-icon">🚨</div><div class="wb-text"><strong>Critical Warning:</strong> ${c.warn}</div></div>`:''}
+    <p class="concept-text">${c.concept}</p>
+    <div class="code-block"><div class="cb-label">// <span>SQL</span></div><pre>${c.code}</pre></div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-badge ${c.ex.badge}">${c.ex.badge.toUpperCase()}</div>
+    <div class="ex-title">${c.ex.title}</div>
+    <div class="ex-scenario">${c.ex.scenario}</div>
+    <textarea class="sql-input" id="sql-${i}" placeholder="${c.ex.placeholder}" rows="3"></textarea>
+    <div class="ex-btns">
+      <button class="ex-btn run" onclick="checkAns(${i})">▶ Run</button>
+      <button class="ex-btn hint" onclick="showHint(${i})">💡 Hint</button>
+      <button class="ex-btn reset" onclick="document.getElementById('sql-${i}').value=''">↺</button>
+    </div>
+    <div class="result-panel" id="res-${i}"></div>
+  </div>
+  <div class="q-tip">
+    <div class="qt-icon">🕵️</div>
+    <div><div class="qt-tag">// Q says</div><p class="qt-msg">${c.qtip}</p></div>
+  </div>
+  <div style="padding:16px 20px 20px">
+    <button class="next-section" onclick="nextSection(${i})">${i<CMDS.length-1?'Next command →':'🏆 Complete Module'}</button>
+  </div>
+</div>`;
+}
+
+function goTo(i){
+  current=i;
+  document.getElementById('sections').innerHTML=renderSection(i);
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{b.classList.toggle('active',idx===i);b.classList.toggle('done',completed.has(idx)&&idx!==i);});
+  document.getElementById('prog').style.width=(completed.size/CMDS.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(i){
+  completed.add(i);
+  if(i<CMDS.length-1) goTo(i+1);
+  else{
+    document.getElementById('sections').innerHTML=`
+    <div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--g);margin-bottom:8px">SQL M2 Complete!</div>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:20px">"QALemental. CREATE, INSERT, UPDATE, DELETE, TRUNCATE, ALTER, DISTINCT, ORDER BY, LIMIT, GROUP BY — the database has no secrets from you now."</p>
+      <a href="dashboard.html" style="display:inline-block;background:var(--g);color:#fff;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px">← Back to Dashboard</a>
+    </div>`;
+    document.getElementById('prog').style.width='100%';
+  }
+}
+
+function checkAns(i){
+  const input=document.getElementById('sql-'+i).value.trim().toLowerCase();
+  const sol=CMDS[i].ex.solution.toLowerCase();
+  const res=document.getElementById('res-'+i);
+  res.style.display='block';
+  if(input.includes(sol)){
+    res.className='result-panel success';
+    res.innerHTML='✓ Correct! QALemental, Watson.';
+    completed.add(i);
+  } else {
+    res.className='result-panel error';
+    res.innerHTML='✗ Not quite. Check the key keywords for this command.';
+  }
+}
+
+function showHint(i){
+  const res=document.getElementById('res-'+i);
+  res.style.display='block';
+  res.className='result-panel hint';
+  res.innerHTML='💡 '+CMDS[i].ex.hint;
+}
+
+goTo(0);
+</script>
+</body>
+</html>
