@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Manual Testing Maestro</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--blue:#3B82F6;--bluedim:rgba(59,130,246,.10);--yellow:#F59E0B;--red:#EF4444;--orange:#F97316;--code:#0A1F10;--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--blue:#2563EB;--bluedim:rgba(37,99,235,.08);--yellow:#D97706;--red:#DC2626;--orange:#EA580C;--code:#F0F7F0;--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--blue:#60A5FA;--bluedim:rgba(96,165,250,.10);--yellow:#FCD34D;--red:#F87171;--orange:#FB923C;--code:#050F05;--shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+.main{padding:72px 20px 100px;max-width:720px;margin:0 auto;}
+.module-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:24px;margin-bottom:28px;}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--yellow);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.mh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;}
+.mh-chip.g{background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.mh-chip.y{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.2);}
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:24px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--yellow);background:rgba(245,158,11,.08);color:var(--yellow);}
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:20px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--yellow);font-family:"Space Mono",monospace;margin-bottom:16px;}
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:14px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.concept-text code{font-family:"Space Mono",monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--yellow);}
+.key-rule{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);border-radius:12px;padding:14px;margin:12px 0;font-size:14px;color:var(--text2);font-weight:300;line-height:1.65;}
+.key-rule strong{color:var(--yellow);}
+.tc-fields{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.tc-field{background:var(--bg2);border-radius:10px;padding:12px 14px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.tc-required{font-family:"Space Mono",monospace;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0;}
+.tc-required.req{background:rgba(34,197,94,.1);color:var(--g);border:1px solid rgba(34,197,94,.2);}
+.tc-required.rec{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.18);}
+.tc-field-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.tc-field-desc{font-size:12px;color:var(--text2);font-weight:300;}
+.bva-visual{background:var(--code);border-radius:12px;padding:18px;margin:12px 0;display:flex;align-items:center;gap:0;overflow:hidden;}
+.bva-zone{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;}
+.bva-zone.invalid{flex:1;background:rgba(239,68,68,.08);border-radius:8px 0 0 8px;}
+.bva-zone.valid{flex:2;background:rgba(34,197,94,.06);}
+.bva-zone.invalid2{flex:1;background:rgba(239,68,68,.08);border-radius:0 8px 8px 0;}
+.bva-label{font-family:"Space Mono",monospace;font-size:9px;text-align:center;}
+.bva-zone.invalid .bva-label{color:var(--red);}
+.bva-zone.valid .bva-label{color:var(--g);}
+.bva-zone.invalid2 .bva-label{color:var(--red);}
+.bva-values{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
+.bv{font-family:"Space Mono",monospace;font-size:10px;padding:3px 8px;border-radius:5px;font-weight:700;}
+.bv.pass{background:rgba(34,197,94,.15);color:var(--g);}
+.bv.fail{background:rgba(239,68,68,.15);color:var(--red);}
+.bv.skip{background:var(--bg3);color:var(--text3);}
+.state-flow{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:14px;background:var(--code);border-radius:12px;margin:12px 0;}
+.state-box{background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:10px 14px;text-align:center;flex-shrink:0;}
+.state-box .state-name{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--g);}
+.state-box .state-desc{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);margin-top:2px;}
+.state-arrow{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;}
+.sa-event{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);white-space:nowrap;}
+.sa-line{font-size:16px;color:var(--border2);}
+.data-table-wrap{overflow-x:auto;margin:12px 0;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--bg3);font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:12px;}
+td.pass{color:var(--g);font-weight:700;}
+td.fail{color:var(--red);}
+td.warn{color:var(--yellow);}
+tr:last-child td{border-bottom:none;}
+.exercise-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:14px;border:1.5px solid var(--border2);padding:16px;margin:12px 20px 0;}
+.ex-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.ex-scenario{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;margin-bottom:10px;}
+.ex-scenario strong{color:var(--text);font-weight:500;}
+.ex-input{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:"Roboto",sans-serif;font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:60px;line-height:1.6;transition:border-color .2s;}
+.ex-input:focus{border-color:var(--border2);}
+.ex-input::placeholder{color:var(--text3);}
+.ex-btn-row{display:flex;gap:8px;margin-top:10px;}
+.ex-btn{padding:9px 16px;border-radius:9px;font-family:"Space Mono",monospace;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.ex-btn.check{background:var(--g);color:#fff;}
+.ex-btn.reveal{background:var(--bg3);border:1.5px solid var(--border);color:var(--text3);}
+.answer-panel{display:none;margin-top:10px;padding:12px;border-radius:10px;font-size:13px;line-height:1.65;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:var(--text2);}
+.answer-panel strong{color:var(--g);}
+.q-tip{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin:14px 20px 0;}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+.next-section{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin:8px 0 0;}
+.next-section:hover{background:var(--gh);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">🎯 Manual Testing <span>Maestro</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+<div class="main">
+  <div class="module-hero fade">
+    <div class="mh-tag">// Manual Testing · Test Design</div>
+    <div class="mh-title">Manual Testing Maestro</div>
+    <div class="mh-sub">Master the craft of writing test cases that actually find bugs — and the techniques that separate good testers from great ones.</div>
+    <div class="mh-chips">
+      <span class="mh-chip g">5 modules</span>
+      <span class="mh-chip y">4 techniques</span>
+      <span class="mh-chip g">Real examples</span>
+    </div>
+  </div>
+  <div class="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · Test Cases</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · BVA</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · EP</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · Decision Tables</button>
+    <button class="sn-btn" onclick="goTo(4)">5 · State Transition</button>
+  </div>
+  <div id="sections"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+let current=0;const completed=new Set();
+
+const SCREENS=[
+`<div class="lesson-card fade">
+  <div class="lc-header"><div class="lc-num">Module 01</div><div class="lc-title">Anatomy of a Good Test Case</div><div class="lc-sub">// what separates professional from useless</div></div>
+  <div class="concept-box">
+    <div class="key-rule"><strong>The Golden Rule:</strong> A good test case is <strong>atomic</strong> (one condition per case), <strong>reproducible</strong> (any tester can run it), <strong>clear</strong> (no ambiguity), and <strong>traceable</strong> (linked to a requirement). If another tester can't run your test case without asking questions — it's not done.</div>
+    <div class="tc-fields">
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Test Case ID</div><div class="tc-field-desc">TC-LOGIN-001 — Unique identifier for tracking and referencing</div></div></div>
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Title</div><div class="tc-field-desc">Verify login with valid credentials — Short, descriptive action</div></div></div>
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Preconditions</div><div class="tc-field-desc">User account exists. App is running. Browser is open.</div></div></div>
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Test Steps</div><div class="tc-field-desc">Numbered, specific actions: 1. Open /login 2. Enter email 3. Enter password 4. Click Login</div></div></div>
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Test Data</div><div class="tc-field-desc">Email: user@example.com / Password: Test1234! — exact values, no vagueness</div></div></div>
+      <div class="tc-field"><div class="tc-required req">REQUIRED</div><div><div class="tc-field-name">Expected Result</div><div class="tc-field-desc">User is redirected to /dashboard. Welcome message displayed.</div></div></div>
+      <div class="tc-field"><div class="tc-required rec">RECOMMENDED</div><div><div class="tc-field-name">Priority</div><div class="tc-field-desc">High / Medium / Low — helps prioritize execution order</div></div></div>
+    </div>
+    <div class="data-table-wrap"><table>
+      <tr><th>ID</th><th>Title</th><th>Data</th><th>Expected Result</th><th>Type</th></tr>
+      <tr><td>TC-001</td><td>Login with valid credentials</td><td>user@example.com / Test1234!</td><td class="pass">→ /dashboard ✅</td><td>Positive</td></tr>
+      <tr><td>TC-002</td><td>Login with wrong password</td><td>user@example.com / Wrong!</td><td class="fail">Error: "Invalid credentials" ❌</td><td>Negative</td></tr>
+      <tr><td>TC-003</td><td>Login with empty fields</td><td>— (empty)</td><td class="fail">Required field errors ❌</td><td>Edge</td></tr>
+      <tr><td>TC-004</td><td>SQL injection in email</td><td>' OR 1=1 --</td><td class="fail">Access denied — no bypass ❌</td><td>Security</td></tr>
+    </table></div>
+    <p style="font-size:13px;color:var(--text2);margin-top:10px;font-weight:300;line-height:1.65">💡 Notice TC-004 — <strong style="color:var(--text)">security testing belongs in test cases too</strong>. SQL injection is one of the most common vulnerabilities. If you're not testing it, someone else will — from the outside.</p>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-title">✏️ Exercise — Write a Negative Test Case</div>
+    <div class="ex-scenario"><strong>Scenario:</strong> An e-commerce checkout form has a promo code field. Write a <strong>negative test case</strong> for an invalid promo code. Include: ID, Title, Preconditions, Steps, Data, Expected Result.</div>
+    <textarea class="ex-input" id="ex-0" placeholder="TC-PROMO-002&#10;Title: Apply invalid promo code&#10;Preconditions: User has items in cart&#10;Steps: 1. Go to checkout 2. Enter promo code 3. Click Apply&#10;Data: INVALIDCODE&#10;Expected: Error message 'Invalid or expired promo code'" rows="5"></textarea>
+    <div class="ex-btn-row">
+      <button class="ex-btn reveal" onclick="showAnswer(0)">💡 Show model answer</button>
+    </div>
+    <div class="answer-panel" id="ans-0"><strong>Model Answer:</strong><br><br>ID: TC-PROMO-002<br>Title: Apply invalid promo code at checkout<br>Preconditions: User is logged in. Cart has at least 1 item. App is running.<br>Steps: 1. Navigate to /checkout 2. Locate promo code field 3. Enter "INVALIDCODE" 4. Click "Apply"<br>Data: INVALIDCODE<br>Expected Result: Error message displayed — "Invalid or expired promo code." Discount is NOT applied. Order total remains unchanged.</div>
+  </div>
+  <div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"If another tester can't run your test case without calling you — it's not a test case. <em>It's a sticky note.</em>"</p></div></div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(0)">Next: Boundary Value Analysis →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header"><div class="lc-num">Technique 01</div><div class="lc-title">Boundary Value Analysis</div><div class="lc-sub">// test at the edges — that's where bugs live</div></div>
+  <div class="concept-box">
+    <p class="concept-text"><strong>BVA tests values at and just outside the boundaries of valid ranges.</strong> If a field accepts 1–100, you must test: 0 (just below min), 1 (min), 100 (max), 101 (just above max). Four values. Full boundary coverage.</p>
+    <div class="bva-visual">
+      <div class="bva-zone invalid">
+        <div class="bva-label">INVALID<br>&lt; 18</div>
+        <div class="bva-values"><span class="bv fail">17</span><div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--red);margin-top:2px">Just below ❌</div></div>
+      </div>
+      <div class="bva-zone valid">
+        <div class="bva-label">VALID RANGE<br>18 — 65</div>
+        <div class="bva-values"><span class="bv pass">18</span><span class="bv skip">41</span><span class="bv pass">65</span></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--g);margin-top:2px;display:flex;gap:16px"><span>Min ✅</span><span>Skip</span><span>Max ✅</span></div>
+      </div>
+      <div class="bva-zone invalid2">
+        <div class="bva-label">INVALID<br>&gt; 65</div>
+        <div class="bva-values"><span class="bv fail">66</span><div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--red);margin-top:2px">Just above ❌</div></div>
+      </div>
+    </div>
+    <div class="data-table-wrap"><table>
+      <tr><th>ID</th><th>Input</th><th>Boundary Type</th><th>Expected Result</th></tr>
+      <tr><td>TC-QTY-001</td><td>0</td><td>Just below min</td><td class="fail">Error: "Minimum quantity is 1" ❌</td></tr>
+      <tr><td>TC-QTY-002</td><td>1</td><td>Minimum valid</td><td class="pass">Accepted ✅</td></tr>
+      <tr><td>TC-QTY-003</td><td>99</td><td>Maximum valid</td><td class="pass">Accepted ✅</td></tr>
+      <tr><td>TC-QTY-004</td><td>100</td><td>Just above max</td><td class="fail">Error: "Maximum quantity is 99" ❌</td></tr>
+      <tr><td>TC-QTY-005</td><td>-1</td><td>Negative value</td><td class="fail">Error: "Invalid quantity" ❌</td></tr>
+    </table></div>
+    <div class="key-rule">💡 <strong>Why boundaries break systems:</strong> Developers often write <code>if (qty > 0 && qty < 100)</code> instead of <code>qty <= 99</code>. The difference: 99 passes the first check but 100 also passes. <strong>Off-by-one errors at boundaries</strong> are among the most common bugs in production.</div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-title">✏️ Exercise — Apply BVA</div>
+    <div class="ex-scenario"><strong>Scenario:</strong> A contact form has a "Message" text field that accepts between <strong>10 and 500 characters</strong>. Using BVA, what are the 4 values you MUST test?</div>
+    <textarea class="ex-input" id="ex-1" placeholder="Value 1 — Just below minimum: ___&#10;Value 2 — Minimum valid: ___&#10;Value 3 — Maximum valid: ___&#10;Value 4 — Just above maximum: ___" rows="4"></textarea>
+    <div class="ex-btn-row"><button class="ex-btn reveal" onclick="showAnswer(1)">💡 Show answer</button></div>
+    <div class="answer-panel" id="ans-1"><strong>Correct BVA values:</strong><br><br>Value 1 — Just below minimum: <strong>9 characters</strong> (should be rejected)<br>Value 2 — Minimum valid: <strong>10 characters</strong> (should be accepted)<br>Value 3 — Maximum valid: <strong>500 characters</strong> (should be accepted)<br>Value 4 — Just above maximum: <strong>501 characters</strong> (should be rejected)<br><br>Also consider: 0 characters (empty), and a very long string (e.g., 10,000 chars).</div>
+  </div>
+  <div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"The midpoint is boring. <em>The boundary is where developers make their mistakes.</em> 17 and 18. 99 and 100. Test there."</p></div></div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(1)">Next: Equivalence Partitioning →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header"><div class="lc-num">Technique 02</div><div class="lc-title">Equivalence Partitioning</div><div class="lc-sub">// test smart — one value per partition covers the whole group</div></div>
+  <div class="concept-box">
+    <p class="concept-text">EP divides input data into <strong>partitions where the system should behave the same way</strong>. Test one representative value from each partition — if it passes, the whole partition should pass. This dramatically reduces test cases without losing coverage.</p>
+    <div class="data-table-wrap"><table>
+      <tr><th>Partition</th><th>Range</th><th>Rep. Value</th><th>Expected Behavior</th><th>Valid?</th></tr>
+      <tr><td>Too young</td><td>&lt; 18</td><td>15</td><td>Error: "Must be 18 or older"</td><td class="fail">❌ Invalid</td></tr>
+      <tr><td>Valid adult</td><td>18–64</td><td>30</td><td>Registration proceeds</td><td class="pass">✅ Valid</td></tr>
+      <tr><td>Senior</td><td>65–99</td><td>70</td><td>Registration proceeds</td><td class="pass">✅ Valid</td></tr>
+      <tr><td>Too old</td><td>&gt; 99</td><td>120</td><td>Error: "Invalid age"</td><td class="fail">❌ Invalid</td></tr>
+      <tr><td>Non-numeric</td><td>Text</td><td>"abc"</td><td>Error: "Numbers only"</td><td class="fail">❌ Invalid</td></tr>
+      <tr><td>Empty</td><td>—</td><td>(blank)</td><td>Error: "Required field"</td><td class="fail">❌ Invalid</td></tr>
+    </table></div>
+    <div class="key-rule">💡 <strong>BVA + EP Together:</strong> These techniques complement each other. <strong>EP identifies the partitions</strong>. <strong>BVA tests the edges between them</strong>. Use both together for maximum coverage with minimum test cases.</div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-title">✏️ Exercise — Define Partitions</div>
+    <div class="ex-scenario"><strong>Scenario:</strong> A promo code field accepts <strong>alphanumeric codes of exactly 8 characters</strong> (e.g., "SUMMER24"). How many equivalence partitions would you define? List them all.</div>
+    <textarea class="ex-input" id="ex-2" placeholder="Partition 1 — Valid: ...&#10;Partition 2 — Invalid: ...&#10;Partition 3 — Invalid: ..." rows="5"></textarea>
+    <div class="ex-btn-row"><button class="ex-btn reveal" onclick="showAnswer(2)">💡 Show answer</button></div>
+    <div class="answer-panel" id="ans-2"><strong>6 Equivalence Partitions:</strong><br><br>✅ Valid: Exactly 8 alphanumeric characters (e.g., "SUMMER24")<br>❌ Invalid: Less than 8 characters (e.g., "SHORT")<br>❌ Invalid: More than 8 characters (e.g., "TOOLONGCODE")<br>❌ Invalid: Special characters (e.g., "SUMM@R24")<br>❌ Invalid: Empty field<br>⚠️ Edge: Lowercase version of valid code (e.g., "summer24") — is it case-sensitive?</div>
+  </div>
+  <div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"Why test 50 invalid values when <em>one per partition proves the point?</em> EP is efficiency. BVA is precision. Use both."</p></div></div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(2)">Next: Decision Tables →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header"><div class="lc-num">Technique 03</div><div class="lc-title">Decision Table Testing</div><div class="lc-sub">// when multiple conditions combine to determine outcomes</div></div>
+  <div class="concept-box">
+    <p class="concept-text">Decision tables are used when system behavior depends on <strong>combinations of multiple conditions</strong>. Each column is a rule — a unique combination of conditions and its expected action. No combination goes untested.</p>
+    <p class="concept-text">Rule: Free shipping if order &gt; $50 OR user has Premium membership. Express only for Premium members.</p>
+    <div class="data-table-wrap"><table>
+      <tr><th>Condition / Rule</th><th>Rule 1</th><th>Rule 2</th><th>Rule 3</th><th>Rule 4</th></tr>
+      <tr><td>Order total &gt; $50</td><td>Y</td><td>Y</td><td>N</td><td>N</td></tr>
+      <tr><td>Premium member</td><td>Y</td><td>N</td><td>Y</td><td>N</td></tr>
+      <tr><td>→ Free shipping</td><td class="pass">✅</td><td class="pass">✅</td><td class="pass">✅</td><td class="fail">❌</td></tr>
+      <tr><td>→ Express available</td><td class="pass">✅</td><td class="fail">❌</td><td class="pass">✅</td><td class="fail">❌</td></tr>
+      <tr><td>→ Standard only</td><td class="fail">❌</td><td class="fail">❌</td><td class="fail">❌</td><td class="pass">✅</td></tr>
+    </table></div>
+    <div class="key-rule">💡 <strong>When to use Decision Tables:</strong> Use when a feature has 2 or more conditions that combine to produce different outcomes. Login rules, discount logic, permission systems, form validation with multiple fields. If you can write "if A and B then X" — use a decision table.</div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-title">✏️ Exercise — Build a Decision Table</div>
+    <div class="ex-scenario"><strong>Scenario:</strong> A bank transfer requires: user must be logged in (Y/N) AND have sufficient balance (Y/N) AND the recipient must exist (Y/N). Build the decision table with all rule combinations and their expected outcomes.</div>
+    <textarea class="ex-input" id="ex-3" placeholder="Logged In | Sufficient Balance | Recipient Exists | Outcome&#10;Y         | Y                 | Y               | Transfer succeeds&#10;Y         | Y                 | N               | Error: recipient not found&#10;..." rows="6"></textarea>
+    <div class="ex-btn-row"><button class="ex-btn reveal" onclick="showAnswer(3)">💡 Show answer</button></div>
+    <div class="answer-panel" id="ans-3"><strong>8 Rules (2³ combinations):</strong><br><br>Y Y Y → Transfer succeeds ✅<br>Y Y N → Error: Recipient not found ❌<br>Y N Y → Error: Insufficient balance ❌<br>Y N N → Error: Insufficient balance + Recipient not found ❌<br>N Y Y → Error: Not logged in → redirect to login ❌<br>N Y N → Error: Not logged in ❌<br>N N Y → Error: Not logged in ❌<br>N N N → Error: Not logged in ❌<br><br>8 test cases from 3 conditions — complete coverage.</div>
+  </div>
+  <div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"4 rules. 4 test cases. <em>Every shipping scenario covered.</em> Decision tables are how senior QAs prove they've tested everything without testing 1,000 things."</p></div></div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(3)">Next: State Transition →</button></div>
+</div>`,
+
+`<div class="lesson-card fade">
+  <div class="lc-header"><div class="lc-num">Technique 04</div><div class="lc-title">State Transition Testing</div><div class="lc-sub">// test how a system moves between states</div></div>
+  <div class="concept-box">
+    <p class="concept-text">State Transition tests the <strong>valid and invalid transitions</strong> between system states. A system is always in a state. Events trigger transitions. Testing ensures valid transitions work correctly — and invalid ones are blocked.</p>
+    <div class="state-flow">
+      <div class="state-box"><div class="state-name">PENDING</div><div class="state-desc">Just registered</div></div>
+      <div class="state-arrow"><div class="sa-event">verify email →</div><div class="sa-line">→</div></div>
+      <div class="state-box"><div class="state-name">ACTIVE</div><div class="state-desc">Verified</div></div>
+      <div class="state-arrow"><div class="sa-event">3 failed logins →</div><div class="sa-line">→</div></div>
+      <div class="state-box"><div class="state-name">LOCKED</div><div class="state-desc">Blocked</div></div>
+      <div class="state-arrow"><div class="sa-event">admin unlock →</div><div class="sa-line">→</div></div>
+      <div class="state-box"><div class="state-name">ACTIVE</div><div class="state-desc">Restored</div></div>
+    </div>
+    <div class="data-table-wrap"><table>
+      <tr><th>ID</th><th>Current State</th><th>Event</th><th>Expected State</th><th>Result</th></tr>
+      <tr><td>TC-ST-001</td><td>PENDING</td><td>User clicks verify link</td><td>ACTIVE</td><td class="pass">✅ Activated</td></tr>
+      <tr><td>TC-ST-002</td><td>PENDING</td><td>Link expires (48h)</td><td>EXPIRED</td><td class="fail">❌ Re-send option</td></tr>
+      <tr><td>TC-ST-003</td><td>ACTIVE</td><td>3 failed login attempts</td><td>LOCKED</td><td class="fail">❌ Lockout message</td></tr>
+      <tr><td>TC-ST-004</td><td>LOCKED</td><td>User tries to login</td><td>LOCKED</td><td class="fail">❌ Still blocked</td></tr>
+      <tr><td>TC-ST-005</td><td>LOCKED</td><td>Admin unlocks account</td><td>ACTIVE</td><td class="pass">✅ User can login</td></tr>
+      <tr><td>TC-ST-006</td><td>PENDING</td><td>Try to login before verifying</td><td>PENDING</td><td class="fail">❌ "Verify email first"</td></tr>
+    </table></div>
+    <div class="key-rule">💡 <strong>The invalid transition test:</strong> TC-ST-004 and TC-ST-006 test <strong>invalid transitions</strong> — trying to do something from the wrong state. These are the most commonly missed tests. Developers test the happy path. QA tests what happens when someone tries to skip steps.</div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-title">✏️ Exercise — Map the States</div>
+    <div class="ex-scenario"><strong>Scenario:</strong> An order in an e-commerce system can be: PENDING → CONFIRMED → SHIPPED → DELIVERED, or PENDING → CANCELLED. Map the valid transitions and write 2 invalid transition test cases that a developer is likely to miss.</div>
+    <textarea class="ex-input" id="ex-4" placeholder="Valid transitions:&#10;PENDING → CONFIRMED (payment received)&#10;...&#10;&#10;Invalid transitions to test:&#10;1. Try to SHIP a PENDING order (not yet confirmed)&#10;2. ..." rows="6"></textarea>
+    <div class="ex-btn-row"><button class="ex-btn reveal" onclick="showAnswer(4)">💡 Show answer</button></div>
+    <div class="answer-panel" id="ans-4"><strong>Valid Transitions:</strong><br>PENDING → CONFIRMED (payment received)<br>CONFIRMED → SHIPPED (item dispatched)<br>SHIPPED → DELIVERED (delivery confirmed)<br>PENDING → CANCELLED (user or system cancels)<br><br><strong>Invalid Transitions (most missed):</strong><br>1. Try to SHIP a PENDING order → Error: "Order not confirmed"<br>2. Try to CANCEL a DELIVERED order → Error: "Cannot cancel delivered order"<br>3. Try to CONFIRM an already CONFIRMED order → Error: "Order already confirmed"<br>4. Try to DELIVER a PENDING order (skipping steps) → Error: "Order not shipped"</div>
+  </div>
+  <div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"The developer tests PENDING → CONFIRMED → SHIPPED → DELIVERED. <em>You test what happens when someone skips CONFIRMED.</em> That's the invalid transition that goes to production unfixed."</p></div></div>
+  <div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(4)">🏆 Complete Module</button></div>
+</div>`
+];
+
+function showAnswer(i){
+  const p=document.getElementById('ans-'+i);
+  p.style.display=p.style.display==='block'?'none':'block';
+}
+
+function goTo(i){
+  current=i;
+  document.getElementById('sections').innerHTML=SCREENS[i];
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{b.classList.toggle('active',idx===i);b.classList.toggle('done',completed.has(idx)&&idx!==i);});
+  document.getElementById('prog').style.width=(completed.size/SCREENS.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(i){
+  completed.add(i);
+  if(i<SCREENS.length-1) goTo(i+1);
+  else{
+    document.getElementById('sections').innerHTML=`<div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--yellow);margin-bottom:8px">Manual Testing Maestro — Complete!</div>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:20px">"QALemental, Dear Watson. Now you design tests like a detective — systematic, thorough, and impossible to fool."</p>
+      <a href="exam.html" style="display:inline-block;background:var(--g);color:#fff;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;margin-bottom:12px;display:block;max-width:280px;margin:0 auto 12px">▶ Practice in Exam Simulator</a>
+      <a href="dashboard.html" style="display:block;text-align:center;font-size:13px;color:var(--text3);margin-top:12px">← Back to Dashboard</a>
+    </div>`;
+    document.getElementById('prog').style.width='100%';
+  }
+}
+
+goTo(0);
+</script>
+</body>
+</html>
