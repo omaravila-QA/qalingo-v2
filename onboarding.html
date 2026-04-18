@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>QALingo — Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--yellow:#F59E0B;--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);--grid:rgba(34,197,94,.02);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--yellow:#D97706;--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);--grid:rgba(22,163,74,.03);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;transition:background .3s,color .3s;position:relative;overflow:hidden;}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:50px 50px;z-index:0;pointer-events:none;}
+.glow{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);width:400px;height:320px;background:radial-gradient(ellipse,rgba(34,197,94,.05),transparent 70%);pointer-events:none;z-index:0;}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:6px;margin-bottom:24px;position:relative;z-index:1;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--bg3);transition:all .3s;}
+.dot.done{background:var(--g);}
+.dot.active{width:24px;border-radius:4px;background:var(--g);}
+
+/* CARD */
+.ob-card{width:100%;max-width:420px;background:var(--card);border-radius:24px;border:1px solid var(--border2);padding:28px;position:relative;z-index:1;box-shadow:0 20px 60px var(--shadow);animation:up .5s ease both;}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.ob-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.ob-icon{font-size:36px;margin-bottom:12px;}
+.ob-title{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;color:var(--text);}
+.ob-sub{font-size:14px;color:var(--text2);font-weight:300;line-height:1.65;margin-bottom:20px;}
+
+/* OPTIONS */
+.ob-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.ob-opt{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg3);border:1.5px solid var(--border);
+  border-radius:13px;padding:14px 16px;
+  cursor:pointer;transition:all .2s;text-align:left;width:100%;
+}
+.ob-opt:hover{border-color:var(--border2);}
+.ob-opt.selected{border-color:var(--g);background:var(--gdim);}
+.ob-opt-icon{font-size:20px;flex-shrink:0;}
+.ob-opt-text{flex:1;}
+.ob-opt-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ob-opt-desc{font-size:12px;color:var(--text2);font-weight:300;}
+.ob-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:10px;}
+.ob-opt.selected .ob-check{background:var(--g);border-color:var(--g);color:#fff;}
+
+/* Q bubble */
+.q-bubble{display:flex;align-items:flex-start;gap:10px;background:var(--gdim);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;margin-bottom:16px;}
+.qb-icon{font-size:20px;flex-shrink:0;}
+.qb-text{font-family:"Space Mono",monospace;font-size:11px;color:var(--text2);line-height:1.6;font-style:italic;}
+.qb-text em{font-style:normal;color:var(--g);}
+
+/* CONTINUE BTN */
+.ob-btn{width:100%;padding:15px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;box-shadow:0 0 24px rgba(34,197,94,.2);}
+.ob-btn:hover{background:var(--gh);}
+.ob-btn:disabled{background:var(--bg3);color:var(--text3);box-shadow:none;cursor:not-allowed;}
+
+.skip-link{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);text-decoration:none;margin-top:12px;display:block;text-align:center;transition:color .2s;}
+.skip-link:hover{color:var(--g);}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+
+<div class="progress-dots" id="dots"></div>
+
+<div class="ob-card" id="ob-card"></div>
+
+<a href="dashboard.html" class="skip-link" style="position:relative;z-index:1">Skip onboarding →</a>
+
+<script>
+const STEPS = [
+  {
+    tag:"Step 1 of 6",
+    icon:"🔍",
+    title:"Welcome to QALingo",
+    sub:"The Duolingo-style app for QA professionals. Let's build your personal learning path in 60 seconds.",
+    qbubble:'"Every great detective starts somewhere, Watson. <em>Let\'s find out where you are.</em>"',
+    type:"single",
+    opts:[],
+    cta:"Let's go →",
+    autoNext:true
+  },
+  {
+    tag:"Step 2 of 6",
+    icon:"💼",
+    title:"What's your QA experience?",
+    sub:"Be honest — Q adapts your path based on where you actually are.",
+    qbubble:'"No wrong answer here. <em>Well, technically there could be.</em> But not now."',
+    type:"single",
+    opts:[
+      {icon:"🌱",title:"Complete beginner",desc:"Never worked in QA. Starting from zero."},
+      {icon:"🔵",title:"Less than 2 years",desc:"I've done some testing but still learning the fundamentals."},
+      {icon:"⚡",title:"2–5 years",desc:"Solid experience. Looking to level up and certify."},
+      {icon:"🏆",title:"5+ years",desc:"Experienced QA. Here to sharpen skills or prep for interviews."},
+    ],
+    cta:"Continue →"
+  },
+  {
+    tag:"Step 3 of 6",
+    icon:"🎯",
+    title:"What's your main goal?",
+    sub:"Pick one — you can explore everything later. Q needs to know where to point the magnifying glass.",
+    qbubble:'"Focus is the detective\'s most powerful tool. <em>Pick one target.</em>"',
+    type:"single",
+    opts:[
+      {icon:"💼",title:"Get a QA job",desc:"Land my first or next QA role, ideally remote"},
+      {icon:"🎓",title:"Get ISTQB certified",desc:"Pass ISTQB Foundation or Scrum Foundation"},
+      {icon:"📈",title:"Upskill",desc:"I'm employed. I want to get better at my craft."},
+      {icon:"🔍",title:"Just exploring",desc:"Curious about QA. No specific goal yet."},
+    ],
+    cta:"Continue →"
+  },
+  {
+    tag:"Step 4 of 6",
+    icon:"⏱",
+    title:"How much time can you commit?",
+    sub:"Consistency beats intensity. Even 5 minutes a day compounds fast.",
+    qbubble:'"The detective who studies 5 minutes every day <em>beats the one who studies 5 hours once a month.</em>"',
+    type:"single",
+    opts:[
+      {icon:"⚡",title:"5 min / day",desc:"Quick daily habit. Perfect for beginners."},
+      {icon:"🔥",title:"10 min / day",desc:"Steady progress. Recommended for most learners."},
+      {icon:"🚀",title:"20+ min / day",desc:"Fast track. Ideal if you're job-hunting or exam-prepping."},
+    ],
+    cta:"Continue →"
+  },
+  {
+    tag:"Step 5 of 6",
+    icon:"📋",
+    title:"Which topics interest you?",
+    sub:"Select all that apply. Q will prioritize these in your path.",
+    qbubble:'"The more specific your case, <em>the faster I find the solution.</em>"',
+    type:"multi",
+    opts:[
+      {icon:"📋",title:"ISTQB Foundation (CTFL)",desc:"The most recognized QA certification globally"},
+      {icon:"🗄️",title:"SQL for QA",desc:"Database queries, defect investigation, data validation"},
+      {icon:"🔌",title:"API Testing",desc:"REST APIs, HTTP methods, Postman, status codes"},
+      {icon:"💻",title:"Programming for QA",desc:"Variables, functions, OOP — the dev perspective"},
+      {icon:"🎯",title:"Manual Testing Techniques",desc:"BVA, EP, Decision Tables, State Transition"},
+      {icon:"🤖",title:"AI Interview Prep",desc:"English interviews for international remote roles"},
+    ],
+    cta:"Continue →"
+  },
+  {
+    tag:"Step 6 of 6",
+    icon:"🎉",
+    title:"Your path is ready, Watson.",
+    sub:"Q built this based on your answers. Time to start your first lesson.",
+    qbubble:'"QALemental. The investigation begins now, <em>Watson.</em>"',
+    type:"finish",
+    opts:[],
+    cta:"Begin my first lesson 🔍"
+  }
+];
+
+let current=0;
+const selections={};
+
+function buildDots(){
+  const el=document.getElementById('dots');
+  el.innerHTML='';
+  STEPS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i<current?'done':i===current?' active':'');
+    el.appendChild(d);
+  });
+}
+
+function buildCard(){
+  const s=STEPS[current];
+  const card=document.getElementById('ob-card');
+
+  let optsHTML='';
+  if(s.type==='single'||s.type==='multi'){
+    optsHTML=`<div class="ob-options" id="ob-options">${s.opts.map((o,i)=>`
+      <button class="ob-opt" onclick="selectOpt(${i})" id="opt-${i}">
+        <div class="ob-opt-icon">${o.icon}</div>
+        <div class="ob-opt-text">
+          <div class="ob-opt-title">${o.title}</div>
+          <div class="ob-opt-desc">${o.desc}</div>
+        </div>
+        <div class="ob-check" id="check-${i}">${s.type==='multi'?'✓':''}</div>
+      </button>`).join('')}
+    </div>`;
+  }
+
+  if(s.type==='finish'){
+    optsHTML=`
+    <div style="background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:14px;border:1px solid var(--border2);padding:16px;margin-bottom:16px">
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">// Your Path</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--g)">✓</span> ISTQB Fundamentals</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--g)">✓</span> Test Design Techniques</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--g)">✓</span> SQL for QA</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--g)">✓</span> API Testing</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--g)">✓</span> AI Interview Prep</div>
+      </div>
+    </div>`;
+  }
+
+  card.innerHTML=`
+    <div class="ob-tag">${s.tag}</div>
+    <div class="ob-icon">${s.icon}</div>
+    <div class="ob-title">${s.title}</div>
+    <div class="ob-sub">${s.sub}</div>
+    ${s.qbubble?`<div class="q-bubble"><div class="qb-icon">🕵️</div><p class="qb-text">${s.qbubble}</p></div>`:''}
+    ${optsHTML}
+    <button class="ob-btn" id="ob-btn" onclick="nextStep()" ${s.type==='single'&&s.opts.length>0?'disabled':''}>
+      ${s.cta}
+    </button>`;
+
+  // Restore previous selections
+  if(selections[current]){
+    const sel=selections[current];
+    (Array.isArray(sel)?sel:[sel]).forEach(i=>markSelected(i,s.type==='multi'));
+  }
+}
+
+function selectOpt(i){
+  const s=STEPS[current];
+  if(s.type==='single'){
+    s.opts.forEach((_,j)=>{
+      document.getElementById('opt-'+j)?.classList.remove('selected');
+      if(document.getElementById('check-'+j)) document.getElementById('check-'+j).textContent='';
+    });
+    markSelected(i,false);
+    selections[current]=i;
+    document.getElementById('ob-btn').disabled=false;
+  } else {
+    if(!Array.isArray(selections[current])) selections[current]=[];
+    const arr=selections[current];
+    const idx=arr.indexOf(i);
+    if(idx>=0){ arr.splice(idx,1); unmarkSelected(i); }
+    else { arr.push(i); markSelected(i,true); }
+    document.getElementById('ob-btn').disabled=arr.length===0;
+  }
+}
+
+function markSelected(i,multi){
+  const opt=document.getElementById('opt-'+i);
+  const chk=document.getElementById('check-'+i);
+  if(opt) opt.classList.add('selected');
+  if(chk) chk.textContent='✓';
+}
+function unmarkSelected(i){
+  const opt=document.getElementById('opt-'+i);
+  const chk=document.getElementById('check-'+i);
+  if(opt) opt.classList.remove('selected');
+  if(chk) chk.textContent='✓';
+  if(opt) opt.classList.remove('selected');
+}
+
+function nextStep(){
+  const s=STEPS[current];
+  if(s.type==='finish'){
+    window.location.href='dashboard.html';
+    return;
+  }
+  if(current<STEPS.length-1){
+    current++;
+    buildDots();
+    buildCard();
+    // Animate
+    document.getElementById('ob-card').style.animation='none';
+    void document.getElementById('ob-card').offsetWidth;
+    document.getElementById('ob-card').style.animation='up .4s ease both';
+  }
+}
+
+buildDots();
+buildCard();
+</script>
+</body>
+</html>
