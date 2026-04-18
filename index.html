@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>QALingo — Learn QA. Play Hard.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;
+  --card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);
+  --text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;
+  --g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);
+  --shadow:rgba(0,0,0,.65);--navbg:rgba(7,13,8,.97);
+  --grid:rgba(34,197,94,.022);
+}
+[data-theme="light"]{
+  --bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;
+  --card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);
+  --text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;
+  --g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);
+  --shadow:rgba(0,0,0,.06);--navbg:rgba(244,246,244,.97);
+  --grid:rgba(22,163,74,.032);
+}
+[data-theme="hc"]{
+  --bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;
+  --card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);
+  --text:#FFF;--text2:#D0D0D0;--text3:#888;
+  --g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);
+  --shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.99);
+  --grid:rgba(74,222,128,.038);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;min-height:100vh;transition:background .3s,color .3s;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:50px 50px;}
+.grid-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 50% 50%,transparent 30%,var(--bg) 100%);}
+.hero-glow{position:fixed;top:28%;left:50%;transform:translate(-50%,-50%);width:500px;height:420px;background:radial-gradient(ellipse,rgba(34,197,94,.045) 0%,transparent 68%);pointer-events:none;z-index:0;}
+/* TOP NAV desktop */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:400;height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 32px;background:var(--navbg);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.tn-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-q{width:32px;height:32px;border-radius:8px;background:var(--g);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:16px;font-weight:700;color:#fff;}
+.logo-w{font-family:"Space Mono",monospace;font-size:16px;font-weight:700;color:var(--text);}
+.tn-links{display:flex;gap:28px;list-style:none;}
+.tn-links a{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:1.2px;text-transform:uppercase;transition:color .2s;}
+.tn-links a:hover{color:var(--g);}
+.tn-right{display:flex;align-items:center;gap:10px;}
+.tog{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;}
+.tog-btn{padding:4px 9px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-family:"Space Mono",monospace;font-size:9px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.btn-nav{display:inline-block;background:var(--g);color:#fff;padding:7px 16px;border-radius:8px;font-family:"Space Mono",monospace;font-size:10px;font-weight:700;text-decoration:none;transition:all .2s;}
+.btn-nav:hover{background:var(--gh);}
+/* MOBILE TOP BAR */
+.mobile-topbar{position:fixed;top:0;left:0;right:0;z-index:400;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--navbg);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.mtb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.mtb-q{width:30px;height:30px;border-radius:8px;background:var(--g);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:#fff;}
+.mtb-word{font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:var(--text);}
+.mtb-tog{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;}
+.mtb-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.mtb-btn.on{background:var(--g);color:#fff;}
+/* BOTTOM NAV mobile */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:400;background:var(--navbg);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;padding:8px 0 max(env(safe-area-inset-bottom,12px),12px);}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.bn-icon{font-size:21px;filter:grayscale(1) opacity(.28);transition:filter .2s;}
+.bn-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.bn-item.on .bn-icon{filter:none;}
+.bn-item.on .bn-label{color:var(--g);}
+.bn-dot{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@media(min-width:768px){.mobile-topbar{display:none;}.bottom-nav{display:none;}.top-nav{display:flex;}.hero{padding-top:80px;}body{padding-bottom:0;}}
+@media(max-width:767px){.top-nav{display:none;}.mobile-topbar{display:flex;}.bottom-nav{display:flex;}.hero{padding-top:70px;}body{padding-bottom:72px;}}
+/* HERO */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-start;padding:80px 28px 60px;position:relative;z-index:1;}
+.hero-badge{display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.22);border-radius:99px;padding:9px 22px;margin:0 auto 52px;max-width:360px;width:100%;}
+.bdot{width:6px;height:6px;background:var(--g);border-radius:50%;box-shadow:0 0 5px var(--g);flex-shrink:0;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.btext{font-family:"Space Mono",monospace;font-size:10px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
+.hero-main{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:40px;}
+.headline{flex:1;}
+.headline h1{font-family:"Syne",sans-serif;font-size:clamp(52px,14vw,76px);font-weight:800;line-height:1.05;letter-spacing:-2.5px;}
+.h-solid{display:block;color:var(--text);}
+.h-green{display:block;color:var(--g);position:relative;overflow:hidden;}
+.h-green::after{content:"";position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),rgba(34,197,94,.4),transparent);box-shadow:0 0 8px var(--g);animation:scan 3s ease-in-out infinite;}
+@keyframes scan{0%{top:5%;opacity:0}5%{opacity:1}48%{top:95%;opacity:.7}52%{top:95%;opacity:0}53%{top:5%;opacity:0}57%{opacity:.8}100%{top:95%;opacity:0}}
+.hero-q{flex-shrink:0;display:flex;align-items:flex-end;}
+.hero-q img{width:clamp(130px,32vw,210px);display:block;}
+.hero-sub{font-size:16px;font-weight:300;line-height:1.75;color:var(--text2);text-align:center;margin-bottom:32px;}
+.hero-sub strong{color:var(--g);font-weight:500;}
+.hero-ctas{display:flex;flex-direction:column;gap:10px;}
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--g);color:#fff;padding:15px;border-radius:13px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 0 28px rgba(34,197,94,.2);position:relative;overflow:hidden;transition:all .2s;}
+.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);animation:shim 3.5s ease-in-out infinite;}
+@keyframes shim{0%{left:-100%}65%,100%{left:150%}}
+.btn-primary:hover{background:var(--gh);}
+.btn-sec{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text2);padding:13px;border-radius:13px;font-size:14px;text-decoration:none;border:1.5px solid var(--border2);transition:all .2s;}
+.btn-sec:hover{border-color:var(--g);color:var(--g);}
+.hero-proof{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;}
+.avs{display:flex;}
+.av{width:24px;height:24px;border-radius:50%;border:2px solid var(--bg);margin-left:-6px;font-size:11px;display:flex;align-items:center;justify-content:center;background:var(--bg3);}
+.av:first-child{margin-left:0;}
+.proof-t{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+.proof-t span{color:var(--g);font-weight:700;}
+/* MARQUEE */
+.mq-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);padding:10px 0;position:relative;z-index:1;}
+.mq-track{display:flex;width:max-content;animation:mq 22s linear infinite;}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{display:flex;align-items:center;gap:8px;padding:0 28px;white-space:nowrap;font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+.mq-item strong{color:var(--g);}
+/* SECTIONS */
+.section{padding:64px 24px;max-width:720px;margin:0 auto;position:relative;z-index:1;}
+.eyebrow{font-family:"Space Mono",monospace;font-size:10px;color:var(--g);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:"";display:inline-block;width:16px;height:2px;background:var(--g);}
+.sec-h{font-family:"Syne",sans-serif;font-size:clamp(26px,7vw,36px);font-weight:800;line-height:1.1;letter-spacing:-.8px;margin-bottom:36px;color:var(--text);}
+.sec-h em{font-style:normal;color:var(--g);}
+.feat-list{display:flex;flex-direction:column;gap:10px;}
+.feat-item{background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;transition:border-color .2s,transform .2s;}
+.feat-item:hover{border-color:var(--border2);transform:translateX(3px);}
+.feat-item.star{background:linear-gradient(135deg,var(--bg4),var(--card));border-color:var(--border2);}
+.fi-ic{width:42px;height:42px;border-radius:11px;background:var(--gdim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.fi-ic.q{background:var(--bg3);border-color:var(--border);padding:2px;overflow:hidden;}
+.fi-ic.q img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
+.fi-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.fi-desc{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;}
+.fi-tag{display:inline-block;margin-top:7px;font-family:"Space Mono",monospace;font-size:9px;background:var(--gdim);color:var(--g);padding:2px 7px;border-radius:5px;}
+.q-qt{margin-top:10px;background:var(--bg2);border-radius:9px;padding:9px 11px;border-left:3px solid var(--g);display:flex;gap:7px;align-items:flex-start;}
+.qq-img{width:28px;height:28px;border-radius:6px;object-fit:contain;flex-shrink:0;background:var(--bg3);}
+.qq-txt{font-family:"Space Mono",monospace;font-size:10px;color:var(--text2);line-height:1.55;font-style:italic;}
+.qq-txt em{font-style:normal;color:var(--g);}
+/* STATS */
+.stats-sec{padding:48px 24px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:1;}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);max-width:400px;margin:0 auto;border:1px solid var(--border);border-radius:16px;overflow:hidden;gap:1px;background:var(--border);}
+.stat-it{padding:22px 16px;text-align:center;background:var(--card);}
+.stat-n{font-family:"Syne",sans-serif;font-size:38px;font-weight:800;color:var(--g);line-height:1;margin-bottom:4px;letter-spacing:-2px;}
+.stat-u{font-size:22px;color:var(--gh);}
+.stat-l{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:.5px;}
+/* PRICING */
+.pricing-sec{padding:64px 24px;max-width:720px;margin:0 auto;position:relative;z-index:1;}
+.plan-list{display:flex;flex-direction:column;gap:10px;margin-top:36px;}
+.plan-card{background:var(--card);border-radius:17px;padding:20px;border:1px solid var(--border);position:relative;transition:transform .2s;}
+.plan-card:hover{transform:translateY(-2px);}
+.plan-card.pop{background:linear-gradient(150deg,var(--bg4),var(--card));border-color:var(--border2);}
+.pop-b{position:absolute;top:-10px;left:18px;background:var(--g);color:#fff;font-size:8px;font-weight:700;font-family:"Space Mono",monospace;padding:3px 10px;border-radius:99px;letter-spacing:1px;text-transform:uppercase;}
+.p-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.p-name{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.p-price{font-family:"Syne",sans-serif;font-size:32px;font-weight:800;line-height:1;letter-spacing:-1px;color:var(--text);}
+.p-price sub{font-size:13px;font-family:"Roboto",sans-serif;font-weight:400;color:var(--text3);vertical-align:middle;}
+.p-per{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);margin-top:2px;}
+.p-btn{padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s;font-family:"Roboto",sans-serif;border:none;white-space:nowrap;flex-shrink:0;}
+.p-btn.out{background:transparent;border:1.5px solid var(--border2);color:var(--text2);}
+.p-btn.out:hover{border-color:var(--g);color:var(--g);}
+.p-btn.sol{background:var(--g);color:#fff;}
+.p-btn.sol:hover{background:var(--gh);}
+.p-feats{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.p-feats li{display:flex;align-items:flex-start;gap:7px;font-size:13px;color:var(--text);line-height:1.4;font-weight:300;}
+.p-feats li.off{color:var(--text3);opacity:.45;}
+.pfi{flex-shrink:0;font-size:11px;margin-top:2px;}
+/* CTA */
+.cta-sec{padding:64px 24px;text-align:center;position:relative;z-index:1;}
+.cta-q{position:relative;z-index:1;margin-bottom:16px;}
+.cta-q img{width:80px;margin:0 auto;display:block;object-fit:contain;}
+.cta-say{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);font-style:italic;margin-bottom:20px;line-height:1.6;}
+.cta-say em{font-style:normal;color:var(--g);}
+.cta-h{font-family:"Syne",sans-serif;font-size:clamp(26px,7vw,36px);font-weight:800;line-height:1.1;letter-spacing:-.8px;margin-bottom:10px;color:var(--text);position:relative;z-index:1;}
+.cta-h em{font-style:normal;color:var(--g);}
+.cta-p{font-size:14px;color:var(--text2);max-width:320px;margin:0 auto 24px;line-height:1.7;font-weight:300;position:relative;z-index:1;}
+footer{border-top:1px solid var(--border);padding:20px 24px 90px;display:flex;justify-content:space-between;align-items:center;font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);flex-wrap:wrap;gap:8px;position:relative;z-index:1;}
+@media(min-width:768px){footer{padding-bottom:20px;}}
+footer a{color:var(--text3);text-decoration:none;}
+footer a:hover{color:var(--g);}
+.ft-l{display:flex;gap:16px;}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* LANG TOGGLE */
+.lang-tog{
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:99px;padding:4px 10px;cursor:pointer;
+  transition:all .2s;flex-shrink:0;user-select:none;
+}
+.lang-tog:hover{border-color:var(--border2);}
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="hero-glow" aria-hidden="true"></div>
+
+<nav class="top-nav">
+  <a href="#" class="tn-logo"><div class="logo-q">Q</div><span class="logo-w">QALingo</span></a>
+  <ul class="tn-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#a11y">Accessibility</a></li>
+  </ul>
+  <div class="tn-right">
+    <div class="tog" role="group">
+      <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙 Dark</button>
+      <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️ Light</button>
+      <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉ HC</button>
+    </div>
+    <div class="lang-tog" id="lang-tog" onclick="toggleLang()" title="Cambiar idioma / Change language">
+      <span id="lang-flag">🇬🇧</span>
+      <span id="lang-label" style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;">EN</span>
+    </div>
+    <a href="login.html" class="btn-nav" id="cta-nav">Start for free</a>
+  </div>
+</nav>
+
+<div class="mobile-topbar">
+  <a href="#" class="mtb-logo"><div class="mtb-q">Q</div><span class="mtb-word">QALingo</span></a>
+  <div class="mtb-tog" role="group">
+    <button class="mtb-btn on" id="m-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="mtb-btn"    id="m-light" onclick="setTheme('light')">☀️</button>
+    <button class="mtb-btn"    id="m-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<section class="hero" id="home">
+  <div class="hero-badge"><div class="bdot"></div><span class="btext">V2.0 · AI Interview Prep included</span></div>
+  <div class="hero-main">
+    <div class="headline">
+      <h1><span class="h-solid">Learn QA.</span><span class="h-green">Play Hard.</span></h1>
+    </div>
+    <div class="hero-q"><img src="./q.png" alt="Q — Chief Bug Officer"></div>
+  </div>
+  <p class="hero-sub">The platform that turns <strong>ISTQB</strong> certification prep<br>into a detective game</p>
+  <div class="hero-ctas">
+    <a href="login.html" class="btn-primary">▶&nbsp; Start for free</a>
+    <a href="#features" class="btn-sec">↓&nbsp; How it works</a>
+  </div>
+  <div class="hero-proof">
+    <div class="avs"><div class="av">🇨🇴</div><div class="av">🇲🇽</div><div class="av">🇦🇷</div><div class="av">🇧🇷</div></div>
+    <span class="proof-t"><span>+2,400</span> QA engineers training here</span>
+  </div>
+</section>
+
+<div class="mq-wrap" aria-hidden="true">
+  <div class="mq-track">
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>ISTQB CTFL v4.0</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>Decision Tables</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span>Q — <strong>Chief Bug Officer</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>AI Interview Prep</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>40 questions</strong> simulator</div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>WCAG AA</strong> accessible</div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>Dark · Light · HC</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>75 QA terms</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>ISTQB CTFL v4.0</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>Decision Tables</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span>Q — <strong>Chief Bug Officer</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>AI Interview Prep</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>40 questions</strong> simulator</div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>WCAG AA</strong> accessible</div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>Dark · Light · HC</strong></div>
+    <div class="mq-item"><span style="color:var(--g)">·</span><strong>75 QA terms</strong></div>
+  </div>
+</div>
+
+<section class="section" id="features">
+  <div class="eyebrow">Features</div>
+  <h2 class="sec-h">Built for engineers who find bugs<br><em>before prod does</em></h2>
+  <div class="feat-list">
+    <div class="feat-item star">
+      <div class="fi-ic q"><img src="./q.png" alt="Q"></div>
+      <div>
+        <div class="fi-title">Q — Chief Bug Officer</div>
+        <div class="fi-desc">SQL-loaded glasses. Deerstalker hat. Always the smartest in the room. Zero patience for wrong answers.</div>
+        <span class="fi-tag">// soul of the product</span>
+        <div class="q-qt"><img src="./q.png" alt="Q" class="qq-img"><p class="qq-txt">"Not so fast, Dr. Jekyll. <em>Back to basics.</em>"</p></div>
+      </div>
+    </div>
+    <div class="feat-item"><div class="fi-ic">🎯</div><div><div class="fi-title">Bug Ticket Cockpit</div><div class="fi-desc">Every question arrives as a Jira ticket. You triage as QA Lead. Q comments either way.</div><span class="fi-tag">// signature UX</span></div></div>
+    <div class="feat-item"><div class="fi-ic">🗺️</div><div><div class="fi-title">Mission Control Map</div><div class="fi-desc">Progress through unlockable zones. Each ISTQB module is a city to conquer.</div><span class="fi-tag">// gamification</span></div></div>
+    <div class="feat-item"><div class="fi-ic">🤖</div><div><div class="fi-title">AI Interview Prep</div><div class="fi-desc">Simulate technical interviews in English. Real questions from international remote companies.</div><span class="fi-tag">// powered by Claude</span></div></div>
+    <div class="feat-item"><div class="fi-ic">🚀</div><div><div class="fi-title">CI/CD Progress Pipeline</div><div class="fi-desc">Theory → Flashcards → Questions → Deploy. Your daily streak as a real pipeline.</div><span class="fi-tag">// streak system</span></div></div>
+  </div>
+</section>
+
+<div class="stats-sec" id="a11y">
+  <div class="stats-grid">
+    <div class="stat-it"><div class="stat-n">40<span class="stat-u">+</span></div><div class="stat-l">CTFL questions</div></div>
+    <div class="stat-it"><div class="stat-n">75<span class="stat-u">+</span></div><div class="stat-l">QA terms</div></div>
+    <div class="stat-it"><div class="stat-n">3<span class="stat-u">x</span></div><div class="stat-l">UI modes</div></div>
+    <div class="stat-it"><div class="stat-n">100<span class="stat-u">%</span></div><div class="stat-l">free to start</div></div>
+  </div>
+</div>
+
+<section class="pricing-sec" id="pricing">
+  <div class="eyebrow">Pricing</div>
+  <h2 class="sec-h">No excuses to <em>not start</em></h2>
+  <div class="plan-list">
+    <div class="plan-card">
+      <div class="p-row"><div><div class="p-name">Free</div><div class="p-price">$0</div><div class="p-per">forever</div></div><a href="login.html" class="p-btn out">Start free</a></div>
+      <ul class="p-feats">
+        <li><span class="pfi">✔</span> Full ISTQB Fundamentals</li>
+        <li><span class="pfi">✔</span> 10-question exam simulator</li>
+        <li><span class="pfi">✔</span> Full QA glossary (75 terms)</li>
+        <li><span class="pfi">✔</span> Dark · Light · HC mode</li>
+        <li class="off"><span class="pfi">–</span> AI Interview Prep</li>
+        <li class="off"><span class="pfi">–</span> Advanced ISTQB modules</li>
+      </ul>
+    </div>
+    <div class="plan-card pop">
+      <div class="pop-b">MOST POPULAR</div>
+      <div class="p-row"><div><div class="p-name">Pro</div><div class="p-price">$9<sub>/mo</sub></div><div class="p-per">USD · cancel anytime</div></div><a href="login.html" class="p-btn sol">Start Pro</a></div>
+      <ul class="p-feats">
+        <li><span class="pfi">✔</span> Everything in Free</li>
+        <li><span class="pfi">✔</span> Full simulator (40 questions)</li>
+        <li><span class="pfi">✔</span> Unlimited AI Interview Prep</li>
+        <li><span class="pfi">✔</span> All ISTQB modules</li>
+        <li><span class="pfi">✔</span> Completion certificate</li>
+        <li><span class="pfi">✔</span> Q in max sarcasm mode</li>
+      </ul>
+    </div>
+    <div class="plan-card">
+      <div class="p-row"><div><div class="p-name">Teams</div><div class="p-price">$29<sub>/mo</sub></div><div class="p-per">up to 10 people</div></div><a href="login.html" class="p-btn out">Contact us</a></div>
+      <ul class="p-feats">
+        <li><span class="pfi">✔</span> Everything in Pro</li>
+        <li><span class="pfi">✔</span> Team dashboard</li>
+        <li><span class="pfi">✔</span> Progress reports</li>
+        <li><span class="pfi">✔</span> Custom onboarding</li>
+        <li><span class="pfi">✔</span> Corporate billing</li>
+        <li><span class="pfi">✔</span> Q for the whole crew</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="cta-sec">
+  <div class="cta-q">
+    <img src="./q.png" alt="Q">
+    <p class="cta-say">"You have been thinking about that remote role for weeks.<br><em>QALemental, dear Watson.</em>"</p>
+  </div>
+  <h2 class="cta-h">Your next remote role<br>starts <em>today</em></h2>
+  <p class="cta-p">Join thousands of QA engineers in LATAM already training with Q. It is free.</p>
+  <a href="login.html" class="btn-primary" style="max-width:300px;margin:0 auto;">▶&nbsp; Start for free now</a>
+</section>
+
+<footer>
+  <div><span style="color:var(--g)">QALingo</span> · Built with 🐛 by <strong style="color:var(--text)">Omar A.</strong> · 2026</div>
+  <div class="ft-l"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Accessibility</a><a href="https://linkedin.com" target="_blank">LinkedIn</a></div>
+</footer>
+
+<nav class="bottom-nav" role="navigation">
+  <a href="#home"     class="bn-item on" id="bn-home"><div class="bn-icon">🏠</div><div class="bn-label">Home</div><div class="bn-dot"></div></a>
+  <a href="#features" class="bn-item"    id="bn-feat"><div class="bn-icon">🎯</div><div class="bn-label">Features</div></a>
+  <a href="#pricing"  class="bn-item"    id="bn-price"><div class="bn-icon">💳</div><div class="bn-label">Pricing</div></a>
+  <a href="login.html" class="bn-item"   id="bn-try"><div class="bn-icon">🐛</div><div class="bn-label">Try Q</div></a>
+  <a href="login.html" class="bn-item"   id="bn-login"><div class="bn-icon">👤</div><div class="bn-label">Login</div></a>
+</nav>
+
+<script>
+
+const TRANSLATIONS = {
+  en: {
+    badge: "V2.0 · AI Interview Prep included",
+    h1: "Learn QA.",
+    h1green: "Play Hard.",
+    sub: 'The platform that turns <strong>ISTQB</strong> certification prep<br>into a detective game',
+    cta1: "▶&nbsp; Start for free",
+    cta2: "↓&nbsp; How it works",
+    proof: '<span>+2,400</span> QA engineers training here',
+    feat_eye: "Features",
+    feat_h: 'Built for engineers who find bugs<br><em>before prod does</em>',
+    f1_title: "Q — Chief Bug Officer",
+    f1_desc: "SQL-loaded glasses. Deerstalker hat. Always the smartest in the room. Zero patience for wrong answers.",
+    f1_tag: "// soul of the product",
+    f2_title: "Bug Ticket Cockpit",
+    f2_desc: "Every question arrives as a Jira ticket. You triage as QA Lead. Q comments either way.",
+    f2_tag: "// signature UX",
+    f3_title: "Mission Control Map",
+    f3_desc: "Progress through unlockable zones. Each ISTQB module is a city to conquer.",
+    f3_tag: "// gamification",
+    f4_title: "AI Interview Prep",
+    f4_desc: "Simulate technical interviews in English. Real questions from international remote companies.",
+    f4_tag: "// powered by Claude",
+    f5_title: "CI/CD Progress Pipeline",
+    f5_desc: "Theory → Flashcards → Questions → Deploy. Your daily streak as a real pipeline.",
+    f5_tag: "// streak system",
+    price_eye: "Pricing",
+    price_h: 'No excuses to <em>not start</em>',
+    p1_name: "Free", p1_per: "forever",
+    p2_name: "Pro", p2_per: "USD · cancel anytime",
+    p3_name: "Teams", p3_per: "up to 10 people",
+    p1_btn: "Start free", p2_btn: "Start Pro", p3_btn: "Contact us",
+    cta_say: '"You have been thinking about that remote role for weeks.<br><em>QALemental, dear Watson.</em>"',
+    cta_h: 'Your next remote role<br>starts <em>today</em>',
+    cta_p: "Join thousands of QA engineers in LATAM already training with Q. It is free.",
+    cta_btn: "▶&nbsp; Start for free now",
+    nav_home:"Home",nav_feat:"Features",nav_price:"Pricing",nav_try:"Try Q",nav_login:"Login",
+    cta_nav:"Start for free",
+  },
+  es: {
+    badge: "V2.0 · Prep de Entrevistas con IA incluida",
+    h1: "Aprende QA.",
+    h1green: "Juega en serio.",
+    sub: 'La plataforma que convierte la preparación para <strong>ISTQB</strong><br>en un juego de detective',
+    cta1: "▶&nbsp; Empezar gratis",
+    cta2: "↓&nbsp; Cómo funciona",
+    proof: '<span>+2,400</span> ingenieros QA en LATAM entrenando aquí',
+    feat_eye: "Funcionalidades",
+    feat_h: 'Hecho para ingenieros que encuentran bugs<br><em>antes que producción</em>',
+    f1_title: "Q — Chief Bug Officer",
+    f1_desc: "Gafas cargadas de SQL. Sombrero de detective. Siempre el más listo del salón. Cero paciencia para respuestas incorrectas.",
+    f1_tag: "// el alma del producto",
+    f2_title: "Cockpit de Bug Tickets",
+    f2_desc: "Cada pregunta llega como un ticket de Jira. Tú haces el triage como QA Lead. Q comenta de todas formas.",
+    f2_tag: "// UX distintivo",
+    f3_title: "Mapa de Control de Misión",
+    f3_desc: "Avanza por zonas desbloqueables. Cada módulo ISTQB es una ciudad por conquistar.",
+    f3_tag: "// gamificación",
+    f4_title: "Prep de Entrevistas con IA",
+    f4_desc: "Simula entrevistas técnicas en inglés. Preguntas reales de empresas internacionales remotas.",
+    f4_tag: "// powered by Claude",
+    f5_title: "Pipeline de Progreso CI/CD",
+    f5_desc: "Teoría → Flashcards → Preguntas → Deploy. Tu racha diaria como un pipeline real.",
+    f5_tag: "// sistema de racha",
+    price_eye: "Precios",
+    price_h: 'Sin excusas para <em>no empezar</em>',
+    p1_name: "Gratis", p1_per: "para siempre",
+    p2_name: "Pro", p2_per: "USD · cancela cuando quieras",
+    p3_name: "Equipos", p3_per: "hasta 10 personas",
+    p1_btn: "Empezar gratis", p2_btn: "Empezar Pro", p3_btn: "Contáctanos",
+    cta_say: '"Llevas semanas pensando en ese rol remoto.<br><em>QALemental, querido Watson.</em>"',
+    cta_h: 'Tu próximo rol remoto<br>empieza <em>hoy</em>',
+    cta_p: "Únete a miles de ingenieros QA en LATAM que ya entrenan con Q. Es gratis.",
+    cta_btn: "▶&nbsp; Empezar gratis ahora",
+    nav_home:"Inicio",nav_feat:"Funciones",nav_price:"Precios",nav_try:"Probar Q",nav_login:"Ingresar",
+    cta_nav:"Empezar gratis",
+  }
+};
+
+let currentLang = 'en';
+
+function toggleLang(){
+  currentLang = currentLang === 'en' ? 'es' : 'en';
+  applyLang(currentLang);
+}
+
+function applyLang(lang){
+  const t = TRANSLATIONS[lang];
+  const isEs = lang === 'es';
+  const flag = isEs ? '🇨🇴' : '🇬🇧';
+  const label = isEs ? 'ES' : 'EN';
+
+  // Update flag+label in both navbars
+  ['lang-flag','lang-flag-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=flag;});
+  ['lang-label','lang-label-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label;});
+
+  // Badge
+  const badge = document.querySelector('.btext');
+  if(badge) badge.textContent = t.badge;
+
+  // Hero headline
+  const hSolid = document.querySelector('.h-solid');
+  const hGreen = document.querySelector('.h-green');
+  if(hSolid) hSolid.textContent = t.h1;
+  if(hGreen) hGreen.childNodes[0].textContent = t.h1green;
+
+  // Sub
+  const sub = document.querySelector('.hero-sub');
+  if(sub) sub.innerHTML = t.sub;
+
+  // CTAs
+  const ctas = document.querySelectorAll('.hero-ctas a');
+  if(ctas[0]) ctas[0].innerHTML = t.cta1;
+  if(ctas[1]) ctas[1].innerHTML = t.cta2;
+
+  // Proof
+  const proof = document.querySelector('.proof-t');
+  if(proof) proof.innerHTML = t.proof;
+
+  // Features eyebrow
+  const featEye = document.querySelector('#features .eyebrow');
+  if(featEye) featEye.childNodes[1] && (featEye.innerHTML = featEye.innerHTML.replace(/Features|Funcionalidades/, t.feat_eye));
+
+  // Features heading
+  const featH = document.querySelector('#features .sec-h');
+  if(featH) featH.innerHTML = t.feat_h;
+
+  // Feature items
+  const fiTitles = document.querySelectorAll('.fi-title');
+  const fiDescs = document.querySelectorAll('.fi-desc');
+  const fiTags = document.querySelectorAll('.fi-tag');
+  const tKeys = [['f1','f2','f3','f4','f5']];
+  tKeys[0].forEach((k,i)=>{
+    if(fiTitles[i]) fiTitles[i].textContent = t[k+'_title'];
+    if(fiDescs[i])  fiDescs[i].textContent  = t[k+'_desc'];
+    if(fiTags[i])   fiTags[i].textContent   = t[k+'_tag'];
+  });
+
+  // Pricing eyebrow & heading
+  const priceEye = document.querySelector('#pricing .eyebrow');
+  if(priceEye) priceEye.innerHTML = `<span></span>${t.price_eye}`;
+  const priceH = document.querySelector('#pricing .sec-h');
+  if(priceH) priceH.innerHTML = t.price_h;
+
+  // Plan names, per, buttons
+  const planNames = document.querySelectorAll('.p-name');
+  const planPers  = document.querySelectorAll('.p-per');
+  const planBtns  = document.querySelectorAll('.p-btn');
+  [[t.p1_name,t.p1_per,t.p1_btn],[t.p2_name,t.p2_per,t.p2_btn],[t.p3_name,t.p3_per,t.p3_btn]].forEach(([name,per,btn],i)=>{
+    if(planNames[i]) planNames[i].textContent = name;
+    if(planPers[i])  planPers[i].textContent  = per;
+    if(planBtns[i])  planBtns[i].textContent  = btn;
+  });
+
+  // CTA section
+  const ctaSay = document.querySelector('.cta-say');
+  if(ctaSay) ctaSay.innerHTML = t.cta_say;
+  const ctaH = document.querySelector('.cta-h');
+  if(ctaH) ctaH.innerHTML = t.cta_h;
+  const ctaP = document.querySelector('.cta-p');
+  if(ctaP) ctaP.textContent = t.cta_p;
+  const ctaBtn = document.querySelector('.cta-sec .btn-primary');
+  if(ctaBtn) ctaBtn.innerHTML = t.cta_btn;
+
+  // Bottom nav labels
+  const navLabels = document.querySelectorAll('.bottom-nav .bn-label');
+  const navKeys = ['nav_home','nav_feat','nav_price','nav_try','nav_login'];
+  navLabels.forEach((el,i)=>{ if(navKeys[i]) el.textContent = t[navKeys[i]]; });
+
+  // Desktop CTA button
+  const ctaNav = document.getElementById('cta-nav');
+  if(ctaNav) ctaNav.textContent = t.cta_nav;
+
+  // html lang attribute
+  document.documentElement.setAttribute('lang', lang);
+}
+
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  ["dark","light","hc"].forEach(id=>{
+    ["btn-","m-"].forEach(p=>{
+      const b=document.getElementById(p+id);
+      if(b) b.classList.toggle("on",id===t);
+    });
+  });
+}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+window.addEventListener("scroll",()=>{
+  const y=window.scrollY+160;
+  const fOff=document.getElementById("features")?.offsetTop||9999;
+  const pOff=document.getElementById("pricing")?.offsetTop||9999;
+  let active="bn-home";
+  if(y>pOff) active="bn-price";
+  else if(y>fOff) active="bn-feat";
+  ["bn-home","bn-feat","bn-price","bn-try","bn-login"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const isOn=id===active;
+    el.classList.toggle("on",isOn);
+    const dot=el.querySelector(".bn-dot");
+    if(isOn&&!dot){const d=document.createElement("div");d.className="bn-dot";el.appendChild(d);}
+    else if(!isOn&&dot) dot.remove();
+  });
+});
+</script>
+</body>
+</html>
