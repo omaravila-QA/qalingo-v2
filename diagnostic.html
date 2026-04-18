@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo v2 — Diagnostics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:15px;line-height:1.6;padding:24px 20px 40px;max-width:720px;margin:0 auto;}
+h1{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;color:var(--g);margin-bottom:4px;letter-spacing:-.5px;}
+.subtitle{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:24px;}
+.run-btn{width:100%;padding:13px;border-radius:12px;border:none;background:var(--g);color:#fff;font-size:14px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;margin-bottom:20px;transition:all .2s;}
+.run-btn:hover{background:var(--gh);}
+.summary-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border2);padding:18px;margin-bottom:20px;display:none;align-items:center;gap:16px;}
+.sc-num{font-family:"Syne",sans-serif;font-size:32px;font-weight:800;line-height:1;}
+.sc-num.g{color:var(--g);}
+.sc-num.r{color:var(--red);}
+.sc-num.y{color:var(--yellow);}
+.sc-lbl{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:.5px;margin-top:2px;}
+.sc-div{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.section{margin-bottom:24px;}
+.sec-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.check-list{display:flex;flex-direction:column;gap:6px;}
+.check-item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--border);text-decoration:none;transition:border-color .2s;}
+.check-item:hover{border-color:var(--border2);}
+.ci-status{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.ok{background:rgba(34,197,94,.15);color:var(--g);}
+.fail{background:rgba(239,68,68,.15);color:var(--red);}
+.warn{background:rgba(245,158,11,.15);color:var(--yellow);}
+.pending{background:var(--bg3);color:var(--text3);}
+.ci-info{flex:1;}
+.ci-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ci-detail{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+.ci-link{font-family:"Space Mono",monospace;font-size:9px;color:var(--blue);flex-shrink:0;}
+.log{background:var(--bg2);border-radius:12px;padding:14px;border:1px solid var(--border);font-family:"Space Mono",monospace;font-size:11px;line-height:1.8;max-height:200px;overflow-y:auto;}
+.log-ok{color:var(--g);}
+.log-err{color:var(--red);}
+.log-warn{color:var(--yellow);}
+.log-info{color:var(--blue);}
+.nav-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);font-family:"Space Mono",monospace;font-size:11px;margin-bottom:6px;}
+.nav-from{color:var(--text2);flex-shrink:0;}
+.nav-to{color:var(--g);}
+</style>
+</head>
+<body>
+
+<h1>🔍 QALingo v2 — Diagnostics</h1>
+<div class="subtitle">// run_diagnostics.sh · checks all 16 files + navigation flow</div>
+
+<button class="run-btn" onclick="runDiagnostics()">▶ Run Full Diagnostic</button>
+
+<div class="summary-card" id="summary">
+  <div><div class="sc-num g" id="sum-ok">0</div><div class="sc-lbl">PASS</div></div>
+  <div class="sc-div"></div>
+  <div><div class="sc-num y" id="sum-warn">0</div><div class="sc-lbl">WARN</div></div>
+  <div class="sc-div"></div>
+  <div><div class="sc-num r" id="sum-fail">0</div><div class="sc-lbl">FAIL</div></div>
+  <div class="sc-div"></div>
+  <div style="flex:1"><div style="font-size:13px;color:var(--text2);font-weight:300" id="sum-msg"></div></div>
+</div>
+
+<div class="section">
+  <div class="sec-label">// diagnostic log</div>
+  <div class="log" id="log">Ready. Click "Run Full Diagnostic" to start.</div>
+</div>
+
+<div class="section">
+  <div class="sec-label">// file check — all 16 pages</div>
+  <div class="check-list" id="file-checks"></div>
+</div>
+
+<div class="section">
+  <div class="sec-label">// navigation flow</div>
+  <div id="nav-checks"></div>
+</div>
+
+<div class="section">
+  <div class="sec-label">// manual checks — tap to open and test</div>
+  <div class="check-list" id="manual-checks"></div>
+</div>
+
+<script>
+const BASE = window.location.href.replace('diagnostic.html','');
+
+const FILES = [
+  {name:'Landing Page',        file:'index.html',       desc:'Hero · EN/ES toggle · Bottom nav · CTAs'},
+  {name:'Login / Sign up',     file:'login.html',       desc:'Tabs · Validation · Password strength'},
+  {name:'Dashboard',           file:'dashboard.html',   desc:'CI/CD Pipeline · Zone map · All modules'},
+  {name:'Lesson (Bug Ticket)', file:'lesson.html',      desc:'Jira ticket · Options · Q feedback'},
+  {name:'Exam Simulator',      file:'exam.html',        desc:'Timer · 40 questions · Score panel'},
+  {name:'Flashcards',          file:'flashcards.html',  desc:'3D flip · Again/Hard/Good/Easy'},
+  {name:'Glossary',            file:'glossary.html',    desc:'Search · Filter · 40+ CTFL terms'},
+  {name:'AI Interview Prep',   file:'interview.html',   desc:'Mode select · Live chat · Feedback'},
+  {name:'Profile / Progress',  file:'profile.html',     desc:'XP bar · Heatmap · Pipeline · Settings'},
+  {name:'Daily Challenges',    file:'challenges.html',  desc:'Countdown timer · Streak · 5 challenges'},
+  {name:'Leaderboard+',        file:'screens.html',     desc:'Leaderboard · Settings · Notifs · Certificate'},
+  {name:'SQL for QA M1',       file:'sql.html',         desc:'SELECT · JOINs · NULLs · Bug Hunt'},
+  {name:'SQL for QA M2',       file:'sql2.html',        desc:'INSERT · UPDATE · DELETE · GROUP BY'},
+  {name:'API Testing',         file:'api.html',         desc:'HTTP Methods · Status Codes · Postman'},
+  {name:'Programming for QA',  file:'programming.html', desc:'Variables · Functions · OOP · Arrays'},
+  {name:'Manual Testing',      file:'manual.html',      desc:'BVA · EP · Decision Tables · State Transition'},
+];
+
+const NAV = [
+  {from:'index.html',      to:'login.html',       desc:'Start for free CTA'},
+  {from:'login.html',      to:'dashboard.html',   desc:'Submit login → dashboard'},
+  {from:'dashboard.html',  to:'lesson.html',      desc:'Continue lesson card'},
+  {from:'lesson.html',     to:'exam.html',        desc:'Next → exam'},
+  {from:'exam.html',       to:'dashboard.html',   desc:'Finish exam → dashboard'},
+  {from:'dashboard.html',  to:'challenges.html',  desc:'Bottom nav Challenges'},
+  {from:'dashboard.html',  to:'glossary.html',    desc:'Bottom nav Glossary'},
+  {from:'dashboard.html',  to:'profile.html',     desc:'Bottom nav Profile'},
+  {from:'profile.html',    to:'screens.html',     desc:'Settings row → screens'},
+  {from:'dashboard.html',  to:'sql.html',         desc:'Zone map → SQL M1'},
+  {from:'dashboard.html',  to:'sql2.html',        desc:'Zone map → SQL M2'},
+  {from:'dashboard.html',  to:'api.html',         desc:'Zone map → API Testing'},
+  {from:'dashboard.html',  to:'programming.html', desc:'Zone map → Programming'},
+  {from:'dashboard.html',  to:'manual.html',      desc:'Zone map → Manual Testing'},
+];
+
+const MANUAL = [
+  {name:'EN/ES Language Toggle', file:'index.html',      desc:'Click 🇬🇧 EN → all text switches to Spanish'},
+  {name:'Dark/Light/HC Theme',   file:'index.html',      desc:'Toggle 🌙 ☀️ ◉ — colors change across all screens'},
+  {name:'Flashcard 3D Flip',     file:'flashcards.html', desc:'Tap card → flips with 3D CSS animation'},
+  {name:'SQL Exercise Checker',  file:'sql.html',        desc:'Write query → Run → validates answer with feedback'},
+  {name:'Live Countdown Timer',  file:'challenges.html', desc:'Timer counts down 1 second at a time in real time'},
+  {name:'Exam Timer',            file:'exam.html',       desc:'Timer counts down from 54:22, turns red under 5min'},
+  {name:'Glossary Search',       file:'glossary.html',   desc:'Type "boundary" → results filter instantly'},
+  {name:'API Quiz',              file:'api.html',        desc:'Select answer → correct green / wrong red highlight'},
+  {name:'Interview Chat',        file:'interview.html',  desc:'Type answer → Q responds with typing indicator'},
+  {name:'Profile Heatmap',       file:'profile.html',    desc:'35 activity dots render with varying green opacity'},
+  {name:'Leaderboard Tabs',      file:'screens.html',    desc:'Weekly / Monthly / All Time tabs switch leaderboard'},
+  {name:'Certificate Download',  file:'screens.html',    desc:'Download PDF and LinkedIn share buttons visible'},
+];
+
+let okCount=0, warnCount=0, failCount=0;
+
+function addLog(msg, type=''){
+  const log = document.getElementById('log');
+  const span = document.createElement('span');
+  span.className = 'log-'+type;
+  span.textContent = msg + '\n';
+  log.appendChild(span);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function checkURL(file){
+  try {
+    const r = await fetch(BASE + file, {method:'HEAD', cache:'no-cache'});
+    return r.ok;
+  } catch(e){ return false; }
+}
+
+async function runDiagnostics(){
+  okCount=0; warnCount=0; failCount=0;
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('file-checks').innerHTML = '';
+  document.getElementById('nav-checks').innerHTML = '';
+  document.getElementById('manual-checks').innerHTML = '';
+  document.getElementById('summary').style.display = 'flex';
+
+  addLog('[INFO] QALingo v2 Diagnostic started', 'info');
+  addLog('[INFO] Base: ' + BASE, 'info');
+  addLog('');
+
+  // FILE CHECKS
+  addLog('[INFO] Checking ' + FILES.length + ' files...', 'info');
+  const fc = document.getElementById('file-checks');
+
+  for(const f of FILES){
+    const exists = await checkURL(f.file);
+    if(exists) okCount++; else failCount++;
+    addLog('[' + (exists?'PASS':'FAIL') + '] ' + f.file, exists?'ok':'err');
+
+    const el = document.createElement('a');
+    el.href = BASE + f.file;
+    el.target = '_blank';
+    el.className = 'check-item';
+    el.innerHTML = `
+      <div class="ci-status ${exists?'ok':'fail'}">${exists?'✓':'✗'}</div>
+      <div class="ci-info">
+        <div class="ci-name">${f.name}</div>
+        <div class="ci-detail">${f.desc}</div>
+      </div>
+      <div class="ci-link">↗ open</div>`;
+    fc.appendChild(el);
+  }
+
+  // NAV CHECKS
+  addLog('');
+  addLog('[INFO] Checking navigation targets...', 'info');
+  const nc = document.getElementById('nav-checks');
+
+  for(const n of NAV){
+    const exists = await checkURL(n.to);
+    if(!exists) warnCount++;
+    addLog('[' + (exists?'PASS':'WARN') + '] ' + n.from + ' → ' + n.to, exists?'ok':'warn');
+
+    const row = document.createElement('div');
+    row.className = 'nav-row';
+    row.innerHTML = `
+      <span class="nav-from">${n.from}</span>
+      <span style="color:var(--text3)">→</span>
+      <span class="nav-to">${n.to}</span>
+      <span style="font-size:11px;color:var(--text3);flex:1;margin-left:8px">${n.desc}</span>
+      <span style="color:${exists?'var(--g)':'var(--yellow)'};font-weight:700">${exists?'✓':'⚠'}</span>`;
+    nc.appendChild(row);
+  }
+
+  // MANUAL CHECKS
+  addLog('');
+  addLog('[INFO] Building manual check list...', 'info');
+  const mc = document.getElementById('manual-checks');
+  for(const m of MANUAL){
+    const el = document.createElement('a');
+    el.href = BASE + m.file;
+    el.target = '_blank';
+    el.className = 'check-item';
+    el.innerHTML = `
+      <div class="ci-status pending">?</div>
+      <div class="ci-info">
+        <div class="ci-name">${m.name}</div>
+        <div class="ci-detail">${m.desc}</div>
+      </div>
+      <div class="ci-link">↗ test</div>`;
+    mc.appendChild(el);
+  }
+
+  // SUMMARY
+  const total = FILES.length + NAV.length;
+  document.getElementById('sum-ok').textContent   = okCount;
+  document.getElementById('sum-warn').textContent  = warnCount;
+  document.getElementById('sum-fail').textContent  = failCount;
+  const msg = failCount === 0
+    ? '✓ All files found · ' + Math.round(okCount/total*100) + '% passing'
+    : '✗ ' + failCount + ' file(s) missing — upload to repo';
+  const msgEl = document.getElementById('sum-msg');
+  msgEl.textContent = msg;
+  msgEl.style.color = failCount===0 ? 'var(--g)' : 'var(--red)';
+
+  addLog('');
+  addLog('[DONE] ' + okCount + ' OK · ' + warnCount + ' WARN · ' + failCount + ' FAIL',
+    failCount===0 ? 'ok' : 'err');
+}
+</script>
+</body>
+</html>
