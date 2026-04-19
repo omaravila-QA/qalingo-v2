@@ -180,9 +180,35 @@ footer a:hover{color:var(--g);}
 .fb-type{padding:7px 13px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
 .fb-type.on{border-color:var(--border2);background:var(--gdim);color:var(--g);}
 
+
+/* PHRASE OF THE DAY */
+.potd-bar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  background:var(--g);color:#052e0f;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:8px 16px;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+  letter-spacing:.3px;cursor:pointer;transition:opacity .2s;
+  border-bottom:1px solid rgba(0,0,0,.1);
+}
+.potd-bar:hover{opacity:.9;}
+.potd-bar .potd-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;opacity:.7;flex-shrink:0;}
+.potd-bar .potd-text{flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.potd-bar .potd-close{font-size:14px;opacity:.6;flex-shrink:0;cursor:pointer;padding:0 4px;}
+.potd-bar.hidden{display:none;}
+/* Shift topbar down when potd is visible */
+body.has-potd .topbar{top:36px;}
+body.has-potd .main-content{padding-top:calc(58px + 36px);}
+
 </style>
 </head>
 <body>
+<!-- PHRASE OF THE DAY -->
+<div class="potd-bar" id="potd-bar">
+  <span class="potd-label">📋 Phrase of the Day</span>
+  <span class="potd-text" id="potd-text"></span>
+  <span class="potd-close" onclick="closePotd(event)">✕</span>
+</div>
+
 <div class="grid-bg" aria-hidden="true"></div>
 <div class="hero-glow" aria-hidden="true"></div>
 
@@ -650,6 +676,60 @@ function sendFb(){
 
 // Init quiz on page load
 if(document.getElementById('quiz-q')) renderQuiz();
+
+
+// PHRASE OF THE DAY
+const PHRASES = [
+  '"Testing shows the presence of defects, not their absence." — ISTQB Principle 2',
+  '"A bug found in requirements costs 10x less to fix than one found in production." — Principle 3',
+  '"Exhaustive testing is impossible. Prioritize by risk." — ISTQB Principle 2',
+  '"The Pesticide Paradox: same tests, repeated, find fewer new defects." — ISTQB Principle 5',
+  '"Testing is context-dependent. A banking app is not a mobile game." — ISTQB Principle 6',
+  '"Absence of errors fallacy: bug-free software can still fail its users." — ISTQB Principle 7',
+  '"Defects cluster together. 80% of bugs live in 20% of the code." — ISTQB Principle 4',
+  '"Static testing finds defects without executing code. Review early, fix cheap." — ISTQB Ch.3',
+  '"A test oracle is any source used to determine expected results." — ISTQB Glossary',
+  '"Error → Defect → Failure. Know the chain." — ISTQB Foundation',
+  '"BVA: test just below min, at min, at max, and just above max." — Test Design',
+  '"Equivalence Partitioning: one value per partition is sufficient." — Test Design',
+  '"Decision tables: every combination of conditions, every expected outcome." — Test Design',
+  '"State transition testing: test valid transitions AND the invalid ones." — Test Design',
+  '"The QA engineer who shapes the story is more valuable than the one who tests it." — Q',
+  '"SELECT before UPDATE. Every time. No exceptions." — SQL for QA',
+  '"A 200 OK is not a pass. The status code and the body must tell the same story." — API Testing',
+  '"NULL is not zero. NULL is not empty. NULL is silence — and silence hides bugs." — SQL for QA',
+  '"IDOR: change /users/42 to /users/43. If you get their data — escalate immediately." — API Security',
+  '"The QA engineer who can GROUP BY is the one who communicates impact with numbers." — SQL for QA',
+  '"Shift-left testing: involve QA before the first line of code is written." — Agile QA',
+  '"Definition of Done is a contract. 'Done but not tested' is not done." — Scrum',
+  '"Three Amigos: BA + Dev + QA align before development starts. Prevent, don't find." — Agile',
+  '"Unit tests are the developer's responsibility. But QA should know how to read them." — Programming for QA',
+  '"Every input field is backed by a variable. What values can break it?" — Programming for QA',
+];
+
+function initPotd(){
+  const dismissed = sessionStorage.getItem('potd-dismissed');
+  if(dismissed) return;
+  const idx = new Date().getDay() + new Date().getDate(); // changes daily
+  const phrase = PHRASES[idx % PHRASES.length];
+  document.getElementById('potd-text').textContent = phrase;
+  document.getElementById('potd-bar').classList.remove('hidden');
+  document.body.classList.add('has-potd');
+  // Shift topbar
+  const topbar = document.querySelector('.topbar');
+  if(topbar) topbar.style.top = '36px';
+}
+
+function closePotd(e){
+  e.stopPropagation();
+  document.getElementById('potd-bar').classList.add('hidden');
+  document.body.classList.remove('has-potd');
+  const topbar = document.querySelector('.topbar');
+  if(topbar) topbar.style.top = '0';
+  sessionStorage.setItem('potd-dismissed','1');
+}
+
+initPotd();
 
 </script>
 </body>
