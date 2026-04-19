@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Daily Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#7A9A7C;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;--orange:#F97316;--shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--red:#DC2626;--yellow:#D97706;--blue:#2563EB;--orange:#EA580C;--shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--red:#F87171;--yellow:#FCD34D;--blue:#60A5FA;--orange:#FB923C;--shadow:rgba(0,0,0,.8);--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.6;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.main{padding:70px 20px 90px;max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+/* HERO */
+.daily-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:20px;position:relative;overflow:hidden;}
+.daily-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;background:radial-gradient(circle,rgba(34,197,94,.08),transparent 70%);}
+.dh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.dh-badge{display:flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);border-radius:99px;padding:5px 12px;}
+.dh-badge-text{font-family:"Space Mono",monospace;font-size:10px;color:var(--yellow);letter-spacing:.5px;}
+.countdown{display:flex;flex-direction:column;align-items:flex-end;}
+.cd-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.cd-time{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1;}
+.cd-time.urgent{color:var(--red);}
+.dh-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.dh-sub{font-size:13px;color:var(--text2);font-weight:300;line-height:1.5;margin-bottom:14px;}
+.dh-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0;}
+.dh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:3px 8px;border-radius:6px;}
+.dh-chip.diff-m{background:rgba(245,158,11,.1);color:var(--yellow);}
+.dh-chip.xp{background:rgba(245,158,11,.1);color:var(--yellow);}
+.dh-chip.pts{background:var(--gdim);color:var(--g);}
+.dh-chip.ctfl{background:var(--bluedim,rgba(59,130,246,.1));color:var(--blue);}
+.start-btn{width:100%;margin-top:16px;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;box-shadow:0 0 24px rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+.start-btn:hover{background:var(--gh);}
+/* STREAK */
+.sec-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:2px 0;}
+.streak-card{background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border);}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.streak-num{font-family:"Syne",sans-serif;font-size:28px;font-weight:800;color:var(--orange);letter-spacing:-1px;}
+.streak-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);margin-top:2px;}
+.streak-days{display:flex;gap:6px;}
+.sd{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.sd-dot{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.sd-dot.done{background:rgba(249,115,22,.15);border:1.5px solid rgba(249,115,22,.3);color:var(--orange);}
+.sd-dot.today{background:var(--orange);color:#fff;box-shadow:0 0 10px rgba(249,115,22,.3);}
+.sd-dot.miss{background:var(--bg3);border:1.5px solid var(--border);color:var(--text3);opacity:.5;}
+.sd-lbl{font-family:"Space Mono",monospace;font-size:7px;color:var(--text3);}
+/* CHALLENGE CARDS */
+.challenge-list{display:flex;flex-direction:column;gap:10px;}
+.ch-card{background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
+.ch-card:hover{border-color:var(--border2);transform:translateX(3px);}
+.ch-card.locked{opacity:.4;cursor:not-allowed;pointer-events:none;}
+.ch-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;border:1px solid transparent;}
+.ch-icon.g{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);}
+.ch-icon.b{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.2);}
+.ch-icon.y{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.18);}
+.ch-icon.o{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.18);}
+.ch-icon.r{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.18);}
+.ch-body{flex:1;}
+.ch-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.ch-sub{font-size:12px;color:var(--text2);font-weight:300;line-height:1.4;}
+.ch-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.ch-pts{font-family:"Space Mono",monospace;font-size:10px;color:var(--yellow);background:rgba(245,158,11,.1);padding:3px 8px;border-radius:5px;}
+.ch-status{font-size:16px;}
+.ch-diff{font-family:"Space Mono",monospace;font-size:8px;padding:2px 6px;border-radius:4px;}
+.ch-diff.e{background:rgba(34,197,94,.1);color:var(--g);}
+.ch-diff.m{background:rgba(245,158,11,.1);color:var(--yellow);}
+.ch-diff.h{background:rgba(239,68,68,.1);color:var(--red);}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;visibility:hidden;opacity:0;transition:opacity .25s,visibility .25s;}
+.modal-overlay.open{visibility:visible;opacity:1;}
+.modal-sheet{background:var(--card);border-radius:24px 24px 0 0;border:1px solid var(--border2);padding:24px 20px 32px;width:100%;max-width:700px;transform:translateY(100%);transition:transform .3s ease;}
+.modal-overlay.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:99px;margin:0 auto 20px;}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">Daily <span>Challenges</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- DAILY CHALLENGE HERO -->
+  <div class="daily-hero fade">
+    <div class="dh-top">
+      <div class="dh-badge">
+        <span class="dh-badge-text">⚡ Daily Bug · Apr 19</span>
+      </div>
+      <div class="countdown">
+        <div class="cd-label">Resets in</div>
+        <div class="cd-time" id="countdown">08:41:59</div>
+      </div>
+    </div>
+    <div class="dh-title">The Boundary Case</div>
+    <div class="dh-sub">A checkout system accepts age values 18–99. Identify all boundary values that must be tested using BVA.</div>
+    <div class="dh-meta">
+      <span class="dh-chip diff-m">⚡ Medium</span>
+      <span class="dh-chip xp">+25 XP</span>
+      <span class="dh-chip pts">+150 pts</span>
+      <span class="dh-chip ctfl">BVA · CTFL 4.2.2</span>
+    </div>
+    <button class="start-btn" onclick="window.location.href='lesson.html'">▶ Start daily challenge</button>
+  </div>
+
+  <!-- STREAK -->
+  <div class="sec-label">// your streak</div>
+  <div class="streak-card fade">
+    <div class="streak-top">
+      <div>
+        <div class="streak-num">🔥 7</div>
+        <div class="streak-label">day streak</div>
+      </div>
+      <div class="streak-days">
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">M</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">T</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">W</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">T</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">F</div></div>
+        <div class="sd"><div class="sd-dot done">✓</div><div class="sd-lbl">S</div></div>
+        <div class="sd"><div class="sd-dot today">●</div><div class="sd-lbl">S</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE CHALLENGES -->
+  <div class="sec-label">// more challenges</div>
+  <div class="challenge-list">
+
+    <div class="ch-card fade" onclick="openChallenge(0)">
+      <div class="ch-icon g">🐛</div>
+      <div class="ch-body">
+        <div class="ch-title">Bug Triage Sprint</div>
+        <div class="ch-sub">Classify 10 bugs by severity and priority in 5 minutes.</div>
+      </div>
+      <div class="ch-right">
+        <div class="ch-pts">+30 XP</div>
+        <div class="ch-diff e">Easy</div>
+        <div class="ch-status">▶</div>
+      </div>
+    </div>
+
+    <div class="ch-card fade" onclick="openChallenge(1)">
+      <div class="ch-icon b">🎯</div>
+      <div class="ch-body">
+        <div class="ch-title">Decision Table Builder</div>
+        <div class="ch-sub">Build a complete decision table for a loan approval system.</div>
+      </div>
+      <div class="ch-right">
+        <div class="ch-pts">+50 XP</div>
+        <div class="ch-diff m">Medium</div>
+        <div class="ch-status">▶</div>
+      </div>
+    </div>
+
+    <div class="ch-card fade" onclick="openChallenge(2)">
+      <div class="ch-icon y">⏱</div>
+      <div class="ch-body">
+        <div class="ch-title">Speed Round</div>
+        <div class="ch-sub">20 ISTQB questions. 10 minutes. No hints. Go.</div>
+      </div>
+      <div class="ch-right">
+        <div class="ch-pts">+80 XP</div>
+        <div class="ch-diff h">Hard</div>
+        <div class="ch-status">▶</div>
+      </div>
+    </div>
+
+    <div class="ch-card fade" onclick="openChallenge(3)">
+      <div class="ch-icon o">📋</div>
+      <div class="ch-body">
+        <div class="ch-title">Test Plan Review</div>
+        <div class="ch-sub">Identify defects in a poorly written test plan document.</div>
+      </div>
+      <div class="ch-right">
+        <div class="ch-pts">+40 XP</div>
+        <div class="ch-diff m">Medium</div>
+        <div class="ch-status">▶</div>
+      </div>
+    </div>
+
+    <div class="ch-card locked">
+      <div class="ch-icon r">🔴</div>
+      <div class="ch-body">
+        <div class="ch-title">Boss Battle</div>
+        <div class="ch-sub">Complete all weekly challenges to unlock.</div>
+      </div>
+      <div class="ch-right">
+        <div class="ch-pts">+200 XP</div>
+        <div class="ch-status">🔒</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item on"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div><div class="nav-pip"></div></a>
+  <a href="gamification.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  ['dark','light','hc'].forEach(id=>{const b=document.getElementById('btn-'+id);if(b)b.classList.toggle('on',id===t);});
+}
+if(window.matchMedia('(prefers-color-scheme: light)').matches) setTheme('light');
+
+// COUNTDOWN
+let secs = 8*3600+41*60+59;
+function tick(){
+  if(secs>0) secs--;
+  const h=Math.floor(secs/3600), m=Math.floor((secs%3600)/60), s=secs%60;
+  const el=document.getElementById('countdown');
+  if(el){
+    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    el.className='cd-time'+(secs<3600?' urgent':'');
+  }
+}
+setInterval(tick,1000);
+
+// CHALLENGE DATA
+const CHALLENGES = [
+  {
+    icon:'🐛', title:'Bug Triage Sprint', diff:'Easy', xp:30, color:'var(--g)',
+    desc:'You have 5 minutes and 10 bug reports on your desk. Classify each by severity (Critical/High/Medium/Low) and priority (P1–P4). A real-world QA skill that separates juniors from seniors.',
+    steps:['Read each bug description carefully','Assign severity — how bad is the impact on the system?','Assign priority — how urgent is the fix for the business?','Consider both user impact and business risk when deciding'],
+    tip:'Severity is about impact on the system. Priority is about urgency of the fix. A cosmetic bug can be P1 if it is on the login page.',
+    link:'lesson.html'
+  },
+  {
+    icon:'🎯', title:'Decision Table Builder', diff:'Medium', xp:50, color:'var(--yellow)',
+    desc:'Build a complete decision table for a loan approval system. Three conditions: credit score (Good/Bad), income verification (Pass/Fail), existing debt (Yes/No). Map every combination to its outcome.',
+    steps:['Identify all conditions — 3 binary conditions = 8 rules total','List all possible combinations systematically','Define the expected outcome for each rule','Verify no combination is missing from the table'],
+    tip:'Decision tables are gold in interviews. If you can build one on a whiteboard, you stand out from 90% of candidates.',
+    link:'manual.html'
+  },
+  {
+    icon:'⏱', title:'Speed Round', diff:'Hard', xp:80, color:'var(--red)',
+    desc:'20 ISTQB Foundation questions. 10 minutes. No hints allowed. This simulates real exam pressure — timing, focus, and knowing the material cold.',
+    steps:['Read each question carefully — do not rush the read','Eliminate obviously wrong answers first','Flag difficult questions and return to them after','Watch the clock — aim for 30 seconds per question'],
+    tip:'The ISTQB exam gives you 60 minutes for 40 questions. That is 90 seconds per question. Practice under pressure now.',
+    link:'istqb-simulator.html'
+  },
+  {
+    icon:'📋', title:'Test Plan Review', diff:'Medium', xp:40, color:'var(--yellow)',
+    desc:'You have been handed a test plan with 8 deliberate defects hidden in it. Find them all — missing scope, wrong entry criteria, undefined exit criteria, gaps in risk assessment.',
+    steps:['Read the test plan structure first for an overview','Check scope — is it clear what is and is not being tested?','Verify entry and exit criteria are both clearly defined','Look for missing risk assessment and test data strategy'],
+    tip:'Reviewing a test plan is static testing. Finding a defect here costs nothing. Finding it in production costs everything.',
+    link:'manual.html'
+  }
+];
+
+function openChallenge(idx){
+  const c = CHALLENGES[idx];
+  document.getElementById('modal-body').innerHTML =
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">' +
+      '<div style="font-size:30px">' + c.icon + '</div>' +
+      '<div>' +
+        '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;letter-spacing:-.3px">' + c.title + '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:5px">' +
+          '<span style="font-family:Space Mono,monospace;font-size:9px;padding:2px 8px;border-radius:5px;background:rgba(245,158,11,.1);color:' + c.color + '">' + c.diff + '</span>' +
+          '<span style="font-family:Space Mono,monospace;font-size:9px;padding:2px 8px;border-radius:5px;background:var(--gdim);color:var(--g)">+' + c.xp + ' XP</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<p style="font-size:14px;color:var(--text2);font-weight:300;line-height:1.65;margin-bottom:16px">' + c.desc + '</p>' +
+    '<div style="font-family:Space Mono,monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">// How to approach it</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+      c.steps.map(function(s,i){
+        return '<div style="display:flex;gap:10px;font-size:13px;color:var(--text2);font-weight:300;line-height:1.5">' +
+          '<span style="font-family:Space Mono,monospace;font-size:9px;color:var(--g);background:var(--gdim);border:1px solid var(--border2);border-radius:5px;padding:2px 7px;flex-shrink:0;margin-top:2px">0' + (i+1) + '</span>' + s + '</div>';
+      }).join('') +
+    '</div>' +
+    '<div style="background:var(--gdim);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:var(--text2);line-height:1.6">' +
+      '🕵️ <strong style="color:var(--g)">Q says:</strong> ' + c.tip +
+    '</div>' +
+    '<div style="display:flex;gap:8px">' +
+      '<button onclick="closeModal()" style="flex:1;padding:13px;border-radius:12px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-size:14px;font-family:Roboto,sans-serif;cursor:pointer">Cancel</button>' +
+      '<button onclick="window.location.href=\'' + c.link + '\'" style="flex:2;padding:13px;border-radius:12px;border:none;background:var(--g);color:#fff;font-size:14px;font-weight:700;font-family:Roboto,sans-serif;cursor:pointer">▶ Start Challenge</button>' +
+    '</div>';
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e){
+  if(e.target === document.getElementById('modal')) closeModal();
+}
+</script>
+</body>
+</html>
