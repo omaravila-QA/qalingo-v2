@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ TOKENS ═══ */
+:root,[data-theme="dark"]{
+  --bg:#0B0F0C; --bg2:#111811; --bg3:#172018; --bg4:#1C2A1E;
+  --card:#111811; --border:rgba(34,197,94,.13); --border2:rgba(34,197,94,.28);
+  --text:#E8E8E8; --text2:#9CA3AF; --text3:#4B5563;
+  --g:#22C55E; --gh:#16A34A; --gdim:rgba(34,197,94,.10);
+  --red:#EF4444; --yellow:#F59E0B; --blue:#3B82F6; --orange:#F97316;
+  --qblue:#60A5FA; --shadow:rgba(0,0,0,.5);
+  --navbg:rgba(11,15,12,.95);
+}
+[data-theme="light"]{
+  --bg:#F9FAFB; --bg2:#F3F4F6; --bg3:#E8EAEC; --bg4:#D1D5DB;
+  --card:#FFFFFF; --border:rgba(22,163,74,.15); --border2:rgba(22,163,74,.35);
+  --text:#111827; --text2:#374151; --text3:#6B7280;
+  --g:#16A34A; --gh:#15803D; --gdim:rgba(22,163,74,.08);
+  --red:#DC2626; --yellow:#D97706; --blue:#2563EB; --orange:#EA580C;
+  --qblue:#2563EB; --shadow:rgba(0,0,0,.08);
+  --navbg:rgba(249,250,251,.96);
+}
+[data-theme="hc"]{
+  --bg:#000; --bg2:#080808; --bg3:#101010; --bg4:#181818;
+  --card:#050505; --border:rgba(74,222,128,.35); --border2:rgba(74,222,128,.6);
+  --text:#FFF; --text2:#E0E0E0; --text3:#A0A0A0;
+  --g:#4ADE80; --gh:#22C55E; --gdim:rgba(74,222,128,.12);
+  --red:#F87171; --yellow:#FCD34D; --blue:#60A5FA; --orange:#FB923C;
+  --qblue:#93C5FD; --shadow:rgba(0,0,0,.8);
+  --navbg:rgba(0,0,0,.98);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Roboto",sans-serif; font-size:16px; line-height:1.6;
+  overflow-x:hidden; min-height:100vh;
+  transition:background .3s,color .3s;
+}
+
+/* ═══ TOP NAV ═══ */
+.topnav{
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px;
+  background:var(--navbg); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.tn-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.tn-mark{width:32px;height:32px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:16px;font-weight:700;color:#fff;box-shadow:0 0 12px rgba(34,197,94,.3);}
+.tn-word{font-family:"Space Mono",monospace;font-size:16px;font-weight:700;color:var(--text);}
+
+.tn-right{display:flex;align-items:center;gap:12px;}
+.stat-chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);padding:5px 10px;border-radius:20px;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;}
+.stat-chip.xp{color:var(--yellow);}
+.stat-chip.streak{color:var(--orange);}
+.tn-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;}
+
+/* theme toggle small */
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+
+/* ═══ MAIN LAYOUT ═══ */
+.main{
+  padding-top:60px; /* topnav height */
+  padding-bottom:72px; /* bottom nav height */
+  max-width:800px;
+  margin:0 auto;
+}
+
+/* ═══ HERO GREETING ═══ */
+.greeting{
+  padding:24px 20px 0;
+  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+}
+.greet-text h1{
+  font-family:"Syne",sans-serif;
+  font-size:24px; font-weight:800; letter-spacing:-.5px;
+  margin-bottom:2px; color:var(--text);
+}
+.greet-text p{font-size:14px;color:var(--text2);font-weight:300;}
+.greet-text p strong{color:var(--g);font-weight:500;}
+
+/* Q greeting bubble */
+.greet-q{
+  flex-shrink:0;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  position:relative;
+}
+.greet-q img{
+  width:64px;
+  border-radius:12px;
+  filter:drop-shadow(0 4px 16px rgba(59,130,246,.4));
+  animation:floatQ 4s ease-in-out infinite;
+}
+@keyframes floatQ{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-6px) rotate(.5deg)}}
+.q-mini-bubble{
+  background:var(--card); border:1px solid var(--border2);
+  border-radius:10px 10px 2px 10px;
+  padding:7px 10px; font-family:"Space Mono",monospace;
+  font-size:9px; color:var(--text2); line-height:1.5;
+  max-width:140px; text-align:right;
+  box-shadow:0 4px 12px var(--shadow);
+}
+.q-mini-bubble em{font-style:normal;color:var(--g);}
+
+/* ═══ XP BAR ═══ */
+.xp-section{padding:16px 20px 0;}
+.xp-meta{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);margin-bottom:6px;}
+.xp-meta span:last-child{color:var(--g);}
+.xp-track{height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gh),var(--g));width:72%;transition:width .5s ease;}
+
+/* ═══ SECTION LABEL ═══ */
+.sec-label{
+  padding:20px 20px 10px;
+  font-family:"Space Mono",monospace;
+  font-size:10px; color:var(--text3);
+  letter-spacing:2px; text-transform:uppercase;
+}
+
+/* ═══ DAILY PIPELINE ═══ */
+.pipeline-card{
+  margin:0 20px;
+  background:var(--card); border-radius:16px;
+  padding:16px 20px; border:1px solid var(--border2);
+  background:linear-gradient(135deg,var(--bg4),var(--card));
+}
+.pipe-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.pipe-title{font-size:14px;font-weight:700;color:var(--text);}
+.pipe-run{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+.pipe-status{display:flex;align-items:center;gap:5px;font-family:"Space Mono",monospace;font-size:10px;color:var(--g);}
+.pipe-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulseDot 1.5s infinite;box-shadow:0 0 4px var(--g);}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.2}}
+
+.stages{display:flex;align-items:center;overflow-x:auto;padding-bottom:2px;}
+.stage{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
+.snode{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  position:relative;
+}
+.snode.done{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.35);}
+.snode.run{background:rgba(59,130,246,.10);border:1.5px solid rgba(59,130,246,.35);animation:runPulse 1.5s infinite;}
+@keyframes runPulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.3)}50%{box-shadow:0 0 0 5px rgba(59,130,246,0)}}
+.snode.pend{background:var(--bg3);border:1.5px solid var(--border);opacity:.4;}
+.scheck{position:absolute;top:-5px;right:-5px;width:15px;height:15px;background:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;border:1.5px solid var(--card);}
+.slbl{font-size:9px;font-family:"Space Mono",monospace;color:var(--text3);text-align:center;}
+.slbl.g{color:var(--g);}.slbl.b{color:var(--blue);}
+.sline{flex:1;height:2px;min-width:16px;margin-bottom:14px;}
+.sline.done{background:var(--gh);}
+.sline.run{background:linear-gradient(90deg,var(--gh),var(--blue));}
+.sline.pend{background:var(--border);}
+
+/* ═══ CONTINUE CTA ═══ */
+.continue-card{
+  margin:12px 20px 0;
+  background:var(--card); border-radius:16px;
+  padding:16px; border:1px solid var(--border2);
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; transition:all .2s;
+  text-decoration:none;
+}
+.continue-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow);border-color:var(--g);}
+.cc-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(59,130,246,.12);border:1.5px solid rgba(59,130,246,.3);
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+}
+.cc-info{flex:1;}
+.cc-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.cc-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.cc-sub{font-size:12px;color:var(--text2);font-weight:300;}
+.cc-arrow{
+  width:36px;height:36px;border-radius:10px;background:var(--g);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;flex-shrink:0;
+  box-shadow:0 0 12px rgba(34,197,94,.3);
+}
+.cc-progress{margin-top:10px;}
+.cc-bar{height:4px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.cc-fill{height:100%;border-radius:99px;background:var(--g);width:60%;}
+.cc-pct{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);margin-top:4px;}
+
+/* ═══ STATS GRID ═══ */
+.stats-grid{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:10px; margin:0 20px;
+}
+.stat-card{
+  background:var(--card); border-radius:14px;
+  padding:14px 12px; border:1px solid var(--border);
+  text-align:center;
+}
+.sc-icon{font-size:20px;margin-bottom:6px;}
+.sc-num{
+  font-family:"Syne",sans-serif;
+  font-size:22px;font-weight:800;line-height:1;
+  margin-bottom:3px;
+}
+.sc-num.g{color:var(--g);}
+.sc-num.y{color:var(--yellow);}
+.sc-num.o{color:var(--orange);}
+.sc-lbl{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;}
+
+/* ═══ ZONE MAP ═══ */
+.zone-list{display:flex;flex-direction:column;gap:10px;padding:0 20px;}
+
+.zone-card{
+  background:var(--card); border-radius:16px;
+  padding:14px 16px; border:1.5px solid var(--border);
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer; transition:all .2s; text-decoration:none;
+}
+.zone-card:hover{border-color:var(--border2);transform:translateX(3px);}
+.zone-card.active{
+  border-color:rgba(34,197,94,.35);
+  background:linear-gradient(135deg,var(--bg4),var(--card));
+}
+.zone-card.locked{opacity:.45;cursor:not-allowed;}
+
+.zi{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.zi.g{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);}
+.zi.b{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);}
+.zi.y{background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.2);}
+.zi.x{background:rgba(255,255,255,.04);border:1px solid var(--border);}
+
+.zone-info{flex:1;}
+.zone-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.zone-sub{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+
+.zone-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.zone-status{font-size:16px;}
+.zone-pbar{width:60px;height:4px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.zone-pfill{height:100%;border-radius:99px;background:var(--g);}
+
+.active-badge{
+  font-family:"Space Mono",monospace;font-size:8px;
+  background:var(--g);color:#fff;
+  padding:2px 7px;border-radius:99px;letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+/* lesson dots */
+.ldots{display:flex;gap:4px;margin-top:6px;}
+.ldot{width:7px;height:7px;border-radius:50%;}
+.ldot.done{background:var(--g);}
+.ldot.cur{background:var(--yellow);animation:blink 1s infinite;}
+.ldot.todo{background:var(--bg3);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ═══ ACHIEVEMENTS ROW ═══ */
+.achieve-row{display:flex;gap:10px;overflow-x:auto;padding:0 20px 4px;}
+.ach-card{
+  flex-shrink:0;width:80px;
+  background:var(--card);border-radius:14px;padding:12px 8px;
+  border:1px solid var(--border);text-align:center;
+}
+.ach-card.unlocked{border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,rgba(245,158,11,.05),var(--card));}
+.ach-card.locked{opacity:.35;}
+.ach-icon{font-size:24px;margin-bottom:4px;}
+.ach-name{font-size:9px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.ach-sub{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);}
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav{
+  position:fixed; bottom:0; left:0; right:0; z-index:200;
+  background:var(--navbg); backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex; padding:8px 0 20px;
+}
+.nav-item{
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; gap:3px; cursor:pointer;
+  text-decoration:none; padding:4px 0;
+}
+.nav-icon{font-size:22px;filter:grayscale(1) opacity(.35);transition:all .2s;}
+.nav-item.active .nav-icon{filter:none;}
+.nav-lbl{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.5px;}
+.nav-item.active .nav-lbl{color:var(--g);}
+.nav-pip{width:4px;height:4px;background:var(--g);border-radius:50%;margin-top:-1px;}
+
+/* spacer */
+.spacer{height:20px;}
+
+/* animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade1{animation:fadeUp .5s ease .05s both;}
+.fade2{animation:fadeUp .5s ease .1s both;}
+.fade3{animation:fadeUp .5s ease .15s both;}
+.fade4{animation:fadeUp .5s ease .2s both;}
+.fade5{animation:fadeUp .5s ease .25s both;}
+.fade6{animation:fadeUp .5s ease .3s both;}
+.fade7{animation:fadeUp .5s ease .35s both;}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a href="#" class="tn-logo">
+    <div class="tn-mark">Q</div>
+    <span class="tn-word">QALingo</span>
+  </a>
+  <div class="tn-right">
+    <div class="stat-chip xp">⚡ 1,240</div>
+    <div class="stat-chip streak">🔥 7</div>
+    <div class="tog-mini" role="group">
+      <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+      <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+      <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+    </div>
+    <div class="tn-avatar">🧑</div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- GREETING -->
+  <div class="greeting fade1">
+    <div class="greet-text">
+      <h1>Welcome back, Omar.</h1>
+      <p>Day <strong>7</strong> streak. Don't break it.</p>
+    </div>
+    <div class="greet-q">
+      <img src="./q.png" alt="Q">
+      <div class="q-mini-bubble">
+        "Still here?<br><em>QALemental.</em>"
+      </div>
+    </div>
+  </div>
+
+  <!-- XP BAR -->
+  <div class="xp-section fade2">
+    <div class="xp-meta">
+      <span>Level 7 · 1,240 XP</span>
+      <span>Next level: 1,720 XP</span>
+    </div>
+    <div class="xp-track">
+      <div class="xp-fill"></div>
+    </div>
+  </div>
+
+  <!-- DAILY PIPELINE -->
+  <div class="sec-label fade3">// daily_build</div>
+  <div class="pipeline-card fade3">
+    <div class="pipe-hdr">
+      <div>
+        <div class="pipe-title">build #031</div>
+        <div class="pipe-run">run · today 08:34</div>
+      </div>
+      <div class="pipe-status">
+        <div class="pipe-dot"></div>
+        running
+      </div>
+    </div>
+    <div class="stages">
+      <div class="stage">
+        <div class="snode done">🧠<div class="scheck">✓</div></div>
+        <div class="slbl g">Theory</div>
+      </div>
+      <div class="sline done"></div>
+      <div class="stage">
+        <div class="snode done">📝<div class="scheck">✓</div></div>
+        <div class="slbl g">Cards</div>
+      </div>
+      <div class="sline run"></div>
+      <div class="stage">
+        <div class="snode run">🎯</div>
+        <div class="slbl b">Questions</div>
+      </div>
+      <div class="sline pend"></div>
+      <div class="stage">
+        <div class="snode pend">🏆</div>
+        <div class="slbl">Challenge</div>
+      </div>
+      <div class="sline pend"></div>
+      <div class="stage">
+        <div class="snode pend">🚀</div>
+        <div class="slbl">Deploy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTINUE -->
+  <a href="#" class="continue-card fade4">
+    <div class="cc-icon">🎯</div>
+    <div class="cc-info">
+      <div class="cc-label">// continue</div>
+      <div class="cc-title">Test Design · Lesson 3</div>
+      <div class="cc-sub">Decision Table Testing · 2 questions left</div>
+      <div class="cc-progress">
+        <div class="cc-bar"><div class="cc-fill"></div></div>
+        <div class="cc-pct">3/5 completed · 60%</div>
+      </div>
+    </div>
+    <div class="cc-arrow">▶</div>
+  </a>
+
+  <!-- STATS -->
+  <div class="sec-label fade5">// your_stats</div>
+  <div class="stats-grid fade5">
+    <div class="stat-card">
+      <div class="sc-icon">🎯</div>
+      <div class="sc-num g">87%</div>
+      <div class="sc-lbl">accuracy</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon">🔥</div>
+      <div class="sc-num y">7</div>
+      <div class="sc-lbl">day streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon">✅</div>
+      <div class="sc-num o">142</div>
+      <div class="sc-lbl">lessons</div>
+    </div>
+  </div>
+
+  <!-- ZONE MAP -->
+  <div class="sec-label fade6">// mission_map</div>
+  <div class="zone-list fade6">
+
+    <div class="zone-card">
+      <div class="zi g">🧪</div>
+      <div class="zone-info">
+        <div class="zone-name">ISTQB Fundamentals</div>
+        <div class="zone-sub">foundation_city.exe</div>
+        <div class="ldots">
+          <div class="ldot done"></div><div class="ldot done"></div>
+          <div class="ldot done"></div><div class="ldot done"></div>
+          <div class="ldot done"></div><div class="ldot done"></div>
+        </div>
+      </div>
+      <div class="zone-right">
+        <div class="zone-status">✅</div>
+        <div class="zone-pbar"><div class="zone-pfill" style="width:100%"></div></div>
+      </div>
+    </div>
+
+    <div class="zone-card active">
+      <div class="zi b">🎯</div>
+      <div class="zone-info">
+        <div class="zone-name">Test Design</div>
+        <div class="zone-sub">design_district.exe</div>
+        <div class="ldots">
+          <div class="ldot done"></div><div class="ldot done"></div>
+          <div class="ldot cur"></div><div class="ldot todo"></div>
+          <div class="ldot todo"></div>
+        </div>
+      </div>
+      <div class="zone-right">
+        <div class="active-badge">active</div>
+        <div class="zone-pbar"><div class="zone-pfill" style="width:40%"></div></div>
+      </div>
+    </div>
+
+    <a href="istqb-simulator.html" class="zone-card active">
+        <div class="zi g">🎯</div>
+        <div class="zone-info">
+          <div class="zone-name">ISTQB Exam Simulator</div>
+          <div class="zone-sub">40 questions · 60 min · 6 chapters · CTFL v4.0</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot done"></div><div class="ldot done"></div>
+            <div class="ldot done"></div><div class="ldot cur"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="active-badge">EXAM</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:60%"></div></div>
+        </div>
+      </a>
+      <a href="sql.html" class="zone-card">
+        <div class="zi b">🗄️</div>
+        <div class="zone-info">
+          <div class="zone-name">SQL for QA</div>
+          <div class="zone-sub">SELECT · JOINs · NULLs · Bug Hunts</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot done"></div><div class="ldot done"></div>
+            <div class="ldot cur"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🗄️</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:40%"></div></div>
+        </div>
+      </a>
+      <a href="sql2.html" class="zone-card">
+        <div class="zi b">🗄️</div>
+        <div class="zone-info">
+          <div class="zone-name">SQL M2 — DML & DDL</div>
+          <div class="zone-sub">INSERT · UPDATE · DELETE · GROUP BY</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🗄️</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:0%"></div></div>
+        </div>
+      </a>
+      <a href="api.html" class="zone-card">
+        <div class="zi b">🔌</div>
+        <div class="zone-info">
+          <div class="zone-name">API Testing</div>
+          <div class="zone-sub">HTTP Methods · Status Codes · Postman</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🔌</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:0%"></div></div>
+        </div>
+      </a>
+      <a href="agile.html" class="zone-card">
+        <div class="zi b" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.2)">🔄</div>
+        <div class="zone-info">
+          <div class="zone-name">Agile & Scrum for QA</div>
+          <div class="zone-sub">Sprints · Ceremonies · DoD · QA Role</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🔄</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:0%"></div></div>
+        </div>
+      </a>
+      <a href="programming.html" class="zone-card">
+        <div class="zi b" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.2)">💻</div>
+        <div class="zone-info">
+          <div class="zone-name">Programming for QA</div>
+          <div class="zone-sub">Variables · Functions · OOP · Arrays</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">💻</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:0%"></div></div>
+        </div>
+      </a>
+      <a href="manual.html" class="zone-card">
+        <div class="zi y" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.2)">🎯</div>
+        <div class="zone-info">
+          <div class="zone-name">Manual Testing Maestro</div>
+          <div class="zone-sub">BVA · EP · Decision Tables · State Transition</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div><div class="ldot todo"></div><div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🎯</div>
+          <div class="zone-pbar"><div class="zone-pfill" style="width:0%"></div></div>
+        </div>
+      </a>
+      <a href="cv-review.html" class="zone-card">
+        <div class="zi" style="background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);font-size:20px">📄</div>
+        <div class="zone-info">
+          <div class="zone-name">CV Review by Q</div>
+          <div class="zone-sub">Upload CV · Paste job req · Get AI feedback</div>
+          <div class="ldots" style="margin-top:6px">
+            <div class="ldot todo"></div><div class="ldot todo"></div>
+            <div class="ldot todo"></div>
+          </div>
+        </div>
+        <div class="zone-right">
+          <div class="zone-status">🔍</div>
+          <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--blue);margin-top:4px">AI-powered</div>
+        </div>
+      </a>
+      <div class="zone-card locked">
+      <div class="zi y">🔍</div>
+      <div class="zone-info">
+        <div class="zone-name">Static Testing</div>
+        <div class="zone-sub">review_zone.exe</div>
+      </div>
+      <div class="zone-right">
+        <div class="zone-status">🔒</div>
+      </div>
+    </div>
+
+    <div class="zone-card locked">
+      <div class="zi x">⚙️</div>
+      <div class="zone-info">
+        <div class="zone-name">Test Management</div>
+        <div class="zone-sub">mgmt_hub.exe</div>
+      </div>
+      <div class="zone-right">
+        <div class="zone-status">🔒</div>
+      </div>
+    </div>
+
+    <div class="zone-card locked">
+      <div class="zi x">🤖</div>
+      <div class="zone-info">
+        <div class="zone-name">Tool Support</div>
+        <div class="zone-sub">???_unlocked.exe</div>
+      </div>
+      <div class="zone-right">
+        <div class="zone-status">🔒</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="sec-label fade7">// achievements</div>
+  <div class="achieve-row fade7">
+    <div class="ach-card unlocked" onclick="window.location.href='screens.html'">
+      <div class="ach-icon">🐛</div>
+      <div class="ach-name">Bug Hunter</div>
+      <div class="ach-sub">50 bugs</div>
+    </div>
+    <div class="ach-card unlocked" onclick="window.location.href='screens.html'">
+      <div class="ach-icon">🔥</div>
+      <div class="ach-name">On Fire</div>
+      <div class="ach-sub">7 days</div>
+    </div>
+    <div class="ach-card unlocked" onclick="window.location.href='screens.html'">
+      <div class="ach-icon">🎯</div>
+      <div class="ach-name">Precision</div>
+      <div class="ach-sub">90% acc</div>
+    </div>
+    <div class="ach-card locked">
+      <div class="ach-icon">🏆</div>
+      <div class="ach-name">CTFL Ready</div>
+      <div class="ach-sub">locked</div>
+    </div>
+    <div class="ach-card locked">
+      <div class="ach-icon">🚀</div>
+      <div class="ach-name">Deployed</div>
+      <div class="ach-sub">locked</div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav" role="navigation" aria-label="Navigation">
+  <a href="dashboard.html"  class="nav-item on"><div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-pip"></div></a>
+  <a href="challenges.html" class="nav-item "><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="profile.html"    class="nav-item "><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html"   class="nav-item "><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html"    class="nav-item "><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  ["dark","light","hc"].forEach(id=>{
+    const b=document.getElementById("btn-"+id);
+    if(!b) return;
+    b.classList.toggle("on",id===t);
+  });
+}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+</script>
+</body>
+</html>
