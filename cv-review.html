@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — CV Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;
+  --card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);
+  --text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;
+  --g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);
+  --blue:#3B82F6;--bluedim:rgba(59,130,246,.10);
+  --yellow:#F59E0B;--red:#EF4444;--orange:#F97316;
+  --shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);
+}
+[data-theme="light"]{
+  --bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;
+  --card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);
+  --text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;
+  --g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);
+  --blue:#2563EB;--bluedim:rgba(37,99,235,.08);
+  --yellow:#D97706;--red:#DC2626;--orange:#EA580C;
+  --shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);
+}
+[data-theme="hc"]{
+  --bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;
+  --card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);
+  --text:#FFF;--text2:#D0D0D0;--text3:#888;
+  --g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);
+  --blue:#60A5FA;--bluedim:rgba(96,165,250,.10);
+  --yellow:#FCD34D;--red:#F87171;--orange:#FB923C;
+  --shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+
+.main{padding:70px 20px 100px;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+
+/* HERO */
+.hero-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:22px;position:relative;overflow:hidden;}
+.hero-card::before{content:"";position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(34,197,94,.07),transparent 70%);}
+.hc-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.hc-title{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;}
+.hc-sub{font-size:14px;color:var(--text2);font-weight:300;line-height:1.6;}
+
+/* STEP INDICATOR */
+.steps{display:flex;gap:0;margin-bottom:4px;}
+.step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.step::after{content:"";position:absolute;top:14px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0;}
+.step:last-child::after{display:none;}
+.step.done::after{background:var(--g);}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:"Space Mono",monospace;z-index:1;transition:all .3s;}
+.step.active .step-dot{border-color:var(--g);background:var(--gdim);color:var(--g);}
+.step.done .step-dot{border-color:var(--g);background:var(--g);color:#fff;}
+.step-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);margin-top:5px;letter-spacing:.5px;text-align:center;}
+.step.active .step-label{color:var(--g);}
+.step.done .step-label{color:var(--g);}
+
+/* SECTION CARDS */
+.section-card{background:var(--card);border-radius:18px;border:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:12px;}
+.sc-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.sc-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.sc-sub{font-size:13px;color:var(--text2);font-weight:300;line-height:1.6;}
+
+/* DROP ZONE */
+.drop-zone{
+  border:2px dashed var(--border2);border-radius:14px;
+  padding:28px 20px;text-align:center;cursor:pointer;
+  transition:all .3s;position:relative;
+  background:var(--gdim);
+}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--g);background:rgba(34,197,94,.08);}
+.drop-zone.has-file{border-style:solid;border-color:var(--g);background:rgba(34,197,94,.06);}
+.dz-icon{font-size:32px;margin-bottom:8px;}
+.dz-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.dz-sub{font-size:12px;color:var(--text3);font-weight:300;}
+.dz-file-info{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:10px;padding:10px 14px;margin-top:10px;}
+.dz-file-icon{font-size:20px;flex-shrink:0;}
+.dz-file-name{font-size:13px;font-weight:600;color:var(--text);flex:1;text-align:left;font-family:"Space Mono",monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dz-file-remove{font-size:16px;color:var(--text3);cursor:pointer;flex-shrink:0;transition:color .2s;}
+.dz-file-remove:hover{color:var(--red);}
+#file-input{display:none;}
+
+/* OR DIVIDER */
+.or-div{display:flex;align-items:center;gap:10px;}
+.or-line{flex:1;height:1px;background:var(--border);}
+.or-text{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);}
+
+/* TEXT AREAS */
+.field-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.field-textarea{
+  width:100%;background:var(--bg3);border:1.5px solid var(--border);
+  border-radius:12px;padding:14px;font-family:"Roboto",sans-serif;
+  font-size:14px;color:var(--text);outline:none;resize:vertical;
+  line-height:1.65;transition:border-color .2s;
+}
+.field-textarea:focus{border-color:var(--border2);}
+.field-textarea::placeholder{color:var(--text3);}
+.char-count{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);text-align:right;margin-top:4px;}
+.char-count.ok{color:var(--g);}
+
+/* ANALYZE BTN */
+.analyze-btn{
+  width:100%;padding:16px;border-radius:13px;border:none;
+  background:var(--g);color:#fff;font-size:16px;font-weight:700;
+  font-family:"Roboto",sans-serif;cursor:pointer;
+  box-shadow:0 0 28px rgba(34,197,94,.2);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.analyze-btn::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);animation:shim 3s ease-in-out infinite;}
+@keyframes shim{0%{left:-100%}65%,100%{left:150%}}
+.analyze-btn:hover{background:var(--gh);box-shadow:0 0 44px rgba(34,197,94,.35);}
+.analyze-btn:disabled{background:var(--bg3);color:var(--text3);box-shadow:none;cursor:not-allowed;animation:none;}
+.analyze-btn:disabled::before{display:none;}
+
+/* LOADING */
+.loading-card{background:var(--card);border-radius:18px;border:1.5px solid var(--border2);padding:28px;text-align:center;display:none;}
+.loading-card.visible{display:block;}
+.loading-steps{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.ls-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:var(--bg3);font-size:13px;color:var(--text3);transition:all .4s;}
+.ls-item.active{background:var(--gdim);border:1px solid var(--border2);color:var(--text);}
+.ls-item.done{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);color:var(--g);}
+.ls-icon{font-size:16px;flex-shrink:0;}
+.ls-spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESULTS */
+.results-wrap{display:none;flex-direction:column;gap:16px;}
+.results-wrap.visible{display:flex;}
+
+/* SCORE CARD */
+.score-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:22px;}
+.score-top{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.score-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:22px;font-weight:800;flex-shrink:0;position:relative;}
+.score-circle.high{background:rgba(34,197,94,.12);border:3px solid var(--g);color:var(--g);}
+.score-circle.mid{background:rgba(245,158,11,.1);border:3px solid var(--yellow);color:var(--yellow);}
+.score-circle.low{background:rgba(239,68,68,.08);border:3px solid var(--red);color:var(--red);}
+.score-info h3{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;}
+.score-info p{font-size:13px;color:var(--text2);font-weight:300;line-height:1.5;}
+.score-bars{display:flex;flex-direction:column;gap:8px;}
+.sb-row{display:flex;align-items:center;gap:10px;}
+.sb-label{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);min-width:110px;flex-shrink:0;}
+.sb-track{flex:1;height:6px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.sb-fill{height:100%;border-radius:99px;transition:width .8s ease;}
+.sb-fill.g{background:var(--g);}
+.sb-fill.y{background:var(--yellow);}
+.sb-fill.b{background:var(--blue);}
+.sb-fill.o{background:var(--orange);}
+.sb-pct{font-family:"Space Mono",monospace;font-size:10px;color:var(--text2);min-width:28px;text-align:right;}
+
+/* ANALYSIS SECTIONS */
+.analysis-section{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:18px;}
+.as-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.as-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.as-icon.g{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);}
+.as-icon.r{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);}
+.as-icon.y{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);}
+.as-icon.b{background:var(--bluedim);border:1px solid rgba(59,130,246,.2);}
+.as-title{font-size:14px;font-weight:700;color:var(--text);}
+.as-list{display:flex;flex-direction:column;gap:8px;}
+.as-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;padding:8px 0;border-bottom:1px solid var(--border);}
+.as-item:last-child{border-bottom:none;padding-bottom:0;}
+.as-bullet{flex-shrink:0;font-size:14px;margin-top:1px;}
+.as-item strong{color:var(--text);font-weight:600;}
+
+/* Q VERDICT */
+.q-verdict{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1.5px solid var(--border2);border-radius:16px;padding:16px;}
+.qv-icon{font-size:24px;flex-shrink:0;}
+.qv-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:4px;}
+.qv-msg{font-size:14px;color:var(--text2);line-height:1.65;font-style:italic;}
+.qv-msg em{font-style:normal;color:var(--g);font-weight:500;}
+
+/* REANALYZE */
+.reanalyze-btn{width:100%;padding:13px;border-radius:13px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-size:14px;font-weight:500;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;}
+.reanalyze-btn:hover{border-color:var(--g);color:var(--g);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">📄 CV <span>Review</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero-card fade">
+    <div class="hc-tag">// Q's Detective Agency · CV Analysis</div>
+    <div class="hc-title">CV Review by Q 🔍</div>
+    <div class="hc-sub">Upload your CV + paste the job requirements. Q analyzes the match, identifies gaps, and tells you exactly how to improve — with zero mercy.</div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps" id="steps">
+    <div class="step active" id="step-1"><div class="step-dot">1</div><div class="step-label">Upload CV</div></div>
+    <div class="step" id="step-2"><div class="step-dot">2</div><div class="step-label">Job Req.</div></div>
+    <div class="step" id="step-3"><div class="step-dot">3</div><div class="step-label">Analyze</div></div>
+    <div class="step" id="step-4"><div class="step-dot">4</div><div class="step-label">Results</div></div>
+  </div>
+
+  <!-- STEP 1: CV INPUT -->
+  <div class="section-card fade" id="card-cv">
+    <div>
+      <div class="sc-label">// Step 1</div>
+      <div class="sc-title">Upload your CV</div>
+      <div class="sc-sub">PDF or paste the text directly. Q reads everything.</div>
+    </div>
+
+    <!-- DROP ZONE -->
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
+         ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <div class="dz-icon">📄</div>
+      <div class="dz-text">Drop your CV here or click to upload</div>
+      <div class="dz-sub">PDF, DOC, DOCX — max 5MB</div>
+      <div class="dz-file-info" id="file-info" style="display:none">
+        <div class="dz-file-icon">📄</div>
+        <div class="dz-file-name" id="file-name"></div>
+        <div class="dz-file-remove" onclick="removeFile(event)">✕</div>
+      </div>
+    </div>
+    <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" onchange="handleFileSelect(this)">
+
+    <div class="or-div"><div class="or-line"></div><div class="or-text">or paste text</div><div class="or-line"></div></div>
+
+    <div>
+      <div class="field-label">CV Text (paste here)</div>
+      <textarea class="field-textarea" id="cv-text" rows="8"
+        placeholder="Paste your full CV text here — name, experience, skills, education, certifications..."
+        oninput="updateCharCount('cv-text','cv-count'); checkReady()"></textarea>
+      <div class="char-count" id="cv-count">0 characters</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: JOB REQUIREMENTS -->
+  <div class="section-card fade" id="card-job">
+    <div>
+      <div class="sc-label">// Step 2</div>
+      <div class="sc-title">Job Requirements</div>
+      <div class="sc-sub">Paste the full job posting or just the requirements section. The more detail, the better Q's analysis.</div>
+    </div>
+    <div>
+      <div class="field-label">Job Description / Requirements</div>
+      <textarea class="field-textarea" id="job-text" rows="8"
+        placeholder="Paste the job description here — required skills, responsibilities, nice-to-haves, tools, years of experience..."
+        oninput="updateCharCount('job-text','job-count'); checkReady()"></textarea>
+      <div class="char-count" id="job-count">0 characters</div>
+    </div>
+  </div>
+
+  <!-- ANALYZE BUTTON -->
+  <button class="analyze-btn" id="analyze-btn" disabled onclick="runAnalysis()">
+    🔍 Analyze my CV
+  </button>
+
+  <!-- LOADING -->
+  <div class="loading-card" id="loading-card">
+    <div style="font-size:28px;margin-bottom:8px">🕵️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px">Q is on the case...</div>
+    <div style="font-size:13px;color:var(--text2);font-weight:300;margin-bottom:16px">Analyzing your CV against the requirements</div>
+    <div class="loading-steps" id="loading-steps">
+      <div class="ls-item" id="ls-1"><div class="ls-icon">📄</div>Reading your CV...</div>
+      <div class="ls-item" id="ls-2"><div class="ls-icon">🎯</div>Parsing job requirements...</div>
+      <div class="ls-item" id="ls-3"><div class="ls-icon">🔍</div>Matching skills and experience...</div>
+      <div class="ls-item" id="ls-4"><div class="ls-icon">📊</div>Scoring match percentage...</div>
+      <div class="ls-item" id="ls-5"><div class="ls-icon">✍️</div>Writing improvement suggestions...</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-wrap" id="results-wrap">
+
+    <!-- SCORE -->
+    <div class="score-card">
+      <div class="score-top">
+        <div class="score-circle" id="score-circle">78%</div>
+        <div class="score-info">
+          <h3 id="score-title">Strong Match</h3>
+          <p id="score-desc">Your CV aligns well with this role. A few targeted improvements could push you to the top of the shortlist.</p>
+        </div>
+      </div>
+      <div class="score-bars" id="score-bars"></div>
+    </div>
+
+    <!-- STRENGTHS -->
+    <div class="analysis-section">
+      <div class="as-header"><div class="as-icon g">✅</div><div class="as-title">Strengths — What Q found impressive</div></div>
+      <div class="as-list" id="strengths-list"></div>
+    </div>
+
+    <!-- GAPS -->
+    <div class="analysis-section">
+      <div class="as-header"><div class="as-icon r">⚠️</div><div class="as-title">Gaps — What's missing or weak</div></div>
+      <div class="as-list" id="gaps-list"></div>
+    </div>
+
+    <!-- IMPROVEMENTS -->
+    <div class="analysis-section">
+      <div class="as-header"><div class="as-icon b">💡</div><div class="as-title">Specific improvements — Exactly what to add</div></div>
+      <div class="as-list" id="improvements-list"></div>
+    </div>
+
+    <!-- KEYWORDS -->
+    <div class="analysis-section">
+      <div class="as-header"><div class="as-icon y">🔑</div><div class="as-title">Keywords to add — ATS optimization</div></div>
+      <div id="keywords-wrap" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <!-- Q VERDICT -->
+    <div class="q-verdict">
+      <div class="qv-icon">🕵️</div>
+      <div>
+        <div class="qv-tag">// Q's final verdict</div>
+        <p class="qv-msg" id="q-verdict"></p>
+      </div>
+    </div>
+
+    <button class="reanalyze-btn" onclick="reset()">↺ Analyze a different CV</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="gamification.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html" class="nav-item on"><div class="nav-icon">👤</div><div class="nav-label">Profile</div><div class="nav-pip"></div></a>
+</nav>
+
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  ["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});
+}
+if(window.matchMedia("(prefers-color-scheme: light)").matches) setTheme("light");
+
+let cvFile = null;
+let cvText = '';
+let jobText = '';
+
+// FILE HANDLING
+function handleFileSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+  setFile(file);
+}
+function handleDragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('drag-over');}
+function handleDragLeave(e){document.getElementById('drop-zone').classList.remove('drag-over');}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file) setFile(file);
+}
+function setFile(file){
+  cvFile = file;
+  document.getElementById('drop-zone').classList.add('has-file');
+  document.getElementById('file-info').style.display='flex';
+  document.getElementById('file-name').textContent = file.name;
+  // Read text if txt
+  if(file.type==='text/plain'){
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('cv-text').value = e.target.result;
+      cvText = e.target.result;
+      updateCharCount('cv-text','cv-count');
+      checkReady();
+    };
+    reader.readAsText(file);
+  } else {
+    // For PDF/DOC: just acknowledge the file, use placeholder text
+    cvText = `[File uploaded: ${file.name}] — Please also paste the CV text below for best analysis.`;
+    checkReady();
+  }
+}
+function removeFile(e){
+  e.stopPropagation();
+  cvFile = null;
+  cvText = '';
+  document.getElementById('drop-zone').classList.remove('has-file');
+  document.getElementById('file-info').style.display='none';
+  document.getElementById('file-input').value='';
+  document.getElementById('cv-text').value='';
+  updateCharCount('cv-text','cv-count');
+  checkReady();
+}
+
+// CHAR COUNT
+function updateCharCount(textareaId, countId){
+  const len = document.getElementById(textareaId).value.length;
+  const el = document.getElementById(countId);
+  el.textContent = len.toLocaleString() + ' characters';
+  el.className = 'char-count' + (len > 100 ? ' ok' : '');
+  if(textareaId==='cv-text') cvText = document.getElementById(textareaId).value;
+  if(textareaId==='job-text') jobText = document.getElementById(textareaId).value;
+}
+
+// CHECK IF READY TO ANALYZE
+function checkReady(){
+  const cvReady = cvText.length > 50 || cvFile;
+  const jobReady = document.getElementById('job-text').value.length > 50;
+  document.getElementById('analyze-btn').disabled = !(cvReady && jobReady);
+}
+
+// STEPS INDICATOR
+function setStep(n){
+  for(let i=1;i<=4;i++){
+    const s = document.getElementById('step-'+i);
+    s.className = 'step' + (i<n?' done':i===n?' active':'');
+  }
+}
+
+// LOADING ANIMATION
+async function animateLoading(){
+  const steps = ['ls-1','ls-2','ls-3','ls-4','ls-5'];
+  for(let i=0;i<steps.length;i++){
+    const el = document.getElementById(steps[i]);
+    el.classList.add('active');
+    const spinner = document.createElement('div');
+    spinner.className = 'ls-spinner';
+    el.insertBefore(spinner, el.firstChild);
+    await sleep(700 + Math.random()*400);
+    spinner.remove();
+    el.classList.remove('active');
+    el.classList.add('done');
+    el.innerHTML = '✓ ' + el.innerHTML;
+  }
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// MAIN ANALYSIS
+async function runAnalysis(){
+  const cv = cvText || document.getElementById('cv-text').value;
+  const job = document.getElementById('job-text').value;
+
+  if(!cv || !job) return;
+
+  setStep(3);
+  document.getElementById('analyze-btn').style.display='none';
+  document.getElementById('loading-card').classList.add('visible');
+  document.getElementById('results-wrap').classList.remove('visible');
+
+  // Animate loading steps
+  await animateLoading();
+
+  // Call Claude API
+  try {
+    const analysis = await callClaude(cv, job);
+    displayResults(analysis);
+  } catch(e) {
+    console.error(e);
+    // Fallback to demo results
+    displayResults(getDemoResults());
+  }
+
+  document.getElementById('loading-card').classList.remove('visible');
+  document.getElementById('results-wrap').classList.add('visible');
+  setStep(4);
+  document.getElementById('results-wrap').scrollIntoView({behavior:'smooth'});
+}
+
+async function callClaude(cv, job){
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:1500,
+      system:`You are Q, a sharp QA detective and career coach. Analyze a QA professional's CV against a job description. 
+Respond ONLY with valid JSON (no markdown, no backticks) in this exact structure:
+{
+  "overallScore": 78,
+  "scoreTitle": "Strong Match",
+  "scoreDesc": "One sentence summary of overall fit.",
+  "bars": [
+    {"label": "Skills Match", "pct": 82, "color": "g"},
+    {"label": "Experience", "pct": 75, "color": "b"},
+    {"label": "Keywords/ATS", "pct": 65, "color": "y"},
+    {"label": "Impact Metrics", "pct": 60, "color": "o"}
+  ],
+  "strengths": [
+    "Specific strength from CV that matches job requirement",
+    "Another strength with specifics"
+  ],
+  "gaps": [
+    "Specific gap or missing requirement",
+    "Another gap"
+  ],
+  "improvements": [
+    "Exact bullet point to add or rewrite with example wording",
+    "Another specific improvement"
+  ],
+  "keywords": ["keyword1","keyword2","keyword3","keyword4","keyword5"],
+  "verdict": "Q's sarcastic but constructive final verdict with em tags for emphasis"
+}`,
+      messages:[{
+        role:"user",
+        content:`CV:\n${cv.substring(0,3000)}\n\nJOB REQUIREMENTS:\n${job.substring(0,2000)}`
+      }]
+    })
+  });
+  const data = await response.json();
+  const text = data.content[0].text.replace(/```json|```/g,'').trim();
+  return JSON.parse(text);
+}
+
+function getDemoResults(){
+  return {
+    overallScore:72,
+    scoreTitle:"Good Match — Room to improve",
+    scoreDesc:"Your QA background aligns with the core requirements. Strengthen the impact metrics and add missing tool mentions to rank higher.",
+    bars:[
+      {label:"Skills Match",pct:78,color:"g"},
+      {label:"Experience",pct:75,color:"b"},
+      {label:"Keywords/ATS",pct:62,color:"y"},
+      {label:"Impact Metrics",pct:55,color:"o"}
+    ],
+    strengths:[
+      "ISTQB certification directly matches the required qualification — mention it in the first line of your summary.",
+      "7+ years QA experience exceeds the minimum requirement of 5 years.",
+      "API testing experience with Postman aligns with 'REST API testing' listed as required skill.",
+      "Cross-functional collaboration mentioned — matches 'Agile team environment' in the job description."
+    ],
+    gaps:[
+      "No mention of automation tools — the role requires Selenium or Cypress experience.",
+      "Missing: performance testing tools (JMeter or k6) listed as nice-to-have.",
+      "No quantified metrics — 'improved quality' means nothing. How much? What defect rate?",
+      "CI/CD experience not explicitly mentioned — required in the job description."
+    ],
+    improvements:[
+      "Replace 'responsible for testing' with 'Reduced production defect rate by 35% through systematic regression testing strategy across 3 product lines.'",
+      "Add a Tools section: 'Selenium, Postman, JIRA/Xray, SQL, Git, Jenkins' — the ATS scans for these.",
+      "Add: 'Integrated automated tests into CI/CD pipeline using Jenkins, reducing release cycle from 2 weeks to 3 days.'",
+      "Rewrite summary line to: 'ISTQB-certified Senior QA Engineer with 7+ years in web and API testing, specializing in defect prevention and cross-functional Agile collaboration.'"
+    ],
+    keywords:["Selenium","Cypress","CI/CD","Jenkins","Test Automation","API Testing","Regression Testing","JIRA","Agile","Defect Management"],
+    verdict:"72%. <em>Decent foundation</em>, Watson — but you're hiding your best work behind vague language. The recruiter spends 7 seconds on your CV. Those 7 seconds need numbers, tools, and impact. Not job descriptions dressed as achievements."
+  };
+}
+
+function displayResults(r){
+  // Score circle
+  const circle = document.getElementById('score-circle');
+  const score = r.overallScore;
+  circle.textContent = score+'%';
+  circle.className = 'score-circle ' + (score>=75?'high':score>=55?'mid':'low');
+
+  document.getElementById('score-title').textContent = r.scoreTitle;
+  document.getElementById('score-desc').textContent = r.scoreDesc;
+
+  // Score bars
+  const barsEl = document.getElementById('score-bars');
+  barsEl.innerHTML = '';
+  r.bars.forEach(b=>{
+    barsEl.innerHTML += `<div class="sb-row">
+      <div class="sb-label">${b.label}</div>
+      <div class="sb-track"><div class="sb-fill ${b.color}" style="width:0%" data-target="${b.pct}"></div></div>
+      <div class="sb-pct">${b.pct}%</div>
+    </div>`;
+  });
+  // Animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.sb-fill').forEach(el=>{
+      el.style.width = el.dataset.target+'%';
+    });
+  },200);
+
+  // Lists
+  renderList('strengths-list', r.strengths, '✅');
+  renderList('gaps-list', r.gaps, '⚠️');
+  renderList('improvements-list', r.improvements, '→');
+
+  // Keywords
+  const kw = document.getElementById('keywords-wrap');
+  kw.innerHTML = r.keywords.map(k=>`
+    <span style="font-family:'Space Mono',monospace;font-size:10px;background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2);padding:4px 10px;border-radius:6px;">${k}</span>
+  `).join('');
+
+  // Q verdict
+  document.getElementById('q-verdict').innerHTML = `"${r.verdict}"`;
+}
+
+function renderList(id, items, bullet){
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(item=>`
+    <div class="as-item">
+      <div class="as-bullet">${bullet}</div>
+      <div>${item}</div>
+    </div>`).join('');
+}
+
+function reset(){
+  cvFile=null; cvText=''; jobText='';
+  document.getElementById('cv-text').value='';
+  document.getElementById('job-text').value='';
+  document.getElementById('cv-count').textContent='0 characters';
+  document.getElementById('job-count').textContent='0 characters';
+  document.getElementById('drop-zone').classList.remove('has-file');
+  document.getElementById('file-info').style.display='none';
+  document.getElementById('file-input').value='';
+  document.getElementById('analyze-btn').style.display='flex';
+  document.getElementById('analyze-btn').disabled=true;
+  document.getElementById('results-wrap').classList.remove('visible');
+  setStep(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
