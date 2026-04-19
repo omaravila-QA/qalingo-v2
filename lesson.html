@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--red:#EF4444;--reddim:rgba(239,68,68,.08);--yellow:#F59E0B;--blue:#3B82F6;--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--red:#DC2626;--reddim:rgba(220,38,38,.07);--yellow:#D97706;--blue:#2563EB;--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--red:#F87171;--reddim:rgba(248,113,113,.08);--yellow:#FCD34D;--blue:#60A5FA;--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:10px;padding:0 16px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;}
+.xp-pill{display:flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:4px 10px;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--yellow);}
+.hearts{font-size:14px;letter-spacing:1px;}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;margin-left:auto;}
+.tog-btn{padding:4px 7px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-wrap{position:fixed;top:58px;left:0;right:0;z-index:199;height:4px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .5s ease;}
+.main{padding:74px 20px 100px;max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.lhdr{font-family:"Space Mono",monospace;font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;text-align:center;}
+.theory-card{background:var(--card);border-radius:18px;border:1px solid var(--border);padding:20px;}
+.tc-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.tc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:12px;}
+.tc-body{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;}
+.tc-body strong{color:var(--text);font-weight:600;}
+.tc-body em{color:var(--g);font-style:italic;}
+.tc-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.tc-li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text2);font-weight:300;}
+.tc-num{font-family:"Space Mono",monospace;font-size:10px;color:var(--g);background:var(--gdim);border:1px solid var(--border2);border-radius:5px;padding:2px 7px;flex-shrink:0;margin-top:3px;}
+.principle-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.pi{background:var(--bg2);border-radius:11px;padding:11px 14px;border:1px solid var(--border);display:flex;gap:10px;}
+.pi-badge{font-family:"Space Mono",monospace;font-size:9px;font-weight:700;color:var(--g);background:var(--gdim);border:1px solid var(--border2);border-radius:5px;padding:2px 7px;flex-shrink:0;height:fit-content;}
+.pi-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.pi-desc{font-size:12px;color:var(--text2);font-weight:300;line-height:1.5;}
+.chain{display:flex;align-items:center;gap:4px;margin:12px 0;overflow-x:auto;padding-bottom:4px;}
+.chain-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:80px;}
+.chain-box{width:58px;height:58px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;}
+.chain-box.err{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.3);color:var(--red);}
+.chain-box.def{background:rgba(245,158,11,.1);border:2px solid rgba(245,158,11,.25);color:var(--yellow);}
+.chain-box.fail{background:rgba(34,197,94,.1);border:2px solid rgba(34,197,94,.25);color:var(--g);}
+.chain-lbl{font-size:11px;color:var(--text2);text-align:center;font-weight:300;line-height:1.3;}
+.chain-arr{font-size:18px;color:var(--text3);flex-shrink:0;}
+.q-bubble{display:flex;gap:10px;background:var(--gdim);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;margin:12px 0;}
+.qb-icon{font-size:18px;flex-shrink:0;}
+.qb-text{font-size:13px;color:var(--text2);font-weight:300;line-height:1.6;font-style:italic;}
+.qb-text em{font-style:normal;color:var(--g);font-weight:500;}
+.continue-btn{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;}
+.continue-btn:hover{background:var(--gh);}
+.question-card{background:var(--card);border-radius:18px;border:1px solid var(--border);padding:20px;}
+.qc-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.qc-text{font-size:15px;font-weight:500;line-height:1.65;color:var(--text);margin-bottom:16px;white-space:pre-line;}
+.scenario-box{background:var(--bg2);border-radius:10px;padding:12px 14px;border-left:3px solid var(--blue);font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;margin-bottom:14px;}
+.scenario-box strong{color:var(--text);}
+.options{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:flex-start;gap:12px;background:var(--bg2);border:1.5px solid var(--border);border-radius:13px;padding:13px 15px;cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+.opt:hover{border-color:var(--border2);}
+.opt.sel{border-color:var(--g);background:var(--gdim);}
+.opt.right{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.07);}
+.opt.wrong{border-color:rgba(239,68,68,.4);background:var(--reddim);}
+.opt.dim{opacity:.35;pointer-events:none;}
+.opt-key{width:26px;height:26px;border-radius:7px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:10px;font-weight:700;color:var(--text3);flex-shrink:0;}
+.opt.sel .opt-key,.opt.right .opt-key{background:var(--g);color:#fff;border-color:var(--g);}
+.opt.wrong .opt-key{background:var(--red);color:#fff;border-color:var(--red);}
+.opt-text{flex:1;font-size:14px;line-height:1.45;color:var(--text);}
+.feedback{border-radius:12px;padding:14px;font-size:13px;line-height:1.65;font-weight:300;}
+.feedback.ok{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:var(--text2);}
+.feedback.bad{background:var(--reddim);border:1px solid rgba(239,68,68,.25);color:var(--text2);}
+.feedback strong{color:var(--text);font-weight:600;}
+.blank-input{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:"Roboto",sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s;margin-top:8px;}
+.blank-input:focus{border-color:var(--border2);}
+.blank-btn{margin-top:10px;padding:11px 20px;border-radius:10px;border:none;background:var(--g);color:#fff;font-size:14px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;}
+.sc-btns{display:flex;gap:10px;margin-top:12px;}
+.sc-btn{flex:1;padding:14px;border-radius:13px;font-size:14px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;border:1.5px solid var(--border);transition:all .2s;}
+.sc-btn.bug{background:var(--reddim);border-color:rgba(239,68,68,.3);color:var(--red);}
+.sc-btn.good{background:var(--gdim);border-color:var(--border2);color:var(--g);}
+.sc-btn:hover{transform:translateY(-2px);}
+.results-card{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid var(--border2);padding:24px;text-align:center;}
+.rc-stats{display:flex;justify-content:center;gap:20px;margin:16px 0;}
+.rc-stat-num{font-family:"Syne",sans-serif;font-size:28px;font-weight:800;line-height:1;}
+.rc-stat-lbl{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);margin-top:3px;}
+.rc-msg{font-family:"Space Mono",monospace;font-size:11px;color:var(--text3);font-style:italic;margin-bottom:20px;line-height:1.6;}
+.rc-msg em{font-style:normal;color:var(--g);}
+.btn-row{display:flex;flex-direction:column;gap:8px;}
+.btn-p{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;}
+.btn-p:hover{background:var(--gh);}
+.btn-s{width:100%;padding:12px;border-radius:13px;border:1.5px solid var(--border2);background:transparent;color:var(--text2);font-size:14px;font-family:"Roboto",sans-serif;cursor:pointer;transition:all .2s;}
+.btn-s:hover{border-color:var(--g);color:var(--g);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .35s ease both;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">✕</a>
+  <div class="xp-pill">⚡ <span id="xp">0</span></div>
+  <div class="hearts" id="hearts">❤️❤️❤️❤️❤️</div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="main" id="main"></div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="gamification.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html" class="nav-item on"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches)setTheme("light");
+
+let step=0,hearts=5,xpVal=0,correct=0,total=0;
+
+const STEPS=[
+{t:"theory",tag:"Chapter 1 · Lesson 1 of 8 · ~5 min",title:"What Is Testing?",
+ body:`<strong>Testing</strong> is the process of evaluating a software product to detect differences between <em>expected</em> and <em>actual</em> results, and to assess whether the product meets specified requirements.`,
+ list:["Finding defects before they reach users","Building confidence that software works as expected","Providing information to stakeholders for decisions","Preventing defects through early review and feedback"],
+ bubble:'"Ready to open your first case, Watson? The UI can lie. <em>The test results never do.</em>"'},
+{t:"mcq",tag:"Multiple Choice",q:"Which best describes the primary purpose of software testing?",
+ opts:["To prove that software has no defects","To evaluate software and detect differences between actual and expected results","To fix bugs found during development","To write test cases for developers to follow"],
+ c:1,exp:"<strong>Option B.</strong> Testing evaluates and detects — it cannot prove absence of defects, doesn't fix bugs (that's development), and doesn't write test cases for others."},
+{t:"theory",tag:"Chapter 1 · Core Theory",title:"The 7 Testing Principles",
+ body:"The <strong>7 ISTQB Testing Principles</strong> — the rules every QA detective lives by. Memorize these. They appear on every exam.",
+ principles:[
+  {badge:"P1",title:"Testing shows presence of defects, not absence",desc:"You can prove bugs exist. You cannot prove they don't."},
+  {badge:"P2",title:"Exhaustive testing is impossible",desc:"You can't test everything. Prioritize by risk and business impact."},
+  {badge:"P3",title:"Early testing saves time and money",desc:"A bug in requirements costs 10x less to fix than one found in production."},
+  {badge:"P4",title:"Defects cluster together",desc:"80% of bugs live in 20% of the code. Focus your effort there."},
+  {badge:"P5",title:"Pesticide Paradox",desc:"Same tests repeated eventually find no new defects. Refresh your tests regularly."},
+  {badge:"P6",title:"Testing is context-dependent",desc:"Banking app ≠ mobile game. Adapt your approach to the domain and risk."},
+  {badge:"P7",title:"Absence of errors fallacy",desc:"Bug-free software can still fail users. Usability matters too."},
+ ]},
+{t:"mcq",tag:"Multiple Choice · Principles",q:"A team has run the same regression tests for 8 months. No new defects found in 3 sprints. What's the most likely ISTQB explanation?",
+ opts:["The software is now defect-free","The testers are not skilled enough","Tests have lost effectiveness — Pesticide Paradox","Developers have improved their code quality"],
+ c:2,exp:"<strong>Pesticide Paradox (P5).</strong> Repeating the same tests stops finding new defects. Tests must be reviewed, updated, and supplemented regularly."},
+{t:"scenario",tag:"Is This a Bug? 🐛",
+ scenario:`A form accepts negative values for "number of items." A user enters <strong>-5</strong> and gets a refund instead of being charged.<br><br>The developer never added input validation. The code processes any number including negatives as a valid order quantity.`,
+ ans:"bug",exp:"<strong>Yes — this is a bug.</strong> Error (forgot validation) → Defect (negative qty accepted) → Failure (user gets refund). Classic chain."},
+{t:"theory",tag:"Chapter 1 · Key Terminology",title:"Error → Defect → Failure",
+ body:"Every bug has an origin story. Learn this chain cold — it appears on every ISTQB exam.",
+ chain:[
+  {box:"ERROR",cls:"err",lbl:"Human mistake",ex:"Developer misreads a requirement"},
+  {box:"DEFECT",cls:"def",lbl:"Flaw in the code",ex:"Wrong formula written"},
+  {box:"FAILURE",cls:"fail",lbl:"Visible malfunction",ex:"Users see wrong total at checkout"},
+ ],
+ note:"⚠️ Not every defect causes a failure. Some lie dormant and only trigger under specific conditions."},
+{t:"fill",tag:"Fill in the Blank",q:'Complete the ISTQB Principle:\n\n"Testing can show the ___ of defects, but cannot prove their ___."',
+ blanks:["presence","absence"],
+ exp:"<strong>Presence / Absence.</strong> This is Principle 2 — one of the most tested ISTQB concepts of all time."},
+{t:"mcq",tag:"Multiple Choice · QA vs QC",q:"A company implements mandatory code reviews to prevent bugs from being introduced. This is an example of:",
+ opts:["Quality Control","Testing","Quality Assurance","Defect Management"],
+ c:2,exp:"<strong>Quality Assurance</strong> focuses on preventing defects through process improvement. QC finds defects in the product. Code reviews are a prevention activity — QA."},
+{t:"mcq",tag:"Multiple Choice · Static Testing",q:"Reviewing a requirements document for ambiguities before any code is written is an example of:",
+ opts:["Dynamic testing","Functional testing","Static testing","Regression testing"],
+ c:2,exp:"<strong>Static testing</strong> examines work products without executing code. Reviewing requirements is static. Dynamic testing requires code execution."},
+{t:"results"}
+];
+
+function render(){
+  const s=STEPS[step];
+  document.getElementById('prog').style.width=(step/STEPS.length*100)+'%';
+  const m=document.getElementById('main');
+  m.innerHTML='';
+  if(s.t==='theory') doTheory(s,m);
+  else if(s.t==='mcq') doMCQ(s,m);
+  else if(s.t==='scenario') doScenario(s,m);
+  else if(s.t==='fill') doFill(s,m);
+  else doResults(m);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function doTheory(s,m){
+  let h=`<div class="lhdr fade">${s.tag}</div><div class="theory-card fade">
+  <div class="tc-tag">// Theory</div><div class="tc-title">${s.title}</div>
+  <div class="tc-body">${s.body}</div>`;
+  if(s.list) h+=`<div class="tc-list">${s.list.map((l,i)=>`<div class="tc-li"><span class="tc-num">0${i+1}</span><span>${l}</span></div>`).join('')}</div>`;
+  if(s.principles) h+=`<div class="principle-grid">${s.principles.map(p=>`<div class="pi"><div class="pi-badge">${p.badge}</div><div><div class="pi-title">${p.title}</div><div class="pi-desc">${p.desc}</div></div></div>`).join('')}</div>`;
+  if(s.chain){
+    h+=`<div class="chain">`;
+    s.chain.forEach((c,i)=>{
+      h+=`<div class="chain-item"><div class="chain-box ${c.cls}">${c.box}</div><div class="chain-lbl"><strong>${c.lbl}</strong><br><span style="font-size:10px;opacity:.65">${c.ex}</span></div></div>`;
+      if(i<s.chain.length-1) h+=`<div class="chain-arr">→</div>`;
+    });
+    h+=`</div><div class="q-bubble"><div class="qb-icon">⚠️</div><div class="qb-text">${s.note}</div></div>`;
+  }
+  if(s.bubble) h+=`<div class="q-bubble"><div class="qb-icon">🕵️</div><div class="qb-text">${s.bubble}</div></div>`;
+  h+=`</div><button class="continue-btn fade" onclick="next()">Continue →</button>`;
+  m.innerHTML=h;
+}
+
+function doMCQ(s,m){
+  total++;
+  const keys=['A','B','C','D'];
+  m.innerHTML=`<div class="lhdr fade">${s.tag}</div>
+  <div class="question-card fade"><div class="qc-tag">// Question</div>
+  <div class="qc-text">${s.q}</div>
+  <div class="options">${s.opts.map((o,i)=>`<button class="opt" id="o${i}" onclick="pickMCQ(${i},${s.c},'${s.exp.replace(/'/g,"\\'")}')"><div class="opt-key">${keys[i]}</div><div class="opt-text">${o}</div></button>`).join('')}</div>
+  </div><div id="fb"></div><button class="continue-btn fade" id="nb" style="display:none" onclick="next()">Continue →</button>`;
+}
+
+function pickMCQ(chosen,correct,exp){
+  const ok=chosen===correct;
+  if(ok){xpVal+=10;correct_++;document.getElementById('xp').textContent=xpVal;}
+  else loseH();
+  const keys=['A','B','C','D'];
+  STEPS[step].opts.forEach((_,i)=>{
+    const el=document.getElementById('o'+i);
+    if(i===correct) el.classList.add('right');
+    else if(i===chosen&&!ok) el.classList.add('wrong');
+    else el.classList.add('dim');
+  });
+  document.getElementById('fb').innerHTML=`<div class="feedback ${ok?'ok':'bad'} fade"><strong>${ok?'✓ Correct!':'✗ Not quite.'}</strong> ${exp}</div>`;
+  document.getElementById('nb').style.display='block';
+}
+
+function doScenario(s,m){
+  total++;
+  m.innerHTML=`<div class="lhdr fade">${s.tag}</div>
+  <div class="question-card fade"><div class="qc-tag">// Scenario</div>
+  <div class="scenario-box">${s.scenario}</div>
+  <div class="sc-btns">
+    <button class="sc-btn bug" onclick="pickSc('bug','${s.ans}','${s.exp.replace(/'/g,"\\'")}')">🐛 Yes, it's a bug</button>
+    <button class="sc-btn good" onclick="pickSc('ok','${s.ans}','${s.exp.replace(/'/g,"\\'")}')">✅ No, it's fine</button>
+  </div></div>
+  <div id="fb"></div><button class="continue-btn fade" id="nb" style="display:none" onclick="next()">Continue →</button>`;
+}
+
+function pickSc(chosen,ans,exp){
+  const ok=chosen===ans;
+  if(ok){xpVal+=10;correct_++;document.getElementById('xp').textContent=xpVal;}
+  else loseH();
+  document.querySelectorAll('.sc-btn').forEach(b=>b.disabled=true);
+  document.getElementById('fb').innerHTML=`<div class="feedback ${ok?'ok':'bad'} fade"><strong>${ok?'✓ Correct!':'✗ Not quite.'}</strong> ${exp}</div>`;
+  document.getElementById('nb').style.display='block';
+}
+
+function doFill(s,m){
+  total++;
+  m.innerHTML=`<div class="lhdr fade">${s.tag}</div>
+  <div class="question-card fade"><div class="qc-tag">// Fill in the blank</div>
+  <div class="qc-text">${s.q}</div>
+  ${s.blanks.map((b,i)=>`<div style="margin-top:10px"><div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3)">Blank ${i+1}:</div><input class="blank-input" id="bl${i}" placeholder="Type your answer..."></div>`).join('')}
+  <button class="blank-btn" onclick="checkFill()">Check Answer →</button>
+  </div><div id="fb"></div><button class="continue-btn fade" id="nb" style="display:none" onclick="next()">Continue →</button>`;
+  window._fillBlanks=s.blanks;window._fillExp=s.exp;
+}
+
+function checkFill(){
+  const blanks=window._fillBlanks,exp=window._fillExp;
+  const ok=blanks.every((b,i)=>document.getElementById('bl'+i).value.trim().toLowerCase().includes(b.toLowerCase()));
+  if(ok){xpVal+=15;correct_++;document.getElementById('xp').textContent=xpVal;}
+  else loseH();
+  document.getElementById('fb').innerHTML=`<div class="feedback ${ok?'ok':'bad'} fade"><strong>${ok?'✓ Correct!':'✗ Correct answers: '+blanks.join(' / ')}</strong> ${exp}</div>`;
+  document.getElementById('nb').style.display='block';
+}
+
+function doResults(m){
+  const pct=total>0?Math.round(correct_/total*100):0;
+  const msg=pct>=90?'"Flawless, Watson. <em>You were born for this.</em>"':pct>=70?'"Solid work. Review the Pesticide Paradox and the Error chain. <em>Almost there.</em>"':'"Not bad for a first case. <em>Study the 7 principles again — they are the foundation of everything.</em>"';
+  m.innerHTML=`<div class="results-card fade">
+  <div style="font-size:48px;margin-bottom:8px">🏆</div>
+  <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--g);margin-bottom:4px">Case Closed!</div>
+  <div style="font-size:14px;color:var(--text2);font-weight:300;margin-bottom:16px">Chapter 1 — Fundamentals of Testing</div>
+  <div class="rc-stats">
+    <div class="rc-stat"><div class="rc-stat-num" style="color:var(--yellow)">+${xpVal}</div><div class="rc-stat-lbl">XP earned</div></div>
+    <div class="rc-stat"><div class="rc-stat-num" style="color:var(--g)">${pct}%</div><div class="rc-stat-lbl">Accuracy</div></div>
+    <div class="rc-stat"><div class="rc-stat-num" style="color:var(--red)">${hearts}</div><div class="rc-stat-lbl">Hearts left</div></div>
+  </div>
+  <div class="rc-msg">${msg}</div>
+  <div class="btn-row">
+    <button class="btn-p" onclick="window.location.href='exam.html'">▶ Practice in Exam Simulator</button>
+    <button class="btn-s" onclick="resetLesson()">↺ Try again</button>
+    <button class="btn-s" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+  </div></div>`;
+  document.getElementById('prog').style.width='100%';
+}
+
+let correct_=0;
+function loseH(){hearts=Math.max(0,hearts-1);document.getElementById('hearts').innerHTML='❤️'.repeat(hearts)+'🖤'.repeat(5-hearts);}
+function next(){step++;render();}
+function resetLesson(){step=0;hearts=5;xpVal=0;correct_=0;total=0;document.getElementById('xp').textContent=0;document.getElementById('hearts').innerHTML='❤️❤️❤️❤️❤️';render();}
+
+render();
+</script>
+</body>
+</html>
