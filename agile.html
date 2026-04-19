@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — Agile & Scrum for QA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;--card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);--text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;--g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);--blue:#3B82F6;--bluedim:rgba(59,130,246,.10);--yellow:#F59E0B;--red:#EF4444;--purple:#8B5CF6;--navbg:rgba(7,13,8,.97);}
+[data-theme="light"]{--bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;--card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);--text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;--g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);--blue:#2563EB;--bluedim:rgba(37,99,235,.08);--yellow:#D97706;--red:#DC2626;--purple:#7C3AED;--navbg:rgba(244,246,244,.97);}
+[data-theme="hc"]{--bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;--card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);--text:#FFF;--text2:#D0D0D0;--text3:#888;--g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);--blue:#60A5FA;--bluedim:rgba(96,165,250,.10);--yellow:#FCD34D;--red:#F87171;--purple:#A78BFA;--navbg:rgba(0,0,0,.98);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+.main{padding:72px 20px 100px;max-width:720px;margin:0 auto;}
+.module-hero{background:linear-gradient(135deg,var(--bg4),var(--card));border-radius:20px;border:1.5px solid rgba(59,130,246,.3);padding:24px;margin-bottom:28px;}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;}
+.chip.g{background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.chip.b{background:var(--bluedim);color:var(--blue);border:1px solid rgba(59,130,246,.25);}
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:24px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--blue);background:var(--bluedim);color:var(--blue);}
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:20px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--blue);font-family:"Space Mono",monospace;margin-bottom:16px;}
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.75;font-weight:300;margin-bottom:12px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.concept-text code{font-family:"Space Mono",monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--yellow);}
+.info-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.info-card{background:var(--bg2);border-radius:12px;padding:13px 16px;border:1px solid var(--border);}
+.ic-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ic-desc{font-size:12px;color:var(--text2);font-weight:300;line-height:1.55;}
+.ic-tag{font-family:"Space Mono",monospace;font-size:8px;padding:2px 6px;border-radius:4px;margin-bottom:6px;display:inline-block;}
+.ic-tag.b{background:var(--bluedim);color:var(--blue);}
+.ic-tag.g{background:var(--gdim);color:var(--g);}
+.ic-tag.p{background:rgba(139,92,246,.1);color:var(--purple);}
+.sprint-flow{display:flex;overflow-x:auto;gap:0;margin:12px 0;padding-bottom:4px;scrollbar-width:none;}
+.sprint-flow::-webkit-scrollbar{display:none;}
+.sf-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.sf-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;min-width:100px;margin:0 2px;}
+.sf-icon{font-size:20px;margin-bottom:4px;}
+.sf-name{font-size:11px;font-weight:700;color:var(--text);}
+.sf-desc{font-size:9px;color:var(--text3);font-family:"Space Mono",monospace;margin-top:2px;}
+.sf-arr{font-size:18px;color:var(--text3);flex-shrink:0;align-self:center;}
+.ceremonies-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0;}
+.cer-card{background:var(--bg2);border-radius:11px;padding:12px;border:1px solid var(--border);}
+.cer-icon{font-size:18px;margin-bottom:5px;}
+.cer-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.cer-desc{font-size:11px;color:var(--text2);font-weight:300;line-height:1.4;}
+.cer-qa{font-size:10px;color:var(--g);font-style:italic;margin-top:4px;}
+.dod-list{display:flex;flex-direction:column;gap:6px;margin:12px 0;}
+.dod-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2);font-weight:300;padding:8px 12px;background:var(--bg2);border-radius:9px;border:1px solid var(--border);}
+.dod-check{color:var(--g);flex-shrink:0;}
+.quiz-card{background:rgba(59,130,246,.06);border:1.5px solid rgba(59,130,246,.2);border-radius:14px;padding:16px;margin:12px 20px 0;}
+.qz-label{font-family:"Space Mono",monospace;font-size:9px;color:var(--blue);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.qz-q{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.qz-opts{display:flex;flex-direction:column;gap:6px;}
+.qz-opt{padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-size:13px;color:var(--text2);cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+.qz-opt:hover{border-color:var(--border2);}
+.qz-opt.correct{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);color:var(--g);}
+.qz-opt.wrong{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:var(--red);}
+.q-tip{display:flex;gap:12px;align-items:flex-start;background:var(--gdim);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin:14px 20px 0;}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+.next-section{width:100%;padding:14px;border-radius:13px;border:none;background:var(--g);color:#fff;font-size:15px;font-weight:700;font-family:"Roboto",sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;margin:8px 0 0;}
+.next-section:hover{background:var(--gh);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">←</a>
+  <div class="page-title">🔄 Agile & Scrum <span>for QA</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+<div class="main">
+  <div class="module-hero fade">
+    <div class="mh-tag">// Module 3 · Agile & Scrum for QA</div>
+    <div class="mh-title">Agile & Scrum for QA</div>
+    <div class="mh-sub">How QA fits in Agile teams, what happens in every ceremony, what Definition of Done really means, and how to test in sprints without losing your mind.</div>
+    <div class="mh-chips">
+      <span class="chip g">6 concepts</span>
+      <span class="chip b">Scrum ceremonies</span>
+      <span class="chip g">QA perspective</span>
+    </div>
+  </div>
+  <div class="sec-nav" id="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · Agile vs Waterfall</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · Scrum Overview</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · Sprint Cycle</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · Ceremonies</button>
+    <button class="sn-btn" onclick="goTo(4)">5 · Definition of Done</button>
+    <button class="sn-btn" onclick="goTo(5)">6 · QA in Agile</button>
+  </div>
+  <div id="sections"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="challenges.html" class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Challenges</div></a>
+  <a href="gamification.html" class="nav-item"><div class="nav-icon">📋</div><div class="nav-label">Progress</div></a>
+  <a href="glossary.html" class="nav-item on"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div><div class="nav-pip"></div></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+<script>
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);["dark","light","hc"].forEach(id=>{const b=document.getElementById("btn-"+id);if(b)b.classList.toggle("on",id===t);});}
+if(window.matchMedia("(prefers-color-scheme: light)").matches)setTheme("light");
+let current=0;const completed=new Set();
+
+const SCREENS=[
+// 1. Agile vs Waterfall
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 01</div><div class="lc-title">Agile vs Waterfall</div><div class="lc-sub">// why the industry shifted</div></div>
+<div class="concept-box">
+<p class="concept-text"><strong>Waterfall</strong> is linear — requirements → design → build → test → deploy. Testing only happens after development is complete. Bugs found late are expensive to fix.<br><br><strong>Agile</strong> is iterative — short cycles called sprints (1-4 weeks), with testing happening throughout, not just at the end. The goal is to deliver working software continuously.</p>
+<div class="info-grid">
+  <div class="info-card"><div class="ic-tag b">Waterfall</div><div class="ic-title">Testing at the end</div><div class="ic-desc">Long development phase → big bang testing → bugs found late → expensive fixes. QA is a phase, not a role throughout the project.</div></div>
+  <div class="info-card"><div class="ic-tag g">Agile</div><div class="ic-title">Testing throughout</div><div class="ic-desc">Short sprints → continuous testing → bugs found early → cheap fixes. QA is a team member, not a department that receives code at the end.</div></div>
+</div>
+<p class="concept-text">The <strong>Agile Manifesto</strong> (2001) established 4 core values:<br><br>
+• Individuals and interactions <em>over</em> processes and tools<br>
+• Working software <em>over</em> comprehensive documentation<br>
+• Customer collaboration <em>over</em> contract negotiation<br>
+• Responding to change <em>over</em> following a plan</p>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Quick Check</div>
+<div class="qz-q">In Waterfall, when does testing typically happen?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">Throughout the entire development lifecycle.</button>
+  <button class="qz-opt" onclick="quiz(this,true)">After development is complete, as a separate phase.</button>
+  <button class="qz-opt" onclick="quiz(this,false)">Before development starts, to prevent bugs.</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"In Waterfall, QA was the last line of defense. In Agile, <em>QA is embedded in every sprint.</em> The shift isn't just methodological — it's cultural."</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(0)">Next: Scrum Overview →</button></div>
+</div>`,
+
+// 2. Scrum Overview
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 02</div><div class="lc-title">Scrum Overview</div><div class="lc-sub">// the most used Agile framework</div></div>
+<div class="concept-box">
+<p class="concept-text"><strong>Scrum</strong> is the most widely used Agile framework. It organizes work into fixed-length iterations called <strong>Sprints</strong>, with defined roles, ceremonies, and artifacts.</p>
+<div class="info-grid">
+  <div class="info-card"><div class="ic-tag b">The 3 Roles</div><div class="ic-title">Scrum Team</div><div class="ic-desc">
+    <strong>Product Owner (PO):</strong> Owns the backlog, prioritizes features, represents stakeholders.<br>
+    <strong>Scrum Master (SM):</strong> Removes blockers, facilitates ceremonies, protects the team.<br>
+    <strong>Development Team:</strong> Self-organizing team that builds, tests, and delivers — QA included.
+  </div></div>
+  <div class="info-card"><div class="ic-tag g">The 3 Artifacts</div><div class="ic-title">Scrum Artifacts</div><div class="ic-desc">
+    <strong>Product Backlog:</strong> Ordered list of all features, bugs, and work to be done.<br>
+    <strong>Sprint Backlog:</strong> Items selected for the current sprint.<br>
+    <strong>Increment:</strong> The potentially shippable product at the end of each sprint.
+  </div></div>
+</div>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Quick Check</div>
+<div class="qz-q">Who is responsible for prioritizing the Product Backlog in Scrum?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">The Scrum Master</button>
+  <button class="qz-opt" onclick="quiz(this,true)">The Product Owner</button>
+  <button class="qz-opt" onclick="quiz(this,false)">The QA Engineer</button>
+  <button class="qz-opt" onclick="quiz(this,false)">The entire Development Team</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"The Scrum Master removes blockers. The Product Owner sets direction. The team delivers. <em>QA makes sure what they deliver actually works.</em>"</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(1)">Next: Sprint Cycle →</button></div>
+</div>`,
+
+// 3. Sprint Cycle
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 03</div><div class="lc-title">The Sprint Cycle</div><div class="lc-sub">// 1-4 weeks, repeat until shipped</div></div>
+<div class="concept-box">
+<p class="concept-text">A <strong>Sprint</strong> is a fixed-length iteration (typically 2 weeks) where the team selects, builds, tests, and delivers a potentially shippable product increment.</p>
+<div class="sprint-flow">
+  <div class="sf-item"><div class="sf-box"><div class="sf-icon">📋</div><div class="sf-name">Sprint Planning</div><div class="sf-desc">Select backlog items</div></div></div>
+  <div class="sf-arr">→</div>
+  <div class="sf-item"><div class="sf-box"><div class="sf-icon">⚙️</div><div class="sf-name">Development</div><div class="sf-desc">Build + test daily</div></div></div>
+  <div class="sf-arr">→</div>
+  <div class="sf-item"><div class="sf-box"><div class="sf-icon">🔍</div><div class="sf-name">QA Testing</div><div class="sf-desc">Continuous, not end</div></div></div>
+  <div class="sf-arr">→</div>
+  <div class="sf-item"><div class="sf-box"><div class="sf-icon">🎯</div><div class="sf-name">Sprint Review</div><div class="sf-desc">Demo to stakeholders</div></div></div>
+  <div class="sf-arr">→</div>
+  <div class="sf-item"><div class="sf-box"><div class="sf-icon">🔄</div><div class="sf-name">Retrospective</div><div class="sf-desc">Improve the process</div></div></div>
+</div>
+<p class="concept-text">Key sprint rules:<br>
+• Sprint length is fixed — don't extend it to fit more work<br>
+• <strong>No new work added</strong> mid-sprint without removing something<br>
+• At the end, software must be <strong>potentially shippable</strong> — tested and meeting Definition of Done<br>
+• Daily Standups keep everyone aligned throughout</p>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Quick Check</div>
+<div class="qz-q">The Product Owner wants to add a new feature mid-sprint because a client just asked for it. What should happen?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">Add it immediately — client comes first.</button>
+  <button class="qz-opt" onclick="quiz(this,false)">The QA team decides whether to include it.</button>
+  <button class="qz-opt" onclick="quiz(this,true)">Add it to the Product Backlog for the next sprint. The current sprint scope is protected.</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"Mid-sprint changes are the enemy of predictability. <em>The backlog exists for a reason, Watson.</em> Everything gets its sprint."</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(2)">Next: Ceremonies →</button></div>
+</div>`,
+
+// 4. Ceremonies
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 04</div><div class="lc-title">Scrum Ceremonies</div><div class="lc-sub">// and what QA does in each one</div></div>
+<div class="concept-box">
+<p class="concept-text">Every Scrum sprint has <strong>4 ceremonies</strong>. As a QA engineer, you have a specific role in each — not just "attending."</p>
+<div class="ceremonies-grid">
+  <div class="cer-card"><div class="cer-icon">📋</div><div class="cer-name">Sprint Planning</div><div class="cer-desc">Team selects backlog items and commits to the sprint goal.</div><div class="cer-qa">QA: Clarify acceptance criteria, estimate testing effort, flag missing test data.</div></div>
+  <div class="cer-card"><div class="cer-icon">☀️</div><div class="cer-name">Daily Standup</div><div class="cer-desc">15-min daily sync: what did I do, what will I do, any blockers?</div><div class="cer-qa">QA: Report test progress, flag blocking bugs, signal when stories are ready for testing.</div></div>
+  <div class="cer-card"><div class="cer-icon">🎯</div><div class="cer-name">Sprint Review</div><div class="cer-desc">Demo the increment to stakeholders. Collect feedback.</div><div class="cer-qa">QA: Confirm all stories meet DoD before demo. Support demo with test evidence.</div></div>
+  <div class="cer-card"><div class="cer-icon">🔄</div><div class="cer-name">Retrospective</div><div class="cer-desc">Team reflects on what went well, what didn't, what to improve.</div><div class="cer-qa">QA: Raise test bottlenecks, suggest process improvements, advocate for shift-left testing.</div></div>
+</div>
+<p class="concept-text">There's also <strong>Backlog Refinement</strong> (not an official ceremony but always happens) — the team reviews upcoming stories, adds detail, and estimates. QA adds acceptance criteria and test scenarios.</p>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Quick Check</div>
+<div class="qz-q">In which Scrum ceremony should QA raise concerns about missing acceptance criteria on user stories?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">Sprint Review</button>
+  <button class="qz-opt" onclick="quiz(this,false)">Daily Standup</button>
+  <button class="qz-opt" onclick="quiz(this,true)">Sprint Planning (or Backlog Refinement)</button>
+  <button class="qz-opt" onclick="quiz(this,false)">Retrospective</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"The QA engineer who only shows up at the end to test is a waterfall tester in an agile costume. <em>Show up in planning. Shape the stories.</em>"</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(3)">Next: Definition of Done →</button></div>
+</div>`,
+
+// 5. Definition of Done
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 05</div><div class="lc-title">Definition of Done</div><div class="lc-sub">// the contract between the team and quality</div></div>
+<div class="concept-box">
+<p class="concept-text">The <strong>Definition of Done (DoD)</strong> is a shared checklist that a user story must satisfy before it can be called complete. It prevents "done but not tested" from being a thing.<br><br>Without a DoD, "done" means whatever the developer says it means. With a DoD, it means the same thing for everyone on the team.</p>
+<div class="dod-list">
+  <div class="dod-item"><div class="dod-check">✓</div><div>Code written and peer-reviewed (code review passed)</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Unit tests written and passing (minimum 80% coverage)</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Acceptance criteria verified by QA</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Regression tests run — no new failures introduced</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>All bugs found during testing resolved or accepted by PO</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Deployed to staging environment</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Product Owner has reviewed and approved</div></div>
+  <div class="dod-item"><div class="dod-check">✓</div><div>Documentation updated (if applicable)</div></div>
+</div>
+<p class="concept-text">The <strong>Definition of Ready (DoR)</strong> is the entry criteria — what a story must have before the team can start working on it (clear acceptance criteria, test data identified, dependencies resolved).</p>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Quick Check</div>
+<div class="qz-q">A developer says a story is "done" but QA hasn't tested it yet. According to Scrum, is this story done?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">Yes — if the developer built what was requested.</button>
+  <button class="qz-opt" onclick="quiz(this,true)">No — if the Definition of Done requires QA sign-off, it is not done.</button>
+  <button class="qz-opt" onclick="quiz(this,false)">It depends on the sprint deadline.</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"'Done' without QA is just <em>code that hasn't failed in front of a user yet.</em> The DoD is the contract. Enforce it."</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(4)">Next: QA in Agile →</button></div>
+</div>`,
+
+// 6. QA in Agile
+`<div class="lesson-card fade">
+<div class="lc-header"><div class="lc-num">Concept 06</div><div class="lc-title">QA's Role in Agile Teams</div><div class="lc-sub">// not a gatekeeper — a partner</div></div>
+<div class="concept-box">
+<p class="concept-text">In Agile, QA is no longer the last line of defense. QA is a <strong>quality partner embedded throughout the sprint</strong>, from story refinement to deployment.</p>
+<div class="info-grid">
+  <div class="info-card"><div class="ic-tag g">Shift-Left Testing</div><div class="ic-title">Test early, test often</div><div class="ic-desc">QA reviews requirements before development starts, writes acceptance criteria, participates in design discussions. A bug caught in planning costs 1x. A bug found in production costs 100x.</div></div>
+  <div class="info-card"><div class="ic-tag b">Three Amigos</div><div class="ic-title">BA + Dev + QA</div><div class="ic-desc">Before development starts, the Business Analyst, Developer, and QA meet to align on what to build, how to build it, and how to test it. This prevents "I thought it worked differently" conversations.</div></div>
+  <div class="info-card"><div class="ic-tag p">Continuous Testing</div><div class="ic-title">Test as code is written</div><div class="ic-desc">QA doesn't wait for the end of the sprint. As stories are completed by dev, QA tests them immediately. Bugs are raised, fixed, and verified within the same sprint — not carried to the next.</div></div>
+</div>
+<p class="concept-text"><strong>Key QA responsibilities in Agile:</strong><br>
+• Write and refine acceptance criteria with the team<br>
+• Identify test scenarios during story refinement<br>
+• Execute functional, regression, and exploratory testing per sprint<br>
+• Maintain and update the regression suite<br>
+• Report test metrics to the team in retrospectives<br>
+• Advocate for quality — raise issues with process, not just with code</p>
+</div>
+<div class="quiz-card">
+<div class="qz-label">// Final Check</div>
+<div class="qz-q">What does "shift-left testing" mean in an Agile context?</div>
+<div class="qz-opts">
+  <button class="qz-opt" onclick="quiz(this,false)">Moving testers from the right side of the office to the left.</button>
+  <button class="qz-opt" onclick="quiz(this,false)">Delaying testing until later in the sprint to have more code to test.</button>
+  <button class="qz-opt" onclick="quiz(this,true)">Involving testing activities earlier in the development lifecycle to catch defects sooner.</button>
+</div>
+</div>
+<div class="q-tip"><div class="qt-icon">🕵️</div><div><div class="qt-tag">// Q says</div><p class="qt-msg">"The QA engineer who waits for a ticket is a gatekeeper. The QA engineer who <em>shapes the ticket</em> is a quality advocate. Be the second one."</p></div></div>
+<div style="padding:16px 20px 20px"><button class="next-section" onclick="nextSection(5)">🏆 Complete Module</button></div>
+</div>`
+];
+
+function quiz(btn,correct){
+  const opts=btn.closest('.qz-opts').querySelectorAll('.qz-opt');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct) opts.forEach(o=>{if(o.getAttribute('onclick').includes('true')) o.classList.add('correct');});
+}
+
+function goTo(i){
+  current=i;
+  document.getElementById('sections').innerHTML=SCREENS[i];
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{b.classList.toggle('active',idx===i);b.classList.toggle('done',completed.has(idx)&&idx!==i);});
+  document.getElementById('prog').style.width=(completed.size/SCREENS.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextSection(i){
+  completed.add(i);
+  if(i<SCREENS.length-1) goTo(i+1);
+  else{
+    document.getElementById('sections').innerHTML=`<div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🏆</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--blue);margin-bottom:8px">Agile & Scrum — Complete!</div>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:20px">"QALemental, Watson. You now know the ceremonies, the DoD, and your role in every sprint. <em>Show up in planning. Shape the stories.</em>"</p>
+      <a href="istqb-simulator.html" style="display:block;background:var(--g);color:#fff;padding:13px 28px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;margin-bottom:10px;text-align:center">▶ Practice in ISTQB Simulator</a>
+      <a href="dashboard.html" style="display:block;text-align:center;font-size:13px;color:var(--text3);margin-top:8px">← Back to Dashboard</a>
+    </div>`;
+    document.getElementById('prog').style.width='100%';
+  }
+}
+
+goTo(0);
+</script>
+</body>
+</html>
