@@ -1,0 +1,53 @@
+<!-- ══ PEGA ESTE BLOQUE justo antes de <section class="cta-sec"> en tu index.html ══ -->
+
+<section class="creator-sec" id="creator">
+  <div class="eyebrow">Meet the Creator</div>
+  <h2 class="sec-h">Built by a QA pro,<br><em>for QA pros.</em></h2>
+
+  <div class="creator-card">
+    <div class="creator-top">
+      <div class="creator-avatar">🔍</div>
+      <div>
+        <div class="creator-name">Omar A.</div>
+        <div class="creator-role">QA Specialist · ISTQB Certified · 10+ Years</div>
+        <div class="creator-badges">
+          <span class="cbadge">10+ Years in QA</span>
+          <span class="cbadge">ISTQB Certified</span>
+          <span class="cbadge">TCS · CitiDirect</span>
+          <span class="cbadge">Bilingual EN / ES</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="creator-body">
+      <p>QALingo is an app made by a QA professional who got tired of preparing for interviews with boring PDFs and long videos.</p>
+      <p>I decided to create a <strong>practical, fun, and effective method</strong> — a Duolingo for QA where you can review fundamentals, prep for ISTQB, and nail interview questions in just 5 minutes a day.</p>
+      <p>With the help of <strong>Q</strong> — that blue bug detective with the soul of James Bond and the mind of Sherlock Holmes — learning no longer feels like studying... <em>it feels like solving interesting cases.</em></p>
+    </div>
+
+    <div class="creator-quote">
+      <div class="cq-bar"></div>
+      <div class="cq-text">"You are Watson. And I will help you solve the most inhospitable mysteries of QA."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AGREGA ESTE CSS dentro del bloque <style> de tu index.html ══ -->
+<style>
+.creator-sec{padding:64px 24px;max-width:720px;margin:0 auto;position:relative;z-index:1;}
+.creator-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:28px;box-shadow:0 0 40px rgba(34,197,94,.05);}
+.creator-top{display:flex;align-items:flex-start;gap:18px;margin-bottom:24px;}
+.creator-avatar{width:64px;height:64px;border-radius:14px;background:var(--gdim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;box-shadow:0 0 20px rgba(34,197,94,.1);}
+.creator-name{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.5px;margin-bottom:3px;}
+.creator-role{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
+.creator-badges{display:flex;flex-wrap:wrap;gap:6px;}
+.cbadge{font-family:"Space Mono",monospace;font-size:9px;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:3px 10px;letter-spacing:.5px;}
+.creator-body{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.creator-body p{font-size:14px;color:var(--text2);line-height:1.75;font-weight:300;}
+.creator-body strong{color:var(--text);font-weight:500;}
+.creator-body em{color:var(--g);font-style:normal;}
+.creator-quote{display:flex;gap:14px;align-items:flex-start;background:var(--bg2);border-radius:10px;padding:14px 16px;}
+.cq-bar{width:3px;border-radius:2px;background:var(--g);flex-shrink:0;align-self:stretch;min-height:100%;}
+.cq-text{font-family:"Space Mono",monospace;font-size:11px;color:var(--g);font-style:italic;line-height:1.6;}
+@media(max-width:480px){.creator-top{flex-direction:column;}.creator-avatar{width:52px;height:52px;font-size:26px;}}
+</style>
