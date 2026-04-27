@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QALingo — UX/UI for QA · Lesson 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{
+  --bg:#070D08;--bg2:#0C1510;--bg3:#111E14;--bg4:#182619;
+  --card:#0C1510;--border:rgba(34,197,94,.11);--border2:rgba(34,197,94,.24);
+  --text:#F0F0F0;--text2:#9DB89F;--text3:#334D36;
+  --g:#22C55E;--gh:#16A34A;--gdim:rgba(34,197,94,.08);
+  --blue:#3B82F6;--bluedim:rgba(59,130,246,.10);
+  --yellow:#F59E0B;--red:#EF4444;--orange:#F97316;
+  --shadow:rgba(0,0,0,.55);--navbg:rgba(7,13,8,.97);
+}
+[data-theme="light"]{
+  --bg:#F4F6F4;--bg2:#E8EDE8;--bg3:#DCE3DC;--bg4:#CDD5CD;
+  --card:#FFF;--border:rgba(22,163,74,.13);--border2:rgba(22,163,74,.30);
+  --text:#0A1C0C;--text2:#3A5540;--text3:#7A8E7C;
+  --g:#16A34A;--gh:#15803D;--gdim:rgba(22,163,74,.07);
+  --blue:#2563EB;--bluedim:rgba(37,99,235,.08);
+  --yellow:#D97706;--red:#DC2626;--orange:#EA580C;
+  --shadow:rgba(0,0,0,.07);--navbg:rgba(244,246,244,.97);
+}
+[data-theme="hc"]{
+  --bg:#000;--bg2:#050505;--bg3:#0D0D0D;--bg4:#141414;
+  --card:#030303;--border:rgba(74,222,128,.32);--border2:rgba(74,222,128,.58);
+  --text:#FFF;--text2:#D0D0D0;--text3:#888;
+  --g:#4ADE80;--gh:#22C55E;--gdim:rgba(74,222,128,.10);
+  --blue:#60A5FA;--bluedim:rgba(96,165,250,.10);
+  --yellow:#FCD34D;--red:#F87171;--orange:#FB923C;
+  --shadow:rgba(0,0,0,.9);--navbg:rgba(0,0,0,.98);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:"Roboto",sans-serif;font-size:16px;line-height:1.7;min-height:100vh;transition:background .3s,color .3s;}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;gap:12px;padding:0 20px;background:var(--navbg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);text-decoration:none;flex-shrink:0;transition:all .2s;}
+.back-btn:hover{border-color:var(--g);color:var(--g);}
+.page-title{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.page-title span{color:var(--g);}
+.tog-mini{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px;flex-shrink:0;}
+.tog-btn{padding:4px 8px;border-radius:99px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;transition:all .2s;}
+.tog-btn.on{background:var(--g);color:#fff;}
+
+/* PROGRESS BAR */
+.prog-bar{position:fixed;top:58px;left:0;right:0;z-index:199;height:3px;background:var(--bg3);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gh),var(--g));transition:width .4s ease;width:0%;}
+
+/* MAIN */
+.main{padding:80px 20px 110px;max-width:720px;margin:0 auto;}
+
+/* MODULE HERO */
+.module-hero{
+  background:linear-gradient(135deg,var(--bg4),var(--card));
+  border-radius:20px;border:1.5px solid var(--border2);
+  padding:24px;margin-bottom:28px;
+  position:relative;overflow:hidden;
+}
+.module-hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(34,197,94,.06),transparent 70%);}
+.mh-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.mh-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);}
+.mh-sub{font-size:15px;color:var(--text2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.mh-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.mh-chip{font-family:"Space Mono",monospace;font-size:9px;padding:4px 10px;border-radius:6px;background:var(--gdim);color:var(--g);border:1px solid var(--border2);}
+.mh-chip.blue{background:var(--bluedim);color:var(--blue);border-color:rgba(59,130,246,.25);}
+.mh-chip.yellow{background:rgba(245,158,11,.1);color:var(--yellow);border-color:rgba(245,158,11,.25);}
+
+/* SECTION NAV */
+.sec-nav{display:flex;gap:6px;overflow-x:auto;padding:0 0 4px;margin-bottom:28px;scrollbar-width:none;}
+.sec-nav::-webkit-scrollbar{display:none;}
+.sn-btn{flex-shrink:0;padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:transparent;font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.sn-btn.done{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);color:var(--g);}
+.sn-btn.active{border-color:var(--g);background:var(--gdim);color:var(--g);}
+
+/* LESSON CARD */
+.lesson-card{background:var(--card);border-radius:18px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.lc-header{padding:18px 20px 0;}
+.lc-num{font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.lc-title{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);margin-bottom:4px;}
+.lc-sub{font-size:13px;color:var(--g);font-family:"Space Mono",monospace;margin-bottom:14px;}
+
+/* CONCEPT BOX */
+.concept-box{padding:0 20px 16px;}
+.concept-text{font-size:15px;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:14px;}
+.concept-text strong{color:var(--text);font-weight:600;}
+.concept-text em{font-style:italic;color:var(--g);}
+.concept-text code{font-family:"Space Mono",monospace;font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--g);}
+
+/* COMPARISON CARD — Bug vs UX */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+@media(max-width:480px){.compare-grid{grid-template-columns:1fr;}}
+.cmp-card{border-radius:12px;padding:14px;border:1px solid var(--border);}
+.cmp-card.bug{background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.2);}
+.cmp-card.ux{background:var(--bluedim);border-color:rgba(59,130,246,.25);}
+.cmp-label{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.cmp-card.bug .cmp-label{color:var(--red);}
+.cmp-card.ux .cmp-label{color:var(--blue);}
+.cmp-item{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;padding:4px 0;border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:flex-start;}
+.cmp-item:last-child{border-bottom:none;}
+.cmp-dot{flex-shrink:0;margin-top:5px;width:5px;height:5px;border-radius:50%;}
+.cmp-card.bug .cmp-dot{background:var(--red);}
+.cmp-card.ux .cmp-dot{background:var(--blue);}
+
+/* REAL WORLD EXAMPLE */
+.example-card{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:12px;padding:16px;margin:14px 0;
+  position:relative;
+}
+.ex-label{
+  font-family:"Space Mono",monospace;font-size:8px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.ex-label::before{content:"";display:inline-block;width:10px;height:2px;background:var(--g);}
+.ex-app{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;margin-bottom:10px;
+}
+.ex-app-icon{font-size:22px;flex-shrink:0;}
+.ex-app-name{font-family:"Space Mono",monospace;font-size:10px;color:var(--text);font-weight:700;}
+.ex-app-desc{font-size:11px;color:var(--text3);}
+.ex-scenarios{display:flex;flex-direction:column;gap:7px;}
+.ex-row{display:flex;gap:10px;align-items:flex-start;}
+.ex-badge-sm{
+  flex-shrink:0;font-family:"Space Mono",monospace;font-size:8px;
+  padding:3px 7px;border-radius:5px;margin-top:1px;white-space:nowrap;
+}
+.ex-badge-sm.func{background:rgba(239,68,68,.1);color:var(--red);}
+.ex-badge-sm.ux{background:var(--bluedim);color:var(--blue);}
+.ex-text{font-size:13px;color:var(--text2);font-weight:300;line-height:1.5;}
+
+/* COST TABLE */
+.cost-table{margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.ct-header{background:var(--bg3);display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.ct-head{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;border-right:1px solid var(--border);}
+.ct-head:last-child{border-right:none;}
+.ct-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--border);}
+.ct-cell{font-size:12px;color:var(--text2);font-weight:300;padding:9px 12px;border-right:1px solid var(--border);line-height:1.4;}
+.ct-cell:last-child{border-right:none;}
+.ct-cell.phase{font-family:"Space Mono",monospace;font-size:10px;color:var(--text);font-weight:700;}
+.ct-cell.cost-low{color:var(--g);}
+.ct-cell.cost-med{color:var(--yellow);}
+.ct-cell.cost-high{color:var(--orange);}
+.ct-cell.cost-crit{color:var(--red);}
+
+/* INSIGHT BOX */
+.insight-box{
+  background:var(--gdim);border:1px solid var(--border2);
+  border-radius:12px;padding:14px 16px;margin:14px 0;
+  border-left:3px solid var(--g);
+}
+.ib-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.ib-text{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;}
+.ib-text strong{color:var(--text);font-weight:600;}
+.ib-text em{font-style:normal;color:var(--g);}
+
+/* EXERCISE */
+.exercise-card{
+  background:linear-gradient(135deg,var(--bg4),var(--card));
+  border-radius:14px;border:1.5px solid var(--border2);
+  padding:16px;margin:12px 20px 0;
+}
+.ex-badge-pill{display:inline-flex;align-items:center;gap:5px;font-family:"Space Mono",monospace;font-size:8px;padding:3px 8px;border-radius:5px;margin-bottom:8px;}
+.ex-badge-pill.beginner{background:rgba(34,197,94,.1);color:var(--g);}
+.ex-badge-pill.intermediate{background:rgba(245,158,11,.1);color:var(--yellow);}
+.ex-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.ex-scenario{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;margin-bottom:14px;}
+.ex-scenario strong{color:var(--text);font-weight:500;}
+
+/* QUIZ OPTIONS */
+.quiz-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.quiz-opt{
+  width:100%;text-align:left;background:transparent;
+  border:1.5px solid var(--border);border-radius:11px;
+  padding:11px 13px;color:var(--text);
+  font-family:"Roboto",sans-serif;font-size:13px;
+  cursor:pointer;display:flex;align-items:center;gap:10px;
+  transition:all .18s ease;line-height:1.4;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--border2);background:var(--gdim);transform:translateX(2px);}
+.quiz-opt.correct{border-color:var(--g)!important;background:rgba(34,197,94,.08)!important;color:var(--g)!important;}
+.quiz-opt.wrong{border-color:var(--red)!important;background:rgba(239,68,68,.07)!important;color:var(--red)!important;text-decoration:line-through;}
+.quiz-opt:disabled{cursor:default;}
+.opt-key{
+  font-family:"Space Mono",monospace;font-size:9px;color:var(--text3);
+  background:var(--bg3);border:1px solid var(--border);
+  width:22px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .18s;
+}
+.quiz-opt.correct .opt-key{background:rgba(34,197,94,.15);border-color:var(--g);color:var(--g);}
+.quiz-opt.wrong .opt-key{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red);}
+
+/* FEEDBACK */
+.quiz-feedback{
+  padding:11px 13px;border-radius:10px;font-size:13px;
+  line-height:1.55;display:none;margin-bottom:10px;
+}
+.quiz-feedback.show-ok{display:block;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22);color:var(--g);}
+.quiz-feedback.show-ko{display:block;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);color:#f7a0a0;}
+.fb-label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.08em;opacity:.7;margin-bottom:4px;}
+
+/* Q TIP */
+.q-tip{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--gdim);border:1px solid var(--border2);
+  border-radius:14px;padding:14px 16px;margin:14px 20px 0;
+}
+.qt-icon{font-size:22px;flex-shrink:0;}
+.qt-tag{font-family:"Space Mono",monospace;font-size:9px;color:var(--g);letter-spacing:1px;margin-bottom:3px;}
+.qt-msg{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;font-style:italic;}
+.qt-msg em{font-style:normal;color:var(--g);font-weight:500;}
+
+/* NEXT BTN */
+.next-section{
+  width:100%;padding:14px;border-radius:13px;border:none;
+  background:var(--g);color:#fff;font-size:15px;font-weight:700;
+  font-family:"Roboto",sans-serif;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;margin:8px 0 0;
+}
+.next-section:hover{background:var(--gh);}
+.next-section:disabled{opacity:.4;cursor:not-allowed;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--navbg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;padding:3px 0;}
+.nav-icon{font-size:21px;filter:grayscale(1) opacity(.28);}
+.nav-label{font-family:"Space Mono",monospace;font-size:8px;color:var(--text3);font-weight:700;}
+.nav-item.on .nav-icon{filter:none;}
+.nav-item.on .nav-label{color:var(--g);}
+.nav-pip{width:4px;height:4px;border-radius:50%;background:var(--g);margin-top:-1px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .35s ease both;}
+
+/* LESSEN DIVIDER */
+.lc-divider{height:1px;background:var(--border);margin:16px 20px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="ux-ui-module.html" class="back-btn" title="Back to module">←</a>
+  <div class="page-title">🎨 UX/UI for QA · <span>Lesson 1 of 6</span></div>
+  <div class="tog-mini">
+    <button class="tog-btn on" id="btn-dark"  onclick="setTheme('dark')">🌙</button>
+    <button class="tog-btn"    id="btn-light" onclick="setTheme('light')">☀️</button>
+    <button class="tog-btn"    id="btn-hc"    onclick="setTheme('hc')">◉</button>
+  </div>
+</div>
+
+<div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="module-hero fade">
+    <div class="mh-tag">// UX/UI for QA · Lesson 01 of 06</div>
+    <div class="mh-title">Why UX matters to a QA</div>
+    <div class="mh-sub">Most QAs find broken things. The best ones find things that work but shouldn't exist the way they do. That's the UX lens.</div>
+    <div class="mh-chips">
+      <span class="mh-chip">3 concepts</span>
+      <span class="mh-chip">1 mini-quiz</span>
+      <span class="mh-chip">~12 min</span>
+      <span class="mh-chip yellow">+30 XP</span>
+    </div>
+  </div>
+
+  <!-- SECTION NAV -->
+  <div class="sec-nav" id="sec-nav">
+    <button class="sn-btn active" onclick="goTo(0)">1 · Bug vs UX</button>
+    <button class="sn-btn" onclick="goTo(1)">2 · Real Cost</button>
+    <button class="sn-btn" onclick="goTo(2)">3 · The QA Lens</button>
+    <button class="sn-btn" onclick="goTo(3)">4 · Mini-Quiz</button>
+  </div>
+
+  <div id="sections"></div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html"   class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></a>
+  <a href="ux-ui-module.html" class="nav-item on"><div class="nav-icon">🎨</div><div class="nav-label">Module</div><div class="nav-pip"></div></a>
+  <a href="challenges.html"  class="nav-item"><div class="nav-icon">🐛</div><div class="nav-label">Bugs</div></a>
+  <a href="glossary.html"    class="nav-item"><div class="nav-icon">📖</div><div class="nav-label">Glossary</div></a>
+  <a href="profile.html"     class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></a>
+</nav>
+
+<script>
+/* ── THEME ── */
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  ["dark","light","hc"].forEach(id=>{
+    const b=document.getElementById("btn-"+id);
+    if(b) b.classList.toggle("on",id===t);
+  });
+}
+if(window.matchMedia("(prefers-color-scheme:light)").matches) setTheme("light");
+
+/* ── CONTENT ── */
+const SECTIONS = [
+
+  /* ─── 1. BUG VS UX ISSUE ─── */
+  {
+    num:"Concept 01",
+    title:"Bug vs UX Issue",
+    sub:"They're not the same. And mixing them up will cost you credibility.",
+
+    render(){return `
+      <div class="lesson-card fade">
+        <div class="lc-header">
+          <div class="lc-num">${this.num}</div>
+          <div class="lc-title">${this.title}</div>
+          <div class="lc-sub">// ${this.sub}</div>
+        </div>
+        <div class="concept-box">
+
+          <p class="concept-text">
+            A <strong>functional bug</strong> means something is broken — it doesn't work as specified.
+            A <strong>UX issue</strong> means something works, but creates friction, confusion, or failure for real users.
+            Both are defects. But they have different origins, different owners, and require different language to report.
+          </p>
+
+          <div class="compare-grid">
+            <div class="cmp-card bug">
+              <div class="cmp-label">🔴 Functional Bug</div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Button throws a 500 error on click</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Form submits without validation</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>API returns wrong status code</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Date field accepts text</span></div>
+            </div>
+            <div class="cmp-card ux">
+              <div class="cmp-label">🔵 UX Issue</div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Button label says "Submit" — user doesn't know what happens next</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Error message says "Invalid input" — doesn't say which field</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Password requirements only visible after failure</span></div>
+              <div class="cmp-item"><div class="cmp-dot"></div><span>Checkout has 7 steps with no progress indicator</span></div>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <div class="ib-label">// Key Principle</div>
+            <p class="ib-text">
+              A functional bug violates a <strong>specification</strong>.
+              A UX issue violates a <strong>user's expectation</strong>.
+              Both can kill a product — but only QAs with a UX lens can find the second kind.
+              <em>That's the difference between a tester and a quality advocate.</em>
+            </p>
+          </div>
+
+          <div class="example-card">
+            <div class="ex-label">Real-world example — Checkout flow</div>
+            <div class="ex-app">
+              <div class="ex-app-icon">🛒</div>
+              <div>
+                <div class="ex-app-name">E-commerce checkout</div>
+                <div class="ex-app-desc">Payment step · mobile · real user data</div>
+              </div>
+            </div>
+            <div class="ex-scenarios">
+              <div class="ex-row">
+                <span class="ex-badge-sm func">FUNCTIONAL BUG</span>
+                <span class="ex-text">Clicking "Pay Now" throws a 422 error — payment never processes.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX ISSUE</span>
+                <span class="ex-text">"Pay Now" button works — but it's the same color as the background on mobile. 23% of users abandon at this step.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX ISSUE</span>
+                <span class="ex-text">After successful payment, user sees a blank screen for 4 seconds before the confirmation. 11% think it failed and tap again.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="q-tip">
+          <div class="qt-icon">🔍</div>
+          <div>
+            <div class="qt-tag">// Q says</div>
+            <p class="qt-msg">"Both are defects. The functional bug breaks the <em>spec</em>. The UX issue breaks the <em>user</em>. Log both. Always."</p>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px 20px">
+          <button class="next-section" onclick="nextSection(0)">Next concept →</button>
+        </div>
+      </div>
+    `;}
+  },
+
+  /* ─── 2. THE REAL COST ─── */
+  {
+    num:"Concept 02",
+    title:"The Real Cost of Late UX Finds",
+    sub:"UX bugs found in production cost 10x more than functional ones — and nobody talks about it.",
+
+    render(){return `
+      <div class="lesson-card fade">
+        <div class="lc-header">
+          <div class="lc-num">${this.num}</div>
+          <div class="lc-title">${this.title}</div>
+          <div class="lc-sub">// ${this.sub}</div>
+        </div>
+        <div class="concept-box">
+
+          <p class="concept-text">
+            The classic rule says <em>a bug found in production costs 10x more to fix</em> than one found in requirements.
+            But for UX issues, the damage is different: it's measured in <strong>drop-off rates, support tickets, lost revenue, and brand reputation</strong> — things that never appear in a defect report.
+          </p>
+
+          <div class="cost-table">
+            <div class="ct-header">
+              <div class="ct-head">Phase</div>
+              <div class="ct-head">Functional Bug Cost</div>
+              <div class="ct-head">UX Issue Cost</div>
+            </div>
+            <div class="ct-row">
+              <div class="ct-cell phase">Requirements</div>
+              <div class="ct-cell cost-low">$1 · Fix the spec</div>
+              <div class="ct-cell cost-low">$1 · Rewrite the flow</div>
+            </div>
+            <div class="ct-row">
+              <div class="ct-cell phase">Development</div>
+              <div class="ct-cell cost-med">$6 · Rework code</div>
+              <div class="ct-cell cost-med">$6 · Rework design + code</div>
+            </div>
+            <div class="ct-row">
+              <div class="ct-cell phase">QA / Staging</div>
+              <div class="ct-cell cost-med">$15 · Fix + retest cycle</div>
+              <div class="ct-cell cost-high">$25 · UX test + redesign loop</div>
+            </div>
+            <div class="ct-row">
+              <div class="ct-cell phase">Production</div>
+              <div class="ct-cell cost-high">$100 · Hotfix + deploy</div>
+              <div class="ct-cell cost-crit">$100+ + churn + brand damage</div>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <div class="ib-label">// Why QA needs to catch UX issues early</div>
+            <p class="ib-text">
+              A functional bug costs money to fix. A UX issue costs money <strong>permanently</strong> — 
+              every day it's live, users are abandoning flows, calling support, or switching to a competitor. 
+              <em>Fixing it in staging costs a sprint. Finding it in prod costs customers.</em>
+            </p>
+          </div>
+
+          <p class="concept-text">
+            The QA engineer who finds a UX issue in staging and writes a clear, impact-based defect report is doing something most testers don't: <strong>connecting quality to business outcomes</strong>. That's what international remote companies pay for.
+          </p>
+
+          <div class="example-card">
+            <div class="ex-label">Production UX bug — Real numbers</div>
+            <div class="ex-app">
+              <div class="ex-app-icon">📱</div>
+              <div>
+                <div class="ex-app-name">Onboarding flow · SaaS app</div>
+                <div class="ex-app-desc">Registration step 3 of 4 · mobile</div>
+              </div>
+            </div>
+            <div class="ex-scenarios">
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX ISSUE</span>
+                <span class="ex-text">CTA button is below the fold on mobile — 68% of users never scroll to find it and abandon registration.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">IMPACT</span>
+                <span class="ex-text">5,000 daily visitors · 68% drop-off · avg plan $29/mo · estimated monthly revenue loss: <strong>~$98,600</strong>.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm func">FIX COST</span>
+                <span class="ex-text">2 hours of CSS. Found in staging? Free. Found in production? 3 months of data needed to identify the pattern.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="q-tip">
+          <div class="qt-icon">🔍</div>
+          <div>
+            <div class="qt-tag">// Q says</div>
+            <p class="qt-msg">"A functional bug breaks a feature. A UX bug breaks the <em>business.</em> Report both — but know which one the CEO cares about."</p>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px 20px">
+          <button class="next-section" onclick="nextSection(1)">Next concept →</button>
+        </div>
+      </div>
+    `;}
+  },
+
+  /* ─── 3. THE QA WITH A UX LENS ─── */
+  {
+    num:"Concept 03",
+    title:"The QA with a UX Lens",
+    sub:"What changes when you test with the user's eyes — not just the spec's.",
+
+    render(){return `
+      <div class="lesson-card fade">
+        <div class="lc-header">
+          <div class="lc-num">${this.num}</div>
+          <div class="lc-title">${this.title}</div>
+          <div class="lc-sub">// ${this.sub}</div>
+        </div>
+        <div class="concept-box">
+
+          <p class="concept-text">
+            A QA engineer without a UX lens asks: <strong>"Does this work according to the spec?"</strong><br>
+            A QA engineer with a UX lens asks: <strong>"Does this work for a real user, in a real context, under real pressure?"</strong>
+          </p>
+          <p class="concept-text">
+            The difference is not about skill — it's about <em>perspective</em>. You shift from testing code behaviour to testing human behaviour. Both matter. The second one is rarer.
+          </p>
+
+          <div class="example-card">
+            <div class="ex-label">Mindset comparison — Same feature, two lenses</div>
+            <div class="ex-app">
+              <div class="ex-app-icon">🔐</div>
+              <div>
+                <div class="ex-app-name">Login form</div>
+                <div class="ex-app-desc">Standard username + password flow</div>
+              </div>
+            </div>
+            <div class="ex-scenarios">
+              <div class="ex-row">
+                <span class="ex-badge-sm func">SPEC LENS</span>
+                <span class="ex-text">Valid credentials → 200 OK → redirect to dashboard. ✓ Pass.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX LENS</span>
+                <span class="ex-text">After 3 failed attempts, error message says "Authentication failed" — no mention of what's wrong, no hint, no account help link. User abandons.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX LENS</span>
+                <span class="ex-text">Password field has no "show password" toggle. On mobile, users can't verify what they typed. Abandonment rate 34% higher than industry average.</span>
+              </div>
+              <div class="ex-row">
+                <span class="ex-badge-sm ux">UX LENS</span>
+                <span class="ex-text">Forgot password link is grey on a white background — contrast ratio 2.1:1, fails WCAG AA (minimum 4.5:1). Users with low vision can't find it.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <div class="ib-label">// The three questions of the UX-Aware QA</div>
+            <p class="ib-text">
+              Before marking a test as Pass, ask:<br><br>
+              <strong>1. Is it obvious?</strong> Would a first-time user know what to do without help?<br>
+              <strong>2. Is it forgiving?</strong> When users make mistakes, does the system help them recover?<br>
+              <strong>3. Is it accessible?</strong> Can someone with visual, motor, or cognitive differences use this?<br><br>
+              If any answer is No — <em>that's a defect worth logging.</em>
+            </p>
+          </div>
+
+          <p class="concept-text">
+            In the next lessons, you'll learn the exact frameworks (Nielsen's Heuristics, WCAG, UX charters) that give you the <strong>vocabulary and criteria</strong> to answer these three questions systematically — not by gut feeling, but by principle.
+          </p>
+
+        </div>
+
+        <div class="q-tip">
+          <div class="qt-icon">🔍</div>
+          <div>
+            <div class="qt-tag">// Q says</div>
+            <p class="qt-msg">"Testing the spec is the floor, Watson. <em>Testing the user is the ceiling.</em> Aim higher."</p>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px 20px">
+          <button class="next-section" onclick="nextSection(2)">Mini-Quiz →</button>
+        </div>
+      </div>
+    `;}
+  },
+
+  /* ─── 4. MINI QUIZ ─── */
+  {
+    num:"Mini-Quiz",
+    title:"Triage these UX tickets",
+    sub:"Bug or UX issue? Q is watching.",
+
+    render(){return `
+      <div class="lesson-card fade">
+        <div class="lc-header">
+          <div class="lc-num">${this.num}</div>
+          <div class="lc-title">${this.title}</div>
+          <div class="lc-sub">// ${this.sub}</div>
+        </div>
+
+        <div class="concept-box" id="quiz-area">
+          <!-- rendered by JS -->
+        </div>
+
+        <div style="padding:0 20px 20px">
+          <button class="next-section" id="quiz-next-btn" onclick="finishLesson()" disabled>
+            Complete Lesson 1 → +30 XP 🎯
+          </button>
+        </div>
+      </div>
+    `;}
+  }
+
+];
+
+/* ── STATE ── */
+let current = 0;
+const completed = new Set();
+
+/* ── QUIZ DATA ── */
+const QUIZ = [
+  {
+    q:"The 'Sign Up' button on the registration page throws a 500 Internal Server Error when clicked.",
+    opts:["Functional Bug","UX Issue","Both — log separately","Not a defect"],
+    correct:0,
+    ok:"Correct. A 500 error is a functional break — the system failed to execute the operation. Clear functional bug.",
+    ko:"This is a Functional Bug. The system broke — it didn't just create friction, it completely failed to work."
+  },
+  {
+    q:"The error message after a failed login says 'Error code: AUTH_FAIL_003'. No explanation of what went wrong or how to fix it.",
+    opts:["Functional Bug","UX Issue","Both — log separately","Not a defect"],
+    correct:1,
+    ok:"Exactly. The system works — it correctly rejected invalid credentials. But the error message violates Nielsen's Heuristic #9: Help users recognize, diagnose, and recover from errors.",
+    ko:"This is a UX Issue. Login correctly rejected — but the error message is cryptic and doesn't help the user understand or fix the problem."
+  },
+  {
+    q:"Clicking 'Delete Account' immediately deletes the account with no confirmation dialog and no undo.",
+    opts:["Functional Bug","UX Issue","Both — log separately","Not a defect"],
+    correct:2,
+    ok:"Sharp. This is both: technically it might match the spec (so not a functional bug) — but it creates irreversible harm with no safeguard (UX issue). Log them separately with different severities.",
+    ko:"This is Both. The action might be technically 'working' — but the lack of confirmation dialog and irreversible consequence is a serious UX violation (Nielsen #5: Error prevention). Log both."
+  },
+  {
+    q:"The checkout form has 9 input fields on a single screen with no grouping, labels above each field, and no progress indicator.",
+    opts:["Functional Bug","UX Issue","Both — log separately","Not a defect"],
+    correct:1,
+    ok:"Correct. Everything works — but the information density, lack of grouping, and missing progress indicator violate multiple usability principles. This is a UX defect.",
+    ko:"This is a UX Issue. The form works, but it's cognitively overwhelming. No functional break — but real user failure. Nielsen's Heuristic #8: Aesthetic and minimalist design."
+  }
+];
+
+let quizAnswers = [];
+let quizDone = false;
+
+function renderQuiz(){
+  const area = document.getElementById('quiz-area');
+  if(!area) return;
+  area.innerHTML = QUIZ.map((q,i) => `
+    <div style="margin-bottom:20px;" id="qblock-${i}">
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Ticket QA-L1-0${i+1}</div>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.6;margin-bottom:10px;">${q.q}</p>
+      <div class="quiz-opts" id="opts-${i}">
+        ${q.opts.map((o,j)=>`
+          <button class="quiz-opt" id="opt-${i}-${j}" onclick="pickAnswer(${i},${j})">
+            <span class="opt-key">${['A','B','C','D'][j]}</span>${o}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${i}">
+        <div class="fb-label" id="fbl-${i}"></div>
+        <div id="fbt-${i}"></div>
+      </div>
+      ${i < QUIZ.length-1 ? '<div style="height:1px;background:var(--border);margin:16px 0;"></div>' : ''}
+    </div>
+  `).join('');
+}
+
+function pickAnswer(qi, chosen){
+  if(quizAnswers[qi] !== undefined) return;
+  quizAnswers[qi] = chosen;
+  const q = QUIZ[qi];
+  const ok = chosen === q.correct;
+  document.querySelectorAll(`#opts-${qi} .quiz-opt`).forEach((btn,j)=>{
+    btn.disabled = true;
+    if(j === q.correct) btn.classList.add('correct');
+    else if(j === chosen && !ok) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById(`fb-${qi}`);
+  document.getElementById(`fbl-${qi}`).textContent = ok ? '✓ CORRECT' : '✗ NOT QUITE';
+  document.getElementById(`fbt-${qi}`).textContent = ok ? q.ok : q.ko;
+  fb.className = 'quiz-feedback ' + (ok ? 'show-ok' : 'show-ko');
+
+  if(quizAnswers.filter(a=>a!==undefined).length === QUIZ.length){
+    document.getElementById('quiz-next-btn').disabled = false;
+    quizDone = true;
+  }
+}
+
+/* ── NAVIGATION ── */
+function goTo(i){
+  current = i;
+  document.getElementById('sections').innerHTML = SECTIONS[i].render();
+  document.querySelectorAll('.sn-btn').forEach((b,idx)=>{
+    b.classList.toggle('active', idx===i);
+    b.classList.toggle('done', completed.has(idx) && idx!==i);
+  });
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(i === 3) setTimeout(renderQuiz, 50);
+}
+
+function nextSection(i){
+  completed.add(i);
+  goTo(i+1);
+}
+
+function finishLesson(){
+  completed.add(3);
+  updateProgress();
+  const score = quizAnswers.filter((a,i)=>a===QUIZ[i].correct).length;
+  const xp = 30;
+  // Save progress
+  localStorage.setItem('uxui-progress','1');
+  document.getElementById('sections').innerHTML = `
+    <div class="lesson-card fade" style="padding:32px;text-align:center">
+      <div style="font-size:52px;margin-bottom:14px">${score===4?'🏆':score>=2?'🔍':'📋'}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--g);margin-bottom:6px;letter-spacing:-.5px">
+        Lesson 1 Complete
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:16px">
+        Quiz: ${score}/${QUIZ.length} correct · +${xp} XP earned
+      </div>
+      <p style="color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:24px;font-weight:300;font-family:'Space Mono',monospace;font-style:italic;border:1px solid var(--border2);background:var(--gdim);border-radius:10px;padding:12px;">
+        ${score===4
+          ? '"Perfect triage, Watson. You see the difference. <span style=\'color:var(--g)\'>Lesson 2 awaits — heuristics await.</span>"'
+          : score>=2
+          ? '"Solid. You understand the distinction. <span style=\'color:var(--g)\'>Review the wrong ones before Lesson 2.</span>"'
+          : '"The concepts are clear — the application needs work. <span style=\'color:var(--g)\'>Re-read Concept 01 and try again.</span>"'
+        } — Q
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <a href="ux-lesson-02.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--g);color:#fff;padding:14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 0 24px rgba(34,197,94,.2)">
+          ▶ Lesson 2 — Nielsen's Heuristics
+        </a>
+        <a href="ux-ui-module.html" style="display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text2);padding:12px;border-radius:12px;text-decoration:none;font-size:14px;border:1.5px solid var(--border2)">
+          ← Back to module map
+        </a>
+      </div>
+    </div>
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(){
+  const pct = (completed.size / SECTIONS.length) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+}
+
+goTo(0);
+</script>
+</body>
+</html>
